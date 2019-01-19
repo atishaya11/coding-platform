@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div th:fragment="submit-box" class="sidebar-box block">
+    <div class="section-title box-title">Submit</div>
+    <div class="box-content">
+        <form id="source-submit-form" method="post" th:action="@{'/problem/submit/' + ${problem.code}}" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td class="label">
+                        Select Language:
+                    </td>
+                    <td>
+                        <select name="lang">
+                            <option th:each="language : ${languages}" th:value="${language.slug}"
+                                    th:text="${language.name}"></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">Select file: </td>
+                    <td>
+                        <input id="submit-source" type="file" name="source">
+
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 10px 0;">
+                <a href="javascript:void(0)" onclick="document.getElementById('source-submit-form').submit()" class=" button submit-button" >Submit</a>
+            </div>
+        </form>
+    </div>
+    </div>
+
+    <div th:fragment="problem-tags-box" class="sidebar-box block">
+        <div class="box-title">Problem Tags</div>
+        <div class="box-content">
+
+        </div>
+    </div>
+    <div th:fragment="submissions-box" class="sidebar-box block">
+        <div class="box-title">Problem Tags</div>
+        <div class="box-content">
+            <div><a th:href="@{'/status/' + ${problem.code}}" class="button" >All Submissions</a></div>
+        </div>
+    </div>
+</body>
+</html>

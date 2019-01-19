@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+    <div th:replace="fragments/header :: header"></div>
+
+    <div  id="body">
+        <!--<div th:replace="fragments/navbar :: navbar"></div>-->
+        <div class="container">
+            <div class="login">
+
+                <strong th:if="${bad_credentials}" class="error" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</strong>
+                <form  th:action="@{/perform_login}" method='POST'>
+                    <label>Username:
+                        <input name="username" type="text" >
+                    </label>
+                    <label>
+                        Password
+                        <input name="password" type="password">
+                    </label>
+                    <div style="text-align: center">
+                        <input type="submit" value="Login">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

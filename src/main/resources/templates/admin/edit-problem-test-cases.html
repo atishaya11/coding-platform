@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="layout :: head"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="center block">
+            <div th:replace="admin/menu :: edit-problem-menu"></div>
+            <div class="problem-edit-box">
+                <a href="javascript:void(0)" class="button" id="add-test-case">+Add Test Case</a>
+                <div>
+                    <div class="section-title">Test Cases</div>
+                    <div>
+                        <table class="test-cases">
+                            <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Input File</th>
+                                <th>Output File</th>
+                                <th>Tag</th>
+                                <th>Sample</th>
+                                <th>&emsp;&emsp;&emsp;</th>
+                            </tr>
+                            <tr th:if="${problem.testCaseDtoList == null || problem.testCaseDtoList.size() < 1}">
+                                <td colspan="6">Test cases not added.</td>
+                            </tr>
+                            <tr th:each="testCase, itr : ${problem.testCaseDtoList}" >
+                                <td th:text="${itr.index}"></td>
+                                <td>
+                                    <a th:href="@{/admin/test_cases/__${testCase.id}__/input.txt}">input.txt</a>
+                                </td>
+                                <td>
+                                    <a th:href="@{/admin/test_cases/__${testCase.id}__/output.txt}">output.txt</a>
+                                </td>
+                                <td th:text="${testCase.tag}">Test Case 1</td>
+                                <td>
+                                    <input type="checkbox" disabled="disabled" th:checked="${testCase.sample}">
+                                </td>
+                                <td>
+                                    <a><img class="icon" th:src="@{/img/edit.png}" src="" alt="Edit"></a>
+                                    <a><img class="icon" th:src="@{/img/delete.png}" src="" alt="Delete"></a>
+                                </td>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div style="text-align: right">
+                    <div style="display: inline-flex;margin: 10px;">
+                        <a href="javascript:void(0)" class="button submit-button" >Save</a>
+                    </div>
+                    <div style="display: inline-flex;margin: 10px;">
+                        <a href="javascript:void(0)" class="button" >Preview</a>
+                    </div>
+                </div>
+            </div>
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="close">&times;</span>
+                        <h3>Add Test Case</h3>
+                    </div>
+                    <div class="modal-body">
+
+                        <form id="form-add-test-case" th:action="@{'/admin/problems/edit/' + ${problem.id} + '/test_cases/upload'}" enctype="application/x-www-form-urlencoded" method="post">
+                            <div>
+                                <div class="section-title">Tag</div>
+                                <div>
+                                    <input type="text" name="tag"/>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="section-title">Input File</div>
+                                <div>
+                                    <input type="file" name="inputFile"/>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="section-title">Output File</div>
+                                <div>
+                                    <input type="file" name="outputFile"/>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="section-title">Sample</div>
+                                <div>
+                                    <input type="checkbox" value="true" name="sample"/>
+                                </div>
+                            </div>
+
+                            <div style="margin: 10px 0; text-align: center;">
+                                <a href="javascript:void(0)" onclick="document.getElementById('form-add-test-case').submit()" class=" button submit-button" >Add</a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create the editor container -->
+
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-box block">
+                <div class="section-title box-title">Actions</div>
+                <div class="box-content" style="display: inline-flex;">
+
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)"  class="button" >Publish</a>
+                    </div>
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)" class="button delete-button" >Delete</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+<script>
+    // Get the modal
+    var modal = document.getElementById('myModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("add-test-case");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>

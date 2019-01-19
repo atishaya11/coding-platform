@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <ul th:fragment="edit-problem-menu" id="edit-problem-menu" class="horizontal menu">
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('details') ? 'active' : '' }" th:href="@{'/admin/problems/edit/' + ${problem.id} + '/details' }">Details</a></li>
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('languages') ? 'active' : '' }" th:href="@{'/admin/problems/edit/' + ${problem.id} + '/languages' }">Languages</a></li>
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('test_cases') ? 'active' : '' }" th:href="@{'/admin/problems/edit/' + ${problem.id} + '/test_cases'}">Test Cases</a></li>
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('settings') ? 'active' : '' }" th:href="@{'/admin/problems/edit/' + ${problem.id} + '/settings'}">Settings</a></li>
+    </ul>
+    <ul th:fragment="admin-home-menu" class="horizontal menu">
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('problems') ? 'active' : '' }" th:href="@{/admin/problems}">Problems</a></li>
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('contests') ? 'active' : '' }" th:href="@{/admin/contests}">Contests</a></li>
+    </ul>
+</body>
+</html>

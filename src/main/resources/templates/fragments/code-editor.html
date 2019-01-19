@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="code-editor" class="code-editor">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script th:src="@{/ace-builds/src-noconflict/ace.js}" type="text/javascript" charset="utf-8"></script>
+    <div style="margin: 10px 0;">
+        <form id="source-submit-form" method="post" th:action="@{'/challenge/submit/' + ${slug}}" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td class="label">
+                        Select Language:
+                    </td>
+                    <td>
+                        <select id="lang-select" name="lang" style="margin: 10px 0">
+                            <option th:each="language : ${languages}" th:value="${language.slug}"
+                                    th:text="${language.name}"></option>
+                            <option value="cpp">C++</option>
+                            <option value="c">C</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div id="editor">
+            </div>
+            <table>
+                <tr>
+                    <td class="label">Select file: </td>
+                    <td>
+                        <input id="submit-source" type="file" name="source">
+
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 10px 0; text-align: center;">
+                <a href="javascript:void(0)" onclick="document.getElementById('source-submit-form').submit()" class="button submit-button" >Submit</a>
+            </div>
+            <script>
+                // trigger extension
+
+
+                var java = '/* package whatever; // don\'t place package name! */\n' +
+                    '\n' +
+                    'import java.util.*;\n' +
+                    'import java.lang.*;\n' +
+                    'import java.io.*;\n' +
+                    '\n' +
+                    'class ide\n' +
+                    '{\n' +
+                    '\tpublic static void main (String[] args) throws java.lang.Exception\n' +
+                    '\t{\n' +
+                    '\t\t// your code goes here\n' +
+                    '\t}\n' +
+                    '}';
+                var cpp = '#include <iostream>\n' +
+                    'using namespace std;\n' +
+                    '\n' +
+                    'int main() {\n' +
+                    '\t// your code goes here\n' +
+                    '\treturn 0;\n' +
+                    '}';
+                var c = '#include <stdio.h>\n' +
+                    '\n' +
+                    'int main(void) {\n' +
+                    '\t// your code goes here\n' +
+                    '\treturn 0;\n' +
+                    '}\n';
+                var python = '# your code goes here';
+
+                $(document).ready(function() {
+
+
+                    var editor = ace.edit("editor");
+
+                    editor.setTheme("ace/theme/github");
+                    document.getElementById('editor').style.fontSize='18px';
+                    changeEditorState(editor);
+                    $("#lang-select").change(function(){
+                        changeEditorState(editor)
+                    });
+
+                });
+                function changeEditorState(editor) {
+                    $("#lang-select").find("option:selected").each(function() {
+                        var lang = $(this).val();
+                        var s;
+                        var mode;
+                        switch (String(lang)){
+                            case "java8":
+                                s = java;
+                                mode="java";
+                                break;
+                            case 'cpp':
+                                s = cpp;
+                                mode="c_cpp";
+                                break;
+                            case 'c':
+                                s = c;
+                                mode="c_cpp";
+                                break;
+                            case 'python':
+                                s = python;
+                                mode="python";
+                                break;
+                        }
+                        editor.session.setMode("ace/mode/"+mode);
+                        editor.setValue(s);
+
+                        // v: Date.now();
+                    });
+                }
+
+            </script>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="layout :: head"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.js"></script>
+    <script th:src="@{/js/summernote-ext-specialchars.js}"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="center block">
+            <!--<div th:text="${challenge.title}"></div>-->
+            <div th:replace="admin/menu :: edit-problem-menu"></div>
+            <form id="details-form" method="post" th:action="@{'/admin/problems/edit/' + ${problem.id} + '/details'}"
+                  enctype="application/x-www-form-urlencoded">
+                <div class="problem-edit-box">
+
+                    <div>
+                        <div class="section-title">Name</div>
+                        <input type="text" th:name="name" th:value="${problem.name}">
+                    </div>
+                    <div>
+                        <div class="section-title">Code</div>
+                        <input type="text" th:name="code" th:value="${problem.code}">
+                    </div>
+                    <div>
+                        <div class="section-title">Description</div>
+                        <div class="editor-wrapper">
+                            <textarea class="summernote"  name="description" th:text="${problem.description}"></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-title">Input format</div>
+                        <div class="editor-wrapper">
+                            <textarea class="summernote" name="inputFormat" th:text="${problem.inputFormat}"></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-title">Output format</div>
+                        <div class="editor-wrapper">
+                            <textarea class="summernote" name="outputFormat" th:text="${problem.outputFormat}"></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-title">Constraints</div>
+                        <div class="editor-wrapper">
+                            <textarea class="summernote" name="constraints" th:text="${problem.constraints}"></textarea>
+                        </div>
+
+                    </div>
+                    <div style="text-align: right">
+                        <div style="display: inline-flex;margin: 10px;">
+                            <a href="javascript:void(0)" onclick="$('#details-form').submit()" class="button submit-button" >Save</a>
+                        </div>
+                        <div style="display: inline-flex;margin: 10px;">
+                            <a href="javascript:void(0)" class="button" >Preview</a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+            <!-- Create the editor container -->
+
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-box block">
+                <div class="section-title box-title">Actions</div>
+                <div class="box-content" style="display: inline-flex;">
+
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)"  class="button" >Publish</a>
+                    </div>
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)" class="button delete-button" >Delete</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script th:src="@{/js/summernote-initialise.js}" type="application/javascript"></script>
+<script>
+    $(document).ready(function() {
+        $('.summernote').summernote();
+    });
+</script>
+
+</body>
+</html>

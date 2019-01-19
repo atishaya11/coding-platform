@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div th:fragment="header" class="header">
+        <!--<div style="text-align: center;font-size: 40px;letter-spacing: 10px;">
+            Programming Platform
+        </div>
+        <div style="text-align: center;text-emphasis: circle;font-style: italic;font-size: 14px;">“Make it work, make it right, make it fast.” – Kent Beck</div>-->
+        <div th:replace="fragments/navbar :: navbar"></div>
+    </div>
+</body>
+</html>

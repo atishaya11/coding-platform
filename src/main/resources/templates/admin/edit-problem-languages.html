@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="layout :: head"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="center block">
+            <div th:replace="admin/menu :: edit-problem-menu"></div>
+            <div class="problem-edit-box">
+                <div>
+                    <div class="section-title">Languages</div>
+                    <div>
+                        <form id="update-languages" th:object="${compilersUpdateForm}" th:action="@{/admin/problems/edit/__${problem.id}__/languages}" method="post" enctype="application/x-www-form-urlencoded">
+                            <table class="test-cases">
+                                <thead>
+                                <tr>
+                                    <th>Allowed</th>
+                                    <th>Compiler</th>
+                                    <th>Version</th>
+                                    <th>Time Limit</th>
+                                    <th>&emsp;&emsp;&emsp;</th>
+                                </tr>
+                                <tr th:each="compiler, itr: ${compilers}" >
+                                    <td>
+                                        <input type="text" th:value="${compiler.id}" th:name="'compilers['+ ${itr.index} + '].id'" hidden="hidden" th:checked="${compiler.id}">
+
+                                        <input type="checkbox" th:name="'compilers['+ ${itr.index} + '].allowed'" th:checked="${compiler.allowed}" value="true">
+                                    </td>
+                                    <td th:text="${compiler.name}">
+                                    </td>
+                                    <td th:text="${compiler.version}"></td>
+                                    <td>
+                                        <input type="number" th:name="'compilers['+ ${itr.index} + '].timeLimit'" th:value="${compiler.timeLimit}">
+                                    </td>
+                                </tr>
+                                </thead>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+                <div style="text-align: right">
+                    <div style="display: inline-flex;margin: 10px;">
+                        <a href="javascript:void(0)" onclick="$('#update-languages').submit()" id="save-languages" class="button submit-button" >Save</a>
+                    </div>
+                    <div style="display: inline-flex;margin: 10px;">
+                        <a href="javascript:void(0)" class="button" >Preview</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-box block">
+                <div class="section-title box-title">Actions</div>
+                <div class="box-content" style="display: inline-flex;">
+
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)"  class="button" >Publish</a>
+                    </div>
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)" class="button delete-button" >Delete</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+       $('#save-languages').click(function () {
+
+       });
+    });
+</script>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

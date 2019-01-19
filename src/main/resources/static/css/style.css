@@ -1,0 +1,403 @@
+
+body{
+    margin: 0;
+    font-size: 14px;
+}
+
+input[type=text], input[type=password], input[type=email] {
+    border: none;
+    border-bottom: 1px solid #E7E7E7;
+    width: 100%;
+    padding: 2px 0;
+    margin-top: 2px;
+    font-size: 12px;
+}
+input[type=submit]{
+    color: #fff;
+    padding: 8px 15px;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 5px;
+    min-width: 50px;
+    background-color: #36383f;
+    width: 90%;
+    margin-top: 10px;
+}
+input:focus{
+    border-bottom: 1px solid #196ED2;
+    outline: none;
+}
+label{
+    font-size: 12px;
+    display: block;
+    font-weight: 600;
+    margin: 10px 0;
+
+}
+.button{
+    display: inline-block;
+    color: #fff;
+    padding: 8px 15px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    border-radius: 5px;
+    min-width: 50px;
+    background-color: #36383f;
+}
+.container {
+    width: 100%;
+    display: inline-flex;
+}
+.header{
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    top: 0;
+}
+.body {
+    max-width: 1200px;
+    min-width: 920px;
+    min-height: 600px;
+    margin: 30px auto 0;
+}
+.center{
+    width: 70%;
+}
+.block{
+    box-shadow: 0 0 5px #36383f;
+    margin-top: 50px;
+}
+.block > div{
+    padding: 10px;
+    margin: 0 5px 5px 5px;
+}
+.footer{
+    min-height: 100px;
+}
+.submit-button{
+    background-color: #2fb45a;
+}
+.delete-button{
+    background: red;
+    opacity: .8
+}
+.login, .register{
+    margin: 200px auto;
+    width: 300px;
+    box-shadow: 0 0 5px #36383f;;
+    border-radius: 2px;
+    padding: 20px;
+    box-sizing: border-box;
+
+}
+.error {
+    color: orange;
+    font-size: 10px;
+}
+.horizontal {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #36383f;
+    background: #000;
+    color: white;
+}
+.horizontal > li{
+    float: left;
+}
+.horizontal > li > a{
+    display: block;
+    color: #fff;
+    text-align: center;
+    padding: 10px 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 10px 5px 0 5px;
+    border-radius: 5px 5px 0 0;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.horizontal > li > img{
+    width: 50px;
+    height: 50px;
+   /* margin: 5px 5px 5px 100px;*/
+}
+.horizontal > li > a:hover {
+    opacity: 0.7;
+}
+.horizontal > li > a.active{
+    opacity: 0.7;
+}
+.sidebar{
+    width: 30%;
+    margin-top: 50px;
+}
+.sidebar-box{
+    padding: 0;
+    margin: 0 0 10px 10px;
+}
+.sidebar-box .box-title{
+    border-bottom: 2px solid #e7e7e7;
+    padding: 10px 15px;
+    text-align: left;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+}
+.sidebar-box .box-content{
+    padding: 5px;
+}
+
+/*Pagination Start*/
+.pagination {
+    display: inline-flex;
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.pagination a {
+    color: black;
+    text-decoration: none;
+    width: 50px;
+    border-radius: 5px;
+    padding-top: 5px;
+}
+.pagination > div > div{
+    height: 30px;
+    width: 200px;
+    margin: auto;
+    border-radius: 5px;
+    font-size: 14px;
+    padding-top: 10px;
+}
+.pagination > div{
+    width: 100%;
+    text-align: center;
+}
+.pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+.pagination a:hover:not(.active) {background-color: #ddd;}
+/*Pagination End*/
+
+
+/*Problems List Start*/
+table.problems{
+    width: 100%;
+    border: 1px solid #36383f;
+}
+.problems td{
+    text-align: left;
+    padding-left: 20px;
+}
+.problems tr{
+    height: 40px;
+}
+.problems tr:nth-child(2n) {
+    background: #D7D7D7;
+}
+table.problems tr:first-child{
+    background: #36383f;
+    color: #fff;
+    height: 30px;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/*Problems list End*/
+/*Problem Page*/
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+.problem-statement > .problem-head{
+    display: flex;
+    margin: 20px 0;
+    border-bottom: 1px solid #E7E7E7;
+    align-items: center;
+    font-weight: 600;
+}
+.problem-statement > .problem-head > .name{
+    font-size: 24px;
+    flex: 1;
+}
+.problem-statement > .problem-head > .code{
+    font-size: 16px;
+}
+/*Problem Page*/
+
+/*New Problem Start*/
+.new-problem > div .section-title {
+    font-size: 18px;
+    padding: 5px 0;
+}
+.new-problem > div{
+    margin: 10px 0;
+}
+.new-problem > div .ql-toolbar {
+    border-radius: 5px 5px 0 0;
+    padding: 5px;
+}
+.new-problem > div .ql-editor {
+    padding: 5px;
+    border-radius: 0 0 5px 5px;
+}
+/*New Problem End*/
+
+/*Modal Styling*/
+
+
+
+/* Modal Header */
+.modal-header {
+    padding: 2px 16px;
+    background-color: #36383f;
+    color: white;
+}
+.modal-header h3 {
+    margin: 10px 0;
+    font-weight: 500;
+    font-size: 12px;
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 200px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Add Animation */
+/*@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}*/
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    padding-top: 7px;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal Body */
+.modal-body {padding: 2px 16px;}
+.modal-body > form > div{
+    margin: 10px 0;
+}
+.modal-body > form > div .section-title{
+    font-weight: 600;
+}
+/* Modal Footer */
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #36383f;
+    color: white;
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 30%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+/*Modal Styling*/
+
+/*Admin problem edit page*/
+
+.menu{
+    background: #fff;
+    border: none;
+    border-bottom: 2px solid #E7E7E7;
+
+}
+.menu > li > a{
+    color: #000;
+    padding: 10px 15px;
+    margin: 0;
+    border-radius: 0;
+    font-size: 12px;
+}
+.menu > li > a.active{
+    background: #E7E7E7;
+    opacity: 1;
+}
+.problem-edit-box{
+    padding: 10px 10px 10px 10px;
+    margin: 0 5px 5px 5px;
+}
+.problem-edit-box > div{
+    margin: 10px 0 ;
+}
+.problem-edit-box > div .section-title {
+
+    font-size: 14px;
+    font-weight: 600;
+    margin: 5px 0 5px 0;
+
+}
+
+table.test-cases{
+    width: 100%;
+    border: 1px solid #36383f;
+    font-size: 10px;
+}
+.test-cases td{
+    text-align: center;
+}
+.test-cases tr{
+    height: 40px;
+}
+.icon{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;;
+}
+table.test-cases tr:first-child{
+    background: #36383f;
+    color: #fff;
+    height: 30px;
+    text-transform: uppercase;
+}
+#add-test-case{
+    width: auto;
+    float: right;
+    margin-bottom: 10px;
+}
+
+/*Admin problem edit page*/

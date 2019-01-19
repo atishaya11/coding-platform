@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+
+
+    <div th:replace="fragments/header :: header"></div>
+
+    <div  id="body">
+        <!--<div th:replace="fragments/navbar :: navbar"></div>-->
+        <div class="container">
+            <div class="register">
+                <form action="/register" th:object="${user}" method='POST'>
+                    <label>Username:
+                        <input th:field="*{username}" type="text" >
+                        <th:block th:each="error: ${#fields.errors('username')}">
+                            <strong class="error" th:text="${error}">Invalid password.</strong><br>
+                        </th:block>
+                    </label>
+                    <label>Email:
+                        <input th:field="*{email}" type="email" >
+                        <th:block th:each="error: ${#fields.errors('email')}">
+                            <strong class="error" th:text="${error}">Invalid password.</strong><br>
+                        </th:block>
+                    </label>
+                    <label>
+                        Password
+                        <input th:field="*{password}" type="password">
+                        <th:block th:each="error: ${#fields.errors('password')}">
+                            <strong  class="error" th:text="${error}">Invalid password.</strong><br>
+                        </th:block>
+                    </label>
+                    <label>Confirm Password:
+                        <input th:field="*{matchingPassword}" type="password" >
+                        <th:block th:each="error: ${#fields.globalErrors()}">
+                            <strong class="error" th:text="${error}"></strong><br>
+                        </th:block>
+                    </label>
+                    <div style="text-align: center">
+                        <input type="submit" value="Register">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

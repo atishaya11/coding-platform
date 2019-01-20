@@ -5,7 +5,7 @@ import com.dscjss.codingplatform.users.dto.UserDto;
 import com.dscjss.codingplatform.users.model.Role;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.users.model.VerificationToken;
-import com.dscjss.codingplatform.util.ObjectMapper;
+import com.dscjss.codingplatform.util.Mapper;
 import com.dscjss.codingplatform.validation.EmailExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -130,6 +130,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserBean getUserByUsername(String username) {
-        return ObjectMapper.getUserBean(userRepository.findByUsername(username));
+        return Mapper.getUserBean(userRepository.findByUsername(username));
     }
 }

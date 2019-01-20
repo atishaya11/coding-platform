@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -51,10 +50,10 @@ public class ProblemController {
     @GetMapping(value = "/{code}")
     public ModelAndView getProblem(@PathVariable String code){
         ProblemDto problem = problemService.getProblemByCode(null, code, false);
-        List<CompilerDto> compilers = problemService.getCompilerList();
         ModelAndView modelAndView = new ModelAndView("problem/problem.html");
         modelAndView.addObject("problem", problem);
-        modelAndView.addObject("compilers", compilers);
+        modelAndView.addObject("compilers", problem.getCompilers());
         return modelAndView;
     }
+
 }

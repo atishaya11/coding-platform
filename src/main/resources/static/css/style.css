@@ -327,7 +327,7 @@ table.problems tr:first-child{
 .modal-content {
     position: relative;
     background-color: #fefefe;
-    margin: auto;
+    margin: 200px auto;
     padding: 0;
     border: 1px solid #888;
     width: 30%;

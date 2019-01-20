@@ -9,16 +9,18 @@
     <div th:fragment="submit-box" class="sidebar-box block">
     <div class="section-title box-title">Submit</div>
     <div class="box-content">
-        <form id="source-submit-form" method="post" th:action="@{'/problem/submit/' + ${problem.code}}" enctype="multipart/form-data">
+        <form id="source-submit-form" method="post" th:action="@{'/submit/' + ${problem.id}}" enctype="multipart/form-data">
             <table>
                 <tr>
                     <td class="label">
                         Select Language:
                     </td>
                     <td>
-                        <select name="lang">
-                            <option th:each="language : ${languages}" th:value="${language.slug}"
-                                    th:text="${language.name}"></option>
+                        <select name="compilerId">
+                            <th:block th:each="compiler : ${compilers}">
+                                <option th:if="${compiler.allowed}" th:value="${compiler.id}"
+                                        th:text="${compiler.name}"></option>
+                            </th:block>
                         </select>
                     </td>
                 </tr>

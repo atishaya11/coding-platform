@@ -1,5 +1,6 @@
 package com.dscjss.codingplatform.problems.dto;
 
+import com.dscjss.codingplatform.compilers.dto.CompilerDto;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.util.Status;
@@ -31,7 +32,7 @@ public class ProblemDto {
     @SafeHtml
     private String constraints;
 
-    private List<Compiler> compilers;
+    private List<CompilerDto> compilers;
 
     private List<TestCaseDto> testCaseDtoList;
 
@@ -110,11 +111,11 @@ public class ProblemDto {
         this.constraints = constraints;
     }
 
-    public List<Compiler> getCompilers() {
+    public List<CompilerDto> getCompilers() {
         return compilers;
     }
 
-    public void setCompilers(List<Compiler> compilers) {
+    public void setCompilers(List<CompilerDto> compilers) {
         this.compilers = compilers;
     }
 

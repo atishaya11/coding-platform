@@ -35,11 +35,11 @@
                         <div class="sample-test" th:each="testCase : ${problem.testCaseDtoList}">
                             <div class="input">
                                 <div class="title">input</div>
-                                <pre th:text="${problem.inputData}"></pre>
+                                <pre th:text="${testCase.input}"></pre>
                             </div>
                             <div class="output">
                                 <div class="title">output</div>
-                                <pre th:text="${problem.outputData}">15</pre>
+                                <pre th:text="${testCase.output}">15</pre>
                             </div>
                             <div class="explanation">
                                 <div class="title">explanation</div>
@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="sidebar">
-                <!--<div th:replace="fragments/sidebar-boxes :: submit-box"></div>-->
+                <div th:replace="fragments/sidebar-boxes :: submit-box"></div>
 
                 <div th:replace="fragments/sidebar-boxes :: problem-tags-box"></div>
 

@@ -1,14 +1,13 @@
 package com.dscjss.codingplatform.util;
 
 import com.amazonaws.AmazonClientException;
-import com.dscjss.codingplatform.s3.AmazonS3Config;
+import com.dscjss.codingplatform.problems.exception.TestDataDownloadException;
 import com.dscjss.codingplatform.s3.S3Services;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 @Service
 public class FileManager {
@@ -30,4 +29,12 @@ public class FileManager {
 
     }
 
+    public File downloadTestDataFile(String fileName) throws InterruptedException {
+        String path = "/tmp/sample-test/" + fileName;
+        File dir = new File(path);
+        boolean created = dir.mkdirs();
+        File tempFile = new File(dir.getAbsolutePath() +"/" + System.currentTimeMillis());
+        s3Services.downloadFile(fileName, tempFile.getAbsolutePath());
+        return tempFile;
+    }
 }

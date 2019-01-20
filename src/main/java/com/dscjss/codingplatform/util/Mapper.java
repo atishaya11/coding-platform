@@ -7,13 +7,15 @@ import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.TestCaseDto;
 import com.dscjss.codingplatform.problems.model.Problem;
 import com.dscjss.codingplatform.problems.model.TestCase;
+import com.dscjss.codingplatform.submissions.dto.SubmissionDto;
+import com.dscjss.codingplatform.submissions.model.Submission;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectMapper {
+public class Mapper {
 
 
     public static TestCaseDto getTestCaseDto(TestCase testCase){
@@ -26,7 +28,7 @@ public class ObjectMapper {
         testCaseDto.setTag(testCase.getTag());
         return testCaseDto;
     }
-
+    
     public static ProblemDto getProblemDto(Problem problem) {
         if(problem == null)
             return null;
@@ -87,5 +89,19 @@ public class ObjectMapper {
         compilerDto.setVersion(compiler.getVersion().getName());
         compilerDto.setTimeLimit(compiler.getDefaultTimeLimit());
         return compilerDto;
+    }
+
+    public static SubmissionDto getSubmissionDto(Submission submission) {
+        if(submission == null)
+            return null;
+
+
+        SubmissionDto submissionDto = new SubmissionDto();
+        submissionDto.setId(submission.getId());
+        submissionDto.setUserBean(getUserBean(submission.getUser()));
+        submissionDto.setCompilerDto(getCompilerDo(submission.getCompiler()));
+        submissionDto.setDate(submission.getCreationDate());
+        submissionDto.setResult(submission.getResult());
+        return submissionDto;
     }
 }

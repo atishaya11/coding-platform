@@ -10,7 +10,8 @@ public enum Status {
     EXECUTED(4),
     CORRECT(5),
     WRONG(6),
-    QUEUED(7);
+    QUEUED(7),
+    RUNNING(8);
     private final int code;
 
     Status(int code) {

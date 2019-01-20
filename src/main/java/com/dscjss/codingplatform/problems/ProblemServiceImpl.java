@@ -8,20 +8,23 @@ import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.TestCaseDto;
 import com.dscjss.codingplatform.problems.dto.UploadTestCaseDto;
 import com.dscjss.codingplatform.problems.exception.TestCaseUploadException;
+import com.dscjss.codingplatform.problems.exception.TestDataDownloadException;
 import com.dscjss.codingplatform.problems.model.AllowedCompiler;
 import com.dscjss.codingplatform.problems.model.Problem;
 import com.dscjss.codingplatform.problems.model.ProblemBody;
 import com.dscjss.codingplatform.problems.model.TestCase;
+import com.dscjss.codingplatform.testcase.TestCaseRepository;
+import com.dscjss.codingplatform.testcase.TestCaseService;
 import com.dscjss.codingplatform.users.UserRepository;
-import com.dscjss.codingplatform.users.UserService;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.util.FileManager;
-import com.dscjss.codingplatform.util.ObjectMapper;
+import com.dscjss.codingplatform.util.Mapper;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,9 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,44 +51,77 @@ public class ProblemServiceImpl implements ProblemService {
     private final TestCaseRepository testCaseRepository;
     private final UserRepository userRepository;
     private final AllowedCompilerRepository allowedCompilerRepository;
+    private final TestCaseService testCaseService;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, CompilerRepository compilerRepository, FileManager fileManager, TestCaseRepository testCaseRepository, UserRepository userRepository, AllowedCompilerRepository allowedCompilerRepository) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, CompilerRepository compilerRepository, FileManager fileManager, TestCaseRepository testCaseRepository, UserRepository userRepository, AllowedCompilerRepository allowedCompilerRepository, TestCaseService testCaseService) {
         this.problemRepository = problemRepository;
         this.compilerRepository = compilerRepository;
         this.fileManager = fileManager;
         this.testCaseRepository = testCaseRepository;
         this.userRepository = userRepository;
         this.allowedCompilerRepository = allowedCompilerRepository;
+        this.testCaseService = testCaseService;
     }
 
     @Override
+    @Cacheable(value = "problems", key = "{#code, #onlySummary}")
     public ProblemDto getProblemByCode(UserBean userBean, String code, boolean onlySummary) {
         Problem problem = problemRepository.findByCode(code);
-        return ObjectMapper.getProblemDto(problem);
+        ProblemDto problemDto = Mapper.getProblemDto(problem);
+        if(onlySummary){
+            return problemDto;
+        }else{
+            List<CompilerDto> compilerDtoList = getCompilerList(problemDto.getId());
+            problemDto.setCompilers(compilerDtoList);
+            problemDto.setTestCaseDtoList(getSampleTests(problem));
+        }
+        return problemDto;
     }
 
+    private List<TestCaseDto> getSampleTests(Problem problem){
+        List<TestCase> testCases = problem.getTestCases();
+        List<TestCaseDto> testCaseDtoList = new ArrayList<>();
+        for(TestCase testCase : testCases){
+            if(testCase.isSample()){
+                try {
+
+                    String input = testCaseService.getInputData(testCase.getId());
+                    String output = testCaseService.getOutputData(testCase.getId());
+                    TestCaseDto testCaseDto = Mapper.getTestCaseDto(testCase);
+                    testCaseDto.setInput(input);
+                    testCaseDto.setOutput(output);
+                    testCaseDtoList.add(testCaseDto);
+                }catch (TestDataDownloadException e){
+                    logger.error("Unable to download test data for test case {}", testCase.getId());
+                }
+            }
+        }
+        return testCaseDtoList;
+    }
     @Override
     public ProblemDto getProblemById(UserBean userBean, Integer id, boolean onlySummary) {
         Problem problem = problemRepository.getOne(id);
-        ProblemDto problemDto = ObjectMapper.getProblemDto(problem);
+        ProblemDto problemDto = Mapper.getProblemDto(problem);
         if(onlySummary){
             return problemDto;
         }else{
             List<TestCase> testCases = problem.getTestCases();
             List<TestCaseDto> testCaseDtoList = new ArrayList<>();
             testCases.forEach(testCase -> {
-                testCaseDtoList.add(ObjectMapper.getTestCaseDto(testCase));
+                testCaseDtoList.add(Mapper.getTestCaseDto(testCase));
             });
             problemDto.setTestCaseDtoList(testCaseDtoList);
         }
         return problemDto;
     }
 
+
+
     @Override
     public Page<ProblemDto> getProblems(UserBean userBean, Pageable pageable) {
         Page<Problem> page = problemRepository.findAll(pageable);
-        return page.map(ObjectMapper::getProblemDto);
+        return page.map(Mapper::getProblemDto);
     }
 
     @Override
@@ -130,8 +163,8 @@ public class ProblemServiceImpl implements ProblemService {
 
         testCaseRepository.save(testCase);
 
-        String inputFileName = problem.getId() + "/" + testCase.getId() + "/" + "input.txt";
-        String outputFileName = problem.getId() + "/" + testCase.getId() + "/" + "output.txt";
+        String inputFileName =  testCase.getId() + "/" + "input.txt";
+        String outputFileName = testCase.getId() + "/" + "output.txt";
 
         try {
             File inputFile = convertMultiPartToFile(testCaseDto.getInputFile(), testCase.getId());
@@ -150,7 +183,7 @@ public class ProblemServiceImpl implements ProblemService {
         problem.getTestCases().add(testCase);
         problemRepository.save(problem);
 
-        return ObjectMapper.getTestCaseDto(testCase);
+        return Mapper.getTestCaseDto(testCase);
     }
 
 
@@ -187,7 +220,7 @@ public class ProblemServiceImpl implements ProblemService {
                 tempCode += "-"+countSimilar + 1;
             problem.setCode(tempCode);
             problemRepository.save(problem);
-            return ObjectMapper.getProblemDto(problem);
+            return Mapper.getProblemDto(problem);
     }
 
     private String createTempCode(String name){
@@ -201,7 +234,7 @@ public class ProblemServiceImpl implements ProblemService {
         List<Problem> problems = problemRepository.findByAuthor_Id(userBean.getId());
         List<ProblemDto> problemDtoList = new ArrayList<>();
         problems.forEach(problem -> {
-            problemDtoList.add(ObjectMapper.getProblemDto(problem));
+            problemDtoList.add(Mapper.getProblemDto(problem));
         });
         return problemDtoList;
     }
@@ -224,7 +257,7 @@ public class ProblemServiceImpl implements ProblemService {
         List<CompilerDto> compilerDtoList = new ArrayList<>();
 
         for(Compiler compiler : compilers){
-            CompilerDto compilerDto = ObjectMapper.getCompilerDo(compiler);
+            CompilerDto compilerDto = Mapper.getCompilerDo(compiler);
             if(map.get(compiler.getId()) != null){
                 compilerDto.setTimeLimit(map.get(compiler.getId()).getTimeLimit());
                 compilerDto.setAllowed(true);
@@ -238,7 +271,7 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public List<CompilerDto> getCompilerList() {
-        return ObjectMapper.getCompilerDtoList(getAllCompilers());
+        return Mapper.getCompilerDtoList(getAllCompilers());
     }
 
     @Override

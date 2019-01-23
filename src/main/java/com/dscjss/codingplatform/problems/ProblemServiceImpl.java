@@ -24,6 +24,8 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +69,7 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     @Cacheable(value = "problems", key = "{#code, #onlySummary}")
     public ProblemDto getProblemByCode(UserBean userBean, String code, boolean onlySummary) {
+        logger.info("Check - Is cached problem.");
         Problem problem = problemRepository.findByCode(code);
         ProblemDto problemDto = Mapper.getProblemDto(problem);
         if(onlySummary){
@@ -194,7 +197,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     private File convertMultiPartToFile(MultipartFile multipartFile, Integer id) throws IOException {
-        String path = "tmp/test/" + id;
+        String path = System.getProperty("java.io.tmpdir") + "/test/" + id;
         File dir = new File(path);
         dir.mkdirs();
         File file = new File(dir.getAbsolutePath() +"/" + System.currentTimeMillis());
@@ -208,7 +211,7 @@ public class ProblemServiceImpl implements ProblemService {
     @Transactional(propagation = Propagation.REQUIRED)
     public ProblemDto createProblemFromName(UserBean userBean, String name) {
             User user = userRepository.findByUsername(userBean.getUsername());
-            String tempCode = createTempCode(name);
+            String tempCode = createTempCode(name.trim());
             Problem problem = new Problem();
             problem.setName(name);
             problem.setAuthor(user);

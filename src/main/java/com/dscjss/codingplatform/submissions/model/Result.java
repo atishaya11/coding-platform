@@ -2,11 +2,13 @@ package com.dscjss.codingplatform.submissions.model;
 
 
 import com.dscjss.codingplatform.util.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "submission_result")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
 
 

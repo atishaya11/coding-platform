@@ -6,6 +6,7 @@ import com.dscjss.codingplatform.submissions.dto.SubmissionDto;
 import com.dscjss.codingplatform.submissions.exception.InvalidSubmissionException;
 import com.dscjss.codingplatform.submissions.exception.SubmissionFailedException;
 import com.dscjss.codingplatform.users.dto.UserBean;
+import com.dscjss.codingplatform.util.Status;
 import com.dscjss.codingplatform.util.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class SubmissionController {
                 SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), source, problemId, compilerId);
                 int submissionId = submissionService.submit(submissionRequest);
                 map.put("submission_id", String.valueOf(submissionId));
-                responseEntity = new ResponseEntity<>(HttpStatus.OK);
+                responseEntity = new ResponseEntity<>(map, HttpStatus.CREATED);
             } catch (IOException e) {
                 e.printStackTrace();
                 logger.error("Error creating submission.");
@@ -66,8 +67,28 @@ public class SubmissionController {
         }else{
             responseEntity = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
         return responseEntity;
+    }
+
+    @RequestMapping(value = "/submit/status/{id}", method = RequestMethod.GET)
+    public ModelAndView getSubmissionStatus(Principal principal, @PathVariable("id") Integer submissionId){
+
+        ModelAndView modelAndView;
+
+        if(principal != null) {
+            String username = principal.getName();
+            SubmissionDto submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, true);
+            if(submissionDto.getResult().getStatus() == Status.RUNNING){
+                submissionService.updateSubmission(submissionDto.getId());
+            }
+            modelAndView = new ModelAndView("submission/submission-status.html");
+
+            modelAndView.addObject("submission", submissionDto);
+            return modelAndView;
+
+        }
+        modelAndView = new ModelAndView("401.html");
+        return modelAndView;
     }
 
     @RequestMapping(value = "/submission/{id}", method = RequestMethod.GET)
@@ -78,22 +99,23 @@ public class SubmissionController {
         if(principal != null) {
             String username = principal.getName();
             SubmissionDto submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, false);
+            if(submissionDto.getResult().getStatus() == Status.RUNNING){
+                submissionService.updateSubmission(submissionDto.getId());
+            }
 
-            modelAndView = new ModelAndView("submission.html");
+            modelAndView = new ModelAndView("submission/submission.html");
 
             modelAndView.addObject("submission", submissionDto);
-
+            return modelAndView;
         }
         modelAndView = new ModelAndView("401.html");
         return modelAndView;
     }
-
-
-    @RequestMapping(value = "/status/{code}")
+    @RequestMapping(value = {"/status/{code}/", "/status/{code}"})
     public ModelAndView submissions(Principal principal, @PathVariable String code, Integer page,
                                     @RequestParam(name = "sort_by", required = false) String sort,
                                     @RequestParam(name = "sort_order", required = false) String order) {
-        ModelAndView modelAndView = new ModelAndView("submissions.html");
+        ModelAndView modelAndView = new ModelAndView("submission/submissions.html");
         int pageSize = 20;
         Pageable pageable = createPageable(page == null ? 0 : page, sort, order, pageSize);
         if (principal != null) {

@@ -32,7 +32,7 @@ public class Submission {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Result result;
 
     @CreatedDate

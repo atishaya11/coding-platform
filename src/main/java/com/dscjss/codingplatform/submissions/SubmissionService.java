@@ -16,4 +16,6 @@ public interface SubmissionService {
     SubmissionDto getSubmission(UserBean userBean, Integer submissionId, boolean onlySummary);
 
     Page<SubmissionDto> getSubmissions(UserBean userBean, String code, Pageable pageable);
+
+    void updateSubmission(int id);
 }

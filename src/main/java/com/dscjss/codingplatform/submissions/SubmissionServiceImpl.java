@@ -22,18 +22,24 @@ import com.dscjss.codingplatform.util.Constants;
 import com.dscjss.codingplatform.util.Mapper;
 import com.dscjss.codingplatform.util.Status;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
@@ -140,6 +146,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             submission.setRemoteId(judgeId);
             Result result = new Result();
             result.setStatus(Status.RUNNING);
+            submission.setResult(result);
             submissionRepository.save(submission);
             return submission.getId();
         }else{
@@ -154,11 +161,15 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
+    @Cacheable(value = "submissions", key = "{#submissionId, #onlySummary}", unless = "#result.result.status.name() == 'RUNNING'")
     public SubmissionDto getSubmission(UserBean userBean, Integer submissionId, boolean onlySummary) {
+        logger.info("Check - Is cached submission.");
         if(submissionId == null)
             return null;
-
-        return getSubmission(userBean, submissionRepository.getOne(submissionId), onlySummary);
+        Submission submission = submissionRepository.getOne(submissionId);
+        if(submission == null)
+            return null;
+        return getSubmission(userBean, submission, onlySummary);
     }
 
     private SubmissionDto getSubmission(UserBean userBean, Submission submission, boolean onlySummary){
@@ -174,7 +185,6 @@ public class SubmissionServiceImpl implements SubmissionService {
                 final String json= restTemplate.getForObject(url, String.class);
                 try {
                     submissionDto.setSource(getSourceFromJson(json));
-                    List<TestCaseResult> testCaseResults = getTestCaseResultsFromJson(json);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -206,8 +216,46 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     private List<TestCaseResult> getTestCaseResultsFromJson(String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        final List<TestCaseResult> testCaseResults = objectMapper.readValue(json, new TypeReference<List<TestCaseResult>>(){});
-        return testCaseResults;
+        ObjectNode objectNode = objectMapper.readValue(json, ObjectNode.class);
+        if(objectNode.has("testCaseResultList")){
+            final String testCaseResultListString = objectNode.get("testCaseResultList").toString();
+            final List<TestCaseResult> testCaseResults = objectMapper.readValue(testCaseResultListString, new TypeReference<List<TestCaseResult>>(){});
+            return testCaseResults;
+        }
+        return null;
+    }
+
+
+    @Override
+    @Async
+    @Transactional
+    public void updateSubmission(int id) {
+        Submission submission = submissionRepository.getOne(id);
+        String url = Constants.JUDGE_API_ENDPOINT + "/submission/" + submission.getRemoteId();
+        String json = restTemplate.getForObject(url, String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        final ObjectNode objectNode;
+        try {
+            objectNode = objectMapper.readValue(json, ObjectNode.class);
+            if(objectNode.has("executing")){
+                final boolean executing = objectNode.get("executing").asBoolean();
+                if(!executing){
+                    Result result = submission.getResult();
+                    JsonNode jsonNode = objectNode.get("result");
+                    result.setStatus(Status.valueOf(jsonNode.get("status").asText()));
+                    result.setMemory(jsonNode.get("memory").asDouble());
+                    result.setScore(jsonNode.get("score").asDouble());
+                    result.setTime(jsonNode.get("time").asInt());
+                    submissionRepository.save(submission);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Error parsing the response object for submission.");
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override

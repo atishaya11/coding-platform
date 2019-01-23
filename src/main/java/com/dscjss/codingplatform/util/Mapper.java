@@ -86,8 +86,10 @@ public class Mapper {
 
         compilerDto.setId(compiler.getId());
         compilerDto.setName(compiler.getName());
-        compilerDto.setVersion(compiler.getVersion().getName());
+        if(compiler.getVersion() != null)
+            compilerDto.setVersion(compiler.getVersion().getName());
         compilerDto.setTimeLimit(compiler.getDefaultTimeLimit());
+        compilerDto.setAceEditorMode(compiler.getAceEditorMode());
         return compilerDto;
     }
 

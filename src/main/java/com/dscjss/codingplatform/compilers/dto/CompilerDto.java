@@ -10,6 +10,8 @@ public class CompilerDto {
 
     private int timeLimit;
 
+    private String aceEditorMode;
+
     private boolean allowed;
 
     public int getId() {
@@ -42,6 +44,14 @@ public class CompilerDto {
 
     public void setTimeLimit(int timeLimit) {
         this.timeLimit = timeLimit;
+    }
+
+    public String getAceEditorMode() {
+        return aceEditorMode;
+    }
+
+    public void setAceEditorMode(String aceEditorMode) {
+        this.aceEditorMode = aceEditorMode;
     }
 
     public boolean isAllowed() {

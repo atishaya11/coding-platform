@@ -2,6 +2,7 @@ package com.dscjss.codingplatform.problems.model;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Embeddable

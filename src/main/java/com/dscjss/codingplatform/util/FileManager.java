@@ -30,7 +30,7 @@ public class FileManager {
     }
 
     public File downloadTestDataFile(String fileName) throws InterruptedException {
-        String path = "/tmp/sample-test/" + fileName;
+        String path = System.getProperty("java.io.tmpdir") + "/sample-test/" + fileName;
         File dir = new File(path);
         boolean created = dir.mkdirs();
         File tempFile = new File(dir.getAbsolutePath() +"/" + System.currentTimeMillis());

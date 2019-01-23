@@ -16,9 +16,13 @@ public class Compiler {
     @Column(name = "slug")
     private String slug;
 
+    @Column(name = "ace_editor_mode")
+    private String aceEditorMode;
+
     @OneToOne
     private Version version;
 
+    @Column(name = "default_time_limit")
     private int defaultTimeLimit;
 
     public Integer getId() {
@@ -43,6 +47,14 @@ public class Compiler {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public String getAceEditorMode() {
+        return aceEditorMode;
+    }
+
+    public void setAceEditorMode(String aceEditorMode) {
+        this.aceEditorMode = aceEditorMode;
     }
 
     public Version getVersion() {

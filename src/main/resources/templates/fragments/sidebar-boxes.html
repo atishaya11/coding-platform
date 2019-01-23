@@ -10,30 +10,42 @@
     <div class="section-title box-title">Submit</div>
     <div class="box-content">
         <form id="source-submit-form" method="post" th:action="@{'/submit/' + ${problem.id}}" enctype="multipart/form-data">
-            <table>
-                <tr>
-                    <td class="label">
-                        Select Language:
-                    </td>
-                    <td>
-                        <select name="compilerId">
-                            <th:block th:each="compiler : ${compilers}">
-                                <option th:if="${compiler.allowed}" th:value="${compiler.id}"
-                                        th:text="${compiler.name}"></option>
-                            </th:block>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">Select file: </td>
-                    <td>
-                        <input id="submit-source" type="file" name="source">
-
-                    </td>
-                </tr>
-            </table>
-            <div style="margin: 10px 0;">
-                <a href="javascript:void(0)" onclick="document.getElementById('source-submit-form').submit()" class=" button submit-button" >Submit</a>
+            <label>
+                Select Language:
+                <select name="compilerId">
+                    <th:block th:each="compiler : ${compilers}">
+                        <option th:if="${compiler.allowed}" th:value="${compiler.id}"
+                                th:text="${compiler.name}"></option>
+                    </th:block>
+                </select>
+            </label>
+            <label>Select file:
+                <input id="submit-source" type="file" name="source">
+            </label>
+            <div style="margin: 10px 0;text-align: center">
+                <a href="javascript:void(0)" onclick="submitForm()" class=" button submit-button" >Submit</a>
+                <script>
+                       function submitForm(){
+                           var form = $('#source-submit-form');
+                           var formData = new FormData(form.get(0));
+                           $.ajax({
+                               url : form.attr('action'),
+                               type: "POST",
+                               data : formData,
+                               processData: false,
+                               contentType: false,
+                               success:function(data, textStatus, jqXHR){
+                                   console.log(data);
+                                   if(jqXHR.status === 201){
+                                      window.location = '/submit/status/' + data.submission_id;
+                                  }
+                               },
+                               error: function(jqXoHR, textStatus, errorThrown){
+                                   //if fails
+                               }
+                           });
+                       }
+                </script>
             </div>
         </form>
     </div>

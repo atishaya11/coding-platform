@@ -19,7 +19,8 @@ public class CacheConfig {
         cacheManager.setCaches(Arrays.asList(
                 new ConcurrentMapCache("problems"),
                 new ConcurrentMapCache("test_cases_input"),
-                new ConcurrentMapCache("test_cases_output")));
+                new ConcurrentMapCache("test_cases_output"),
+                new ConcurrentMapCache("submissions")));
         return cacheManager;
     }
 }

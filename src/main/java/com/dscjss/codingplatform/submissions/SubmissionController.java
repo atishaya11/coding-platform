@@ -113,8 +113,8 @@ public class SubmissionController {
     }
     @RequestMapping(value = {"/status/{code}/", "/status/{code}"})
     public ModelAndView submissions(Principal principal, @PathVariable String code, Integer page,
-                                    @RequestParam(name = "sort_by", required = false) String sort,
-                                    @RequestParam(name = "sort_order", required = false) String order) {
+                                    @RequestParam(name = "sort_by", required = false, defaultValue = "creationDate") String sort,
+                                    @RequestParam(name = "sort_order", required = false, defaultValue = "desc") String order) {
         ModelAndView modelAndView = new ModelAndView("submission/submissions.html");
         int pageSize = 20;
         Pageable pageable = createPageable(page == null ? 0 : page, sort, order, pageSize);

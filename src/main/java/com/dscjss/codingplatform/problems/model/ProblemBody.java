@@ -8,12 +8,16 @@ import javax.persistence.Table;
 @Embeddable
 public class ProblemBody {
 
+    @Lob
     private String description;
 
+    @Lob
     private String inputFormat;
 
+    @Lob
     private String outputFormat;
 
+    @Lob
     private String constraints;
 
 

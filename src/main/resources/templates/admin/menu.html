@@ -11,6 +11,14 @@
         <li><a th:class="${#httpServletRequest.requestURI.endsWith('test_cases') ? 'active' : '' }" th:href="@{'/admin/problems/edit/' + ${problem.id} + '/test_cases'}">Test Cases</a></li>
         <li><a th:class="${#httpServletRequest.requestURI.endsWith('settings') ? 'active' : '' }" th:href="@{'/admin/problems/edit/' + ${problem.id} + '/settings'}">Settings</a></li>
     </ul>
+
+    <ul th:fragment="edit-contest-menu" id="edit-contest-menu" class="horizontal menu">
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('details') ? 'active' : '' }" th:href="@{'/admin/contests/edit/' + ${contest.id} + '/details' }">Details</a></li>
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('problems') ? 'active' : '' }" th:href="@{'/admin/contests/edit/' + ${contest.id} + '/problems' }">Problems</a></li>
+        <li><a th:class="${#httpServletRequest.requestURI.endsWith('settings') ? 'active' : '' }" th:href="@{'/admin/contests/edit/' + ${contest.id} + '/settings'}">Settings</a></li>
+    </ul>
+
+
     <ul th:fragment="admin-home-menu" class="horizontal menu">
         <li><a th:class="${#httpServletRequest.requestURI.endsWith('problems') ? 'active' : '' }" th:href="@{/admin/problems}">Problems</a></li>
         <li><a th:class="${#httpServletRequest.requestURI.endsWith('contests') ? 'active' : '' }" th:href="@{/admin/contests}">Contests</a></li>

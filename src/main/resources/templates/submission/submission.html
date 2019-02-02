@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="center block">
+
+            <div class="submission">
+                <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).RUNNING}">
+                    <div>
+                        <img src="" th:src="@{/img/running_small.gif}" alt="Running"/>
+                        <div>RUNNING</div>
+                        <script>
+                            window.setTimeout(function(){location.reload()},3000)
+                        </script>
+                    </div>
+                </div>
+                <div th:unless="${submission.result.status == T(com.dscjss.codingplatform.util.Status).RUNNING}">
+
+                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).CORRECT}">
+                        <img src="" th:src="@{/img/correct.png}" alt="Correct"/>
+                        <div>Correct</div>
+                    </div>
+
+                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).WRONG}">
+                        <img src="" th:src="@{/img/wrong.png}" alt="Wrong"/>
+                        <div>Wrong</div>
+                    </div>
+
+                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).TIME_LIMIT_EXCEEDED}">
+                        <img src="" th:src="@{/img/time_limit_exceeded.png}" alt="Time Limit Exceeded"/>
+                        <div>Time Limit Exceeded</div>
+                    </div>
+
+
+                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).RUNTIME_ERROR}">
+                        <img src="" th:src="@{/img/runtime_error.png}" alt="Runtime Error"/>
+                        <div>Runtime Error</div>
+                    </div>
+
+                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).COMPILATION_ERROR}">
+                        <img src="" th:src="@{/img/compilation_error.png}" alt="Compilation Error"/>
+                        <div>Compilation Error</div>
+                    </div>
+                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).INTERNAL_ERROR}">
+                        <img src="" th:src="@{/img/internal_error.png}" alt="Failed, please try again."/>
+                        <div>Submission Failed, Please try again.</div>
+                    </div>
+                    <div>
+                        <div id="editor" th:text="${submission.source}"></div>
+                    </div>
+
+
+                </div>
+                <div>
+
+                    <table th:if="${submission.result.status.name() != 'COMPILATION_ERROR' &&
+                                    submission.result.status.name() != 'INTERNAL_ERROR' }">
+                        <tr>
+                            <th>Order</th>
+                            <th>Time</th>
+                            <th>Result</th>
+                        </tr>
+                        <tr th:each="result, itr : ${submission.testCaseResultList}">
+                            <td th:text="${itr.index}"></td>
+                            <td th:text="${T(java.lang.String).format('%.2f', __${result.time/1000.0}__) + 's'}"></td>
+                            <td>
+                                <img src="" th:src="@{'/img/' + __${result.status.name().toLowerCase()}__ + '.png'}" alt=""/>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+
+
+            <!--<div th:replace="fragments/sidebar-boxes :: submissions-box"></div>-->
+        </div>
+    </div>
+
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+
+<th:block th:if="${submission.result.status != T(com.dscjss.codingplatform.util.Status).RUNNING}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script th:src="@{/ace-builds/src-noconflict/ace.js}" type="text/javascript" charset="utf-8"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        $(document).ready(function() {
+            var editor = ace.edit("editor");
+            editor.setOptions({
+                maxLines: Infinity
+            });
+            editor.setReadOnly(true);
+            editor.setTheme("ace/theme/github");
+            document.getElementById('editor').style.fontSize='18px';
+            var mode = /*[[${submission.compilerDto.aceEditorMode}]]*/
+            editor.session.setMode("ace/mode/"+mode);
+
+        });
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package com.dscjss.codingplatform.problems.model;
 
 import com.dscjss.codingplatform.submissions.model.Submission;
 import com.dscjss.codingplatform.users.model.User;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -42,7 +43,6 @@ public class Problem {
 
     @OneToMany
     private Set<Submission> submissions;
-
 
     @CreatedDate
     @Column(name = "creation_date")

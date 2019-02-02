@@ -7,7 +7,7 @@ import com.dscjss.codingplatform.compilers.model.Compiler;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.TestCaseDto;
 import com.dscjss.codingplatform.problems.dto.UploadTestCaseDto;
-import com.dscjss.codingplatform.problems.exception.TestCaseUploadException;
+import com.dscjss.codingplatform.problems.exception.TestDataUploadException;
 import com.dscjss.codingplatform.problems.exception.TestDataDownloadException;
 import com.dscjss.codingplatform.problems.model.AllowedCompiler;
 import com.dscjss.codingplatform.problems.model.Problem;
@@ -24,8 +24,6 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -154,8 +152,8 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    @Transactional(rollbackFor = TestCaseUploadException.class)
-    public TestCaseDto uploadTestCase(UserBean userBean, UploadTestCaseDto testCaseDto, Integer id) throws TestCaseUploadException {
+    @Transactional(rollbackFor = TestDataUploadException.class)
+    public TestCaseDto uploadTestCase(UserBean userBean, UploadTestCaseDto testCaseDto, Integer id) throws TestDataUploadException {
         Problem problem = problemRepository.getOne(id);
         TestCase testCase = new TestCase();
         testCase.setProblem(problem);
@@ -177,7 +175,7 @@ public class ProblemServiceImpl implements ProblemService {
         } catch (IOException | FileUploadException e) {
             e.printStackTrace();
             logger.error("Unable to create test case for problem {} .", problem.getId());
-            throw new TestCaseUploadException("Test case creation failed.");
+            throw new TestDataUploadException("Test case creation failed.");
         }
 
         if(problem.getTestCases() == null){

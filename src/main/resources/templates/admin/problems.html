@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="layout :: head"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="center block">
+            <div th:replace="admin/menu :: admin-home-menu"></div>
+            <div>
+                <a href="javascript:void(0)" style="width: auto;" class="button" id="add-problem">+Add Problem</a>
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close">&times;</span>
+                            <h3>Add Problem</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form sec:authorize="isAuthenticated()" id="create-problem" th:action="@{/admin/problems/create}" enctype="application/x-www-form-urlencoded" method="post">
+                                <div>
+                                    <label>
+                                        Problem Name
+                                        <input type="text" name="name"/>
+                                    </label>
+                                </div>
+                                <div style="margin: 10px 0; text-align: center;">
+                                    <a href="javascript:void(0)" onclick="document.getElementById('create-problem').submit()" class=" button submit-button" >Create</a>
+                                </div>
+                            </form>
+                            <div sec:authorize="!isAuthenticated()">Please login to create a problem.</div>
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>Problems Created by You:</div>
+                <table class="problems">
+                    <tr>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Successful Submissions</th>
+                        <th></th>
+                    </tr>
+
+
+                    <tr style="cursor: pointer" th:each="problem : ${problems}">
+                        <td th:text="${problem.name}"></td>
+                        <td><a th:text="${problem.code}" th:href="@{/problems/__${problem.code}__}"></a></td>
+                        <td>5</td>
+                        <td>
+                            <a th:href="@{/admin/problems/edit/__${problem.id}__/details}"><img class="icon" th:src="@{/img/edit.png}" src="" alt="Edit"></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById('myModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("add-problem");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>

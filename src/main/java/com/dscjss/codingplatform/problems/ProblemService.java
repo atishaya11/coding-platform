@@ -1,11 +1,10 @@
 package com.dscjss.codingplatform.problems;
 
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
-import com.dscjss.codingplatform.compilers.model.Compiler;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.TestCaseDto;
 import com.dscjss.codingplatform.problems.dto.UploadTestCaseDto;
-import com.dscjss.codingplatform.problems.exception.TestCaseUploadException;
+import com.dscjss.codingplatform.problems.exception.TestDataUploadException;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +21,7 @@ public interface ProblemService {
 
     void updateProblemDetails(UserBean userBean, ProblemDto problem, Integer id);
 
-    TestCaseDto uploadTestCase(UserBean userBean, UploadTestCaseDto testCaseDto, Integer id) throws TestCaseUploadException;
+    TestCaseDto uploadTestCase(UserBean userBean, UploadTestCaseDto testCaseDto, Integer id) throws TestDataUploadException;
 
     ProblemDto createProblemFromName(UserBean userBean, String name);
 

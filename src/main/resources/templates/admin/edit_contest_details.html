@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="layout :: head"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.js"></script>
+    <script th:src="@{/js/summernote-ext-specialchars.js}"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="center block">
+            <div th:replace="admin/menu :: edit-contest-menu"></div>
+            <div class="edit-box">
+                <form id="details-form" method="post" th:action="@{'/admin/contests/edit/' + ${contest.id} + '/details'}"
+                      enctype="application/x-www-form-urlencoded">
+                    <div class="contest-edit-box">
+
+                        <div>
+                            <div class="section-title">Name</div>
+                            <input type="text" th:name="name" th:value="${contest.name}">
+                        </div>
+                        <div>
+                            <div class="section-title">Code</div>
+                            <input type="text" th:name="code" th:value="${contest.code}">
+                        </div>
+                        <div>
+                            <div class="section-title">Start Date</div>
+                            <input id="start" type="text" class="date" th:attr="data-date=${#dates.format(contest.startDate, 'dd-MM-yyyy hh:mm')}" th:name="endDate" th:value="${#dates.format(contest.startDate, 'dd-MM-yyyy hh:mm')}">
+                        </div>
+                        <div>
+                            <div class="section-title">End Date</div>
+                            <input id="end" type="text" class="date" th:attr="data-date=${#dates.format(contest.endDate, 'dd-MM-yyyy hh:mm')}" th:name="startDate" th:value="${#dates.format(contest.endDate, 'dd-MM-yyyy hh:mm')}">
+                        </div>
+                        <div>
+                            <div class="section-title">Description</div>
+                            <div class="editor-wrapper">
+                                <textarea class="summernote"  name="description" th:text="${contest.description}"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="section-title">Prizes</div>
+                            <div class="editor-wrapper">
+                                <textarea class="summernote" name="prizes" th:text="${contest.prizes}"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="section-title">Rules</div>
+                            <div class="editor-wrapper">
+                                <textarea class="summernote" name="rules" th:text="${contest.rules}"></textarea>
+                            </div>
+
+                        </div>
+                        <div>
+                            <div class="section-title">Scoring</div>
+                            <div class="editor-wrapper">
+                                <textarea class="summernote" name="scoring" th:text="${contest.scoring}"></textarea>
+                            </div>
+                        </div>
+                        <div style="text-align: right">
+                            <div style="display: inline-flex;margin: 10px;">
+                                <a href="javascript:void(0)" onclick="$('#details-form').submit()" class="button submit-button" >Save</a>
+                            </div>
+                            <div style="display: inline-flex;margin: 10px;">
+                                <a href="javascript:void(0)" class="button" >Preview</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-box block">
+                <div class="section-title box-title">Actions</div>
+                <div class="box-content" style="display: inline-flex;">
+
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)"  class="button" >Publish</a>
+                    </div>
+                    <div style="margin: 10px;">
+                        <a href="javascript:void(0)" class="button delete-button" >Delete</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script th:src="@{/js/summernote-initialise.js}" type="application/javascript"></script>
+<script>
+        $(document).ready(function() {
+            $('.summernote').summernote();
+            $('#start').flatpickr({
+                enableTime: true,
+                dateFormat: "d-m-Y h:i"
+            });
+            $('#end').flatpickr({
+                enableTime: true,
+                dateFormat: "d-m-Y h:i"
+            });
+        });
+</script>
+
+</body>
+</html>

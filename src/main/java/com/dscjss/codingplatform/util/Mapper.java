@@ -3,6 +3,8 @@ package com.dscjss.codingplatform.util;
 
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
 import com.dscjss.codingplatform.compilers.model.Compiler;
+import com.dscjss.codingplatform.contests.dto.ContestDto;
+import com.dscjss.codingplatform.contests.model.Contest;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.TestCaseDto;
 import com.dscjss.codingplatform.problems.model.Problem;
@@ -105,5 +107,25 @@ public class Mapper {
         submissionDto.setDate(submission.getCreationDate());
         submissionDto.setResult(submission.getResult());
         return submissionDto;
+    }
+
+    public static ContestDto getContestDto(Contest contest) {
+        if(contest == null)
+            return null;
+
+        ContestDto contestDto = new ContestDto();
+        contestDto.setId(contest.getId());
+        contestDto.setName(contest.getName());
+        contestDto.setCode(contest.getCode());
+        if(contest.getBody() != null){
+            contestDto.setDescription(contest.getBody().getDescription());
+            contestDto.setPrizes(contest.getBody().getPrizes());
+            contestDto.setRules(contest.getBody().getRules());
+            contestDto.setScoring(contest.getBody().getScoring());
+        }
+
+        contestDto.setStartDate(contest.getStartDate());
+        contestDto.setEndDate(contest.getEndDate());
+        return contestDto;
     }
 }

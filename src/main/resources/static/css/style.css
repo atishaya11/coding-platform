@@ -386,14 +386,14 @@ table.problems tr:first-child{
     background: #E7E7E7;
     opacity: 1;
 }
-.problem-edit-box{
+.edit-box{
     padding: 10px 10px 10px 10px;
     margin: 0 5px 5px 5px;
 }
-.problem-edit-box > div{
+.edit-box > div{
     margin: 10px 0 ;
 }
-.problem-edit-box > div .section-title {
+.edit-box > div .section-title {
 
     font-size: 14px;
     font-weight: 600;

@@ -5,18 +5,15 @@ import com.dscjss.codingplatform.compilers.dto.CompilerDto;
 import com.dscjss.codingplatform.problems.dto.CompilersUpdateForm;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.UploadTestCaseDto;
-import com.dscjss.codingplatform.problems.exception.TestCaseUploadException;
+import com.dscjss.codingplatform.problems.exception.TestDataUploadException;
 import com.dscjss.codingplatform.users.UserService;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -34,12 +31,12 @@ public class AdminController {
     }
 
 
-    @GetMapping(value = {"", "/"})
+    @GetMapping(value = {"", "/", "/problems"})
     public ModelAndView adminHome(Principal principal, HttpServletRequest httpServletRequest){
 
         if(principal != null){
             UserBean userBean = userService.getUserByUsername(principal.getName());
-            ModelAndView modelAndView = new ModelAndView("admin/home.html");
+            ModelAndView modelAndView = new ModelAndView("admin/problems.html");
             modelAndView.addObject("user", userBean);
             modelAndView.addObject("problems", problemService.getProblemsByAuthor(userBean));
             return modelAndView;
@@ -142,7 +139,7 @@ public class AdminController {
             ModelAndView modelAndView = new ModelAndView("redirect:/admin/problems/edit/" + id + "/test_cases");
             try {
                 problemService.uploadTestCase(new UserBean(username), testCaseDto, id);
-            } catch (TestCaseUploadException e) {
+            } catch (TestDataUploadException e) {
                 e.printStackTrace();
             }
             return modelAndView;

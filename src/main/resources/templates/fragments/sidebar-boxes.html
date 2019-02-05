@@ -7,48 +7,48 @@
 <body>
 
     <div th:fragment="submit-box" class="sidebar-box block">
-    <div class="section-title box-title">Submit</div>
-    <div class="box-content">
-        <form id="source-submit-form" method="post" th:action="@{'/submit/' + ${problem.id}}" enctype="multipart/form-data">
-            <label>
-                Select Language:
-                <select name="compilerId">
-                    <th:block th:each="compiler : ${compilers}">
-                        <option th:if="${compiler.allowed}" th:value="${compiler.id}"
-                                th:text="${compiler.name}"></option>
-                    </th:block>
-                </select>
-            </label>
-            <label>Select file:
-                <input id="submit-source" type="file" name="source">
-            </label>
-            <div style="margin: 10px 0;text-align: center">
-                <a href="javascript:void(0)" onclick="submitForm()" class=" button submit-button" >Submit</a>
-                <script>
-                       function submitForm(){
-                           var form = $('#source-submit-form');
-                           var formData = new FormData(form.get(0));
-                           $.ajax({
-                               url : form.attr('action'),
-                               type: "POST",
-                               data : formData,
-                               processData: false,
-                               contentType: false,
-                               success:function(data, textStatus, jqXHR){
-                                   console.log(data);
-                                   if(jqXHR.status === 201){
-                                      window.location = '/submit/status/' + data.submission_id;
-                                  }
-                               },
-                               error: function(jqXoHR, textStatus, errorThrown){
-                                   //if fails
-                               }
-                           });
-                       }
-                </script>
-            </div>
-        </form>
-    </div>
+        <div class="section-title box-title">Submit</div>
+        <div class="box-content">
+            <form id="source-submit-form" method="post" th:action="@{'/submit/' + ${problem.id}}" enctype="multipart/form-data">
+                <label>
+                    Select Language:
+                    <select name="compilerId">
+                        <th:block th:each="compiler : ${compilers}">
+                            <option th:if="${compiler.allowed}" th:value="${compiler.id}"
+                                    th:text="${compiler.name}"></option>
+                        </th:block>
+                    </select>
+                </label>
+                <label>Select file:
+                    <input id="submit-source" type="file" name="source">
+                </label>
+                <div style="margin: 10px 0;text-align: center">
+                    <a href="javascript:void(0)" onclick="submitForm()" class=" button submit-button" >Submit</a>
+                    <script>
+                           function submitForm(){
+                               var form = $('#source-submit-form');
+                               var formData = new FormData(form.get(0));
+                               $.ajax({
+                                   url : form.attr('action'),
+                                   type: "POST",
+                                   data : formData,
+                                   processData: false,
+                                   contentType: false,
+                                   success:function(data, textStatus, jqXHR){
+                                       console.log(data);
+                                       if(jqXHR.status === 201){
+                                          window.location = '/submit/status/' + data.submission_id;
+                                      }
+                                   },
+                                   error: function(jqXoHR, textStatus, errorThrown){
+                                       //if fails
+                                   }
+                               });
+                           }
+                    </script>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div th:fragment="problem-tags-box" class="sidebar-box block">
@@ -61,6 +61,52 @@
         <div class="box-title">Problem Tags</div>
         <div class="box-content">
             <div><a th:href="@{'/status/' + ${problem.code}}" class="button" >All Submissions</a></div>
+        </div>
+    </div>
+
+
+    <div th:fragment="contest-submit-box" class="sidebar-box block">
+        <div class="section-title box-title">Submit</div>
+        <div class="box-content">
+            <form id="source-submit-form" method="post" th:action="@{'/contests/' + ${contest.id} + '/submit/' + ${problem.id}}" enctype="multipart/form-data">
+                <label>
+                    Select Language:
+                    <select name="compilerId">
+                        <th:block th:each="compiler : ${compilers}">
+                            <option th:if="${compiler.allowed}" th:value="${compiler.id}"
+                                    th:text="${compiler.name}"></option>
+                        </th:block>
+                    </select>
+                </label>
+                <label>Select file:
+                    <input id="submit-source" type="file" name="source">
+                </label>
+                <div style="margin: 10px 0;text-align: center">
+                    <a href="javascript:void(0)" onclick="submitForm()" class=" button submit-button" >Submit</a>
+                    <script>
+                        function submitForm(){
+                            var form = $('#source-submit-form');
+                            var formData = new FormData(form.get(0));
+                            $.ajax({
+                                url : form.attr('action'),
+                                type: "POST",
+                                data : formData,
+                                processData: false,
+                                contentType: false,
+                                success:function(data, textStatus, jqXHR){
+                                    console.log(data);
+                                    if(jqXHR.status === 201){
+                                        window.location = '/submit/status/' + data.submission_id;
+                                    }
+                                },
+                                error: function(jqXoHR, textStatus, errorThrown){
+                                    //if fails
+                                }
+                            });
+                        }
+                    </script>
+                </div>
+            </form>
         </div>
     </div>
 </body>

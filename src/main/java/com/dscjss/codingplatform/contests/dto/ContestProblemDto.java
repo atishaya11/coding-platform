@@ -7,6 +7,7 @@ public class ContestProblemDto {
 
     private int id;
     private ProblemDto problemDto;
+    private ContestDto contestDto;
 
     public int getId() {
         return id;
@@ -22,5 +23,13 @@ public class ContestProblemDto {
 
     public void setProblemDto(ProblemDto problemDto) {
         this.problemDto = problemDto;
+    }
+
+    public ContestDto getContestDto() {
+        return contestDto;
+    }
+
+    public void setContestDto(ContestDto contestDto) {
+        this.contestDto = contestDto;
     }
 }

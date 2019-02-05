@@ -3,20 +3,34 @@ package com.dscjss.codingplatform.contests;
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
 import com.dscjss.codingplatform.contests.dto.ContestDto;
 import com.dscjss.codingplatform.contests.dto.ContestProblemDto;
+import com.dscjss.codingplatform.contests.exception.NotFoundException;
 import com.dscjss.codingplatform.contests.model.Contest;
 import com.dscjss.codingplatform.contests.model.ContestBody;
 import com.dscjss.codingplatform.contests.model.ContestProblem;
+import com.dscjss.codingplatform.contests.model.RegisteredUser;
+import com.dscjss.codingplatform.error.InvalidRequestException;
+import com.dscjss.codingplatform.error.UserNotFoundException;
 import com.dscjss.codingplatform.problems.ProblemRepository;
+import com.dscjss.codingplatform.problems.ProblemService;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.model.Problem;
+import com.dscjss.codingplatform.submissions.SubmissionService;
+import com.dscjss.codingplatform.submissions.dto.SubmissionRequest;
+import com.dscjss.codingplatform.submissions.exception.InvalidSubmissionException;
+import com.dscjss.codingplatform.submissions.exception.SubmissionFailedException;
+import com.dscjss.codingplatform.submissions.model.Submission;
 import com.dscjss.codingplatform.users.UserRepository;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,13 +44,19 @@ public class ContestServiceImpl implements ContestService {
     private UserRepository userRepository;
     private ProblemRepository problemRepository;
     private ContestProblemRepository contestProblemRepository;
+    private ProblemService problemService;
+    private SubmissionService submissionService;
+    private RegisteredUserRepository registeredUserRepository;
 
     @Autowired
-    public ContestServiceImpl(ContestRepository contestRepository, UserRepository userRepository, ProblemRepository problemRepository, ContestProblemRepository contestProblemRepository) {
+    public ContestServiceImpl(ContestRepository contestRepository, UserRepository userRepository, ProblemRepository problemRepository, ContestProblemRepository contestProblemRepository, ProblemService problemService, SubmissionService submissionService, RegisteredUserRepository registeredUserRepository) {
         this.contestRepository = contestRepository;
         this.userRepository = userRepository;
         this.problemRepository = problemRepository;
         this.contestProblemRepository = contestProblemRepository;
+        this.problemService = problemService;
+        this.submissionService = submissionService;
+        this.registeredUserRepository = registeredUserRepository;
     }
 
     @Override
@@ -79,6 +99,16 @@ public class ContestServiceImpl implements ContestService {
         String lowerCaseTitle = name.toLowerCase();
         lowerCaseTitle = lowerCaseTitle.replace("[^A-Za-z0-9 ]", "");
         return lowerCaseTitle.replace(' ', '-');
+    }
+
+    @Override
+    public List<ContestDto> getContests(UserBean userBean) {
+        List<Contest> contests = contestRepository.findAll();
+        List<ContestDto> contestDtoList = new ArrayList<>();
+        contests.forEach(contest -> {
+            contestDtoList.add(Mapper.getContestDto(contest));
+        });
+        return contestDtoList;
     }
 
     @Override
@@ -169,5 +199,74 @@ public class ContestServiceImpl implements ContestService {
             return false;
         contestProblemRepository.deleteById(contestProblemId);
         return true;
+    }
+
+    @Override
+    public ContestProblemDto getProblem(UserBean userBean, String code, String problemCode) {
+
+        Contest contest = contestRepository.findByCode(code);
+        if(contest == null)
+            throw new NotFoundException();
+        ContestProblem contestProblem = contestProblemRepository.findByProblemCode(problemCode);
+        if(contestProblem == null)
+            return null;
+
+        ContestProblemDto contestProblemDto = new ContestProblemDto();
+        contestProblemDto.setId(contestProblem.getId());
+        contestProblemDto.setProblemDto(problemService.getProblemByCode(userBean, contestProblem.getProblem().getCode(), false));
+        contestProblemDto.setContestDto(Mapper.getContestDto(contest));
+        return contestProblemDto;
+
+    }
+
+
+    @Override
+    public int submit(SubmissionRequest submissionRequest) throws InvalidSubmissionException, SubmissionFailedException {
+
+        Contest contest = contestRepository.getOne(submissionRequest.getContestId());
+        if(contest == null){
+            throw  new InvalidSubmissionException("Invalid contest.");
+        }
+        ContestProblem contestProblem = contestProblemRepository.getOne(submissionRequest.getContestProblemId());
+        if(contestProblem == null)
+            throw new InvalidSubmissionException("Invalid contest problem");
+        submissionRequest.setProblemId(contestProblem.getProblem().getId());
+        submissionRequest.setForContest(true);
+        submissionRequest.setPublic(false);
+        submissionRequest.setMaxScore(contestProblem.getMaxScore());
+        return submissionService.submit(submissionRequest);
+
+    }
+
+    @Override
+    public Page<RegisteredUser> getLeaderboard(UserBean userBean, String code, Pageable pageable) {
+        return registeredUserRepository.findByContestCode(code, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void registerUser(UserBean userBean, String code) throws UserNotFoundException, NotFoundException {
+        User user = userRepository.findByUsername(userBean.getUsername());
+
+        if(user == null){
+            throw new UserNotFoundException();
+        }
+
+        Contest contest = contestRepository.findByCode(code);
+        if(contest == null) {
+            throw new NotFoundException();
+        }
+
+        if(!registeredUserRepository.existsByUserId(user.getId())){
+            RegisteredUser registeredUser = new RegisteredUser();
+            registeredUser.setContest(contest);
+            registeredUser.setUser(user);
+            List<RegisteredUser> registeredUsers = contest.getRegisteredUsers();
+            if(registeredUsers == null){
+                contest.setRegisteredUsers(new ArrayList<>());
+            }
+            contest.getRegisteredUsers().add(registeredUser);
+            contestRepository.save(contest);
+        }
     }
 }

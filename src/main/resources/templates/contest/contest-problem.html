@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="center block">
+            <div class="problem-statement">
+                <div class="problem-head" >
+                    <div class="name" th:text="${problem.problemDto.name}"></div>
+                    <div class="code" th:text="'Problem Code - ' + ${problem.problemDto.code}"></div>
+                </div>
+
+                <div class="description" th:utext="${problem.problemDto.description}"></div>
+
+                <div class="input-specification">
+                    <div class="section-title">Input Format</div>
+                    <div  th:utext="${problem.problemDto.inputFormat}">Input format</div>
+                </div>
+                <div class="output-specification">
+                    <div class="section-title">Output Format</div>
+                    <div  th:utext="${problem.problemDto.outputFormat}">Output format</div>
+                </div>
+                <div class="constraints">
+                    <div class="section-title">Constraints</div>
+                    <div  th:utext="${problem.problemDto.constraints}">Constraints</div>
+                </div>
+                <div class="sample-tests">
+                    <div class="section-title">Example</div>
+                    <div class="sample-test" th:each="testCase : ${problem.problemDto.testCaseDtoList}">
+                        <div class="input">
+                            <div class="title">input</div>
+                            <pre th:text="${testCase.input}"></pre>
+                        </div>
+                        <div class="output">
+                            <div class="title">output</div>
+                            <pre th:text="${testCase.output}"></pre>
+                        </div>
+                        <!--<div class="explanation">
+                            <div class="title">explanation</div>
+                            <pre>Explanation</pre>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="info-bar">
+                    <div class="info">
+                        <div class="info-title">
+                            Author:
+                        </div>
+                        <div th:text="${problem.problemDto.author.username}"></div>
+                    </div>
+                    <div class="info">
+                        <div class="info-title">
+                            Time Limit:
+                        </div>
+                        6 sec
+                    </div>
+                    <div class="info">
+                        <div class="info-title">
+                            Source Limit:
+                        </div>
+                        50000 bytes
+                    </div>
+                </div>
+                <div style="text-align: center; margin: 10px 0;">
+                    <a class="button submit-button" th:href="@{'/problems/submit/'+ ${problem.problemDto.code}}">Submit</a>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div th:replace="fragments/sidebar-boxes :: contest-submit-box"></div>
+        </div>
+    </div>
+
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</body>
+</html>

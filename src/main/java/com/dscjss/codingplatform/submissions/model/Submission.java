@@ -40,10 +40,12 @@ public class Submission {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    private boolean isPublic;
+    private boolean isPublic; // Solution will not be visible to the public
 
-    private boolean visible;
+    private boolean visible; // Will not be shown on the submissions page.
 
+    @Column(name = "for_contest")
+    private boolean forContest;
 
     public Integer getId() {
         return id;
@@ -115,5 +117,13 @@ public class Submission {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public boolean isForContest() {
+        return forContest;
+    }
+
+    public void setForContest(boolean forContest) {
+        this.forContest = forContest;
     }
 }

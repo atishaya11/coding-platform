@@ -60,6 +60,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+    //TODO secure "/test_cases" with JWT
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -88,7 +90,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/registration/confirm").permitAll()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/user/registration/token/resend").permitAll()
-                .antMatchers("/problems/*").permitAll()
+                .antMatchers("/problems/**").permitAll()
+                .antMatchers("/contests/**").permitAll()
                 .antMatchers("/test_case/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

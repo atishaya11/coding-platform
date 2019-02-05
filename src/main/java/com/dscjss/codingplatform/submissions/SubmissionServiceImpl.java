@@ -142,6 +142,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             submission.setProblem(problem);
             submission.setPublic(submissionRequest.isPublic());
             submission.setVisible(submissionRequest.isVisible());
+            submission.setForContest(submissionRequest.isForContest());
             submission.setCreationDate(new Date());
             submission.setRemoteId(judgeId);
             Result result = new Result();

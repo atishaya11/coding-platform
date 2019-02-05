@@ -48,7 +48,7 @@ public class SubmissionController {
         if(principal != null){
             String username = principal.getName();
             try {
-                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), source, problemId, compilerId);
+                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), source, problemId, compilerId, 0);
                 int submissionId = submissionService.submit(submissionRequest);
                 map.put("submission_id", String.valueOf(submissionId));
                 responseEntity = new ResponseEntity<>(map, HttpStatus.CREATED);

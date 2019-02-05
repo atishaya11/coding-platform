@@ -21,6 +21,10 @@ public class RegisteredUser {
     private Contest contest;
 
 
+
+    private Double score;
+
+
     public Integer getId() {
         return id;
     }
@@ -43,5 +47,13 @@ public class RegisteredUser {
 
     public void setContest(Contest contest) {
         this.contest = contest;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 }

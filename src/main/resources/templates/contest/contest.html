@@ -10,18 +10,34 @@
 <div  class="body">
     <div class="container">
         <div class="center block">
+            <div>
+                <div>
+                    <table class="problems">
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th></th>
+                        </tr>
 
 
+                        <tr style="cursor: pointer" th:each="contestProblem : ${contest.problemDtoList}">
+                            <td th:text="${contestProblem.problemDto.name}"></td>
+                            <td><a th:text="${contestProblem.problemDto.code}" href="javascript:void(0)"></a></td>
+                            <td>
+                                <a th:href="@{/contests/__${contest.code}__/problems/__${contestProblem.problemDto.code}__}"><img class="icon" th:src="@{/img/link.png}" src="" alt="Link"></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="sidebar">
 
-
-            <!--<div th:replace="fragments/sidebar-boxes :: submissions-box"></div>-->
         </div>
     </div>
 
 </div>
 <div th:replace="fragments/footer :: footer"></div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </body>
 </html>

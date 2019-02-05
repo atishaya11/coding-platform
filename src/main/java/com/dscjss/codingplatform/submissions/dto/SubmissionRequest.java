@@ -10,6 +10,10 @@ public class SubmissionRequest {
     private int problemId;
     private boolean isPublic;
     private boolean visible;
+    private int contestId;
+    private boolean forContest;
+    private int contestProblemId; // Contest problems are separately stored but submissions are mapped only by actual problem. See ContestProblem.java for more details
+    private int maxScore;
 
     public UserBean getUserBean() {
         return userBean;
@@ -57,5 +61,37 @@ public class SubmissionRequest {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public int getContestId() {
+        return contestId;
+    }
+
+    public void setContestId(int contestId) {
+        this.contestId = contestId;
+    }
+
+    public boolean isForContest() {
+        return forContest;
+    }
+
+    public void setForContest(boolean forContest) {
+        this.forContest = forContest;
+    }
+
+    public int getContestProblemId() {
+        return contestProblemId;
+    }
+
+    public void setContestProblemId(int contestProblemId) {
+        this.contestProblemId = contestProblemId;
+    }
+
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
     }
 }

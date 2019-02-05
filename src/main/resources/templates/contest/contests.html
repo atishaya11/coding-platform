@@ -10,7 +10,24 @@
 <div  class="body">
     <div class="container">
         <div class="center block">
+            <div>
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th></th>
+                    </tr>
 
+                    <tr style="cursor: pointer" th:each="contest : ${contests}">
+                        <td th:text="${contest.startDate}"></td>
+                        <td th:text="${contest.name}"></td>
+                        <td>
+                            <a th:href="@{/contests/__${contest.code}__}"><img class="icon" th:src="@{/img/link.png}" src="" alt="Link"></a>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
 
         </div>
         <div class="sidebar">

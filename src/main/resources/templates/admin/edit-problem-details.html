@@ -6,10 +6,10 @@
     <title>Title</title>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.js"></script>
-    <script th:src="@{/js/summernote-ext-specialchars.js}"></script>
+    <script th:src="@{/static/js/summernote-ext-specialchars.js}"></script>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
@@ -91,7 +91,7 @@
 
 <div th:replace="fragments/footer :: footer"></div>
 
-<script th:src="@{/js/summernote-initialise.js}" type="application/javascript"></script>
+<script th:src="@{/static/js/summernote-initialise.js}" type="application/javascript"></script>
 <script>
     $(document).ready(function() {
         $('.summernote').summernote();

@@ -9,76 +9,88 @@
 
     <div  class="body">
         <div class="container">
-            <div class="center block">
-                <div class="problem-statement">
-                    <div class="problem-head" >
-                        <div class="name" th:text="${problem.name}"></div>
-                        <div class="code" th:text="'Problem Code - ' + ${problem.code}"></div>
-                    </div>
+            <div class="block">
+                <ul class="breadcrumb">
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li class="next">&#8811;</li>
+                    <li><a th:href="@{/problems}">Problems</a></li>
+                    <li class="next">&#8811;</li>
+                    <li th:text="${problem.name}"></li>
+                    <li style="float: right;"><a th:href="@{/problems/submit/__${problem.code}__}">Code Editor</a></li>
+                </ul>
+            </div>
+            <div style="display: inline-flex">
+                <div class="center block">
+                    <div class="problem-statement">
+                        <div class="problem-head" >
+                            <div class="name" th:text="${problem.name}"></div>
+                            <div class="code" th:text="'Problem Code - ' + ${problem.code}"></div>
+                        </div>
 
-                    <div class="description" th:utext="${problem.description}"></div>
+                        <div  th:utext="${problem.description}"></div>
 
-                    <div class="input-specification">
-                        <div class="section-title">Input Format</div>
-                        <div  th:utext="${problem.inputFormat}">Input format</div>
-                    </div>
-                    <div class="output-specification">
-                        <div class="section-title">Output Format</div>
-                        <div  th:utext="${problem.outputFormat}">Output format</div>
-                    </div>
-                    <div class="constraints">
-                        <div class="section-title">Constraints</div>
-                        <div  th:utext="${problem.constraints}">Constraints</div>
-                    </div>
-                    <div class="sample-tests">
-                        <div class="section-title">Example</div>
-                        <div class="sample-test" th:each="testCase : ${problem.testCaseDtoList}">
-                            <div class="input">
-                                <div class="title">input</div>
-                                <pre th:text="${testCase.input}"></pre>
-                            </div>
-                            <div class="output">
-                                <div class="title">output</div>
-                                <pre th:text="${testCase.output}">15</pre>
-                            </div>
-                            <div class="explanation">
-                                <div class="title">explanation</div>
-                                <pre>Explanation</pre>
+                        <div>
+                            <div class="section-title">Input Format</div>
+                            <div  th:utext="${problem.inputFormat}">Input format</div>
+                        </div>
+                        <div>
+                            <div class="section-title">Output Format</div>
+                            <div  th:utext="${problem.outputFormat}">Output format</div>
+                        </div>
+                        <div>
+                            <div class="section-title">Constraints</div>
+                            <div  th:utext="${problem.constraints}">Constraints</div>
+                        </div>
+                        <div>
+                            <div class="section-title">Sample</div>
+                            <div class="sample-test" th:each="testCase : ${problem.testCaseDtoList}">
+                                <div class="input">
+                                    <div class="title">input</div>
+                                    <pre th:text="${testCase.input}"></pre>
+                                </div>
+                                <div class="output">
+                                    <div class="title">output</div>
+                                    <pre th:text="${testCase.output}">15</pre>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="info-bar">
-                        <div class="info">
-                            <div class="info-title">
-                                Author:
-                            </div>
-                            <div th:text="${problem.author.username}"></div>
+                        <div>
+                            <div class="section-title">Explanation</div>
+                            <div th:utext="${problem.constraints}"></div>
                         </div>
-                        <div class="info">
-                            <div class="info-title">
-                                Time Limit:
+                        <div class="info-bar">
+                            <div class="info">
+                                <div class="info-title">
+                                    Author:
+                                </div>
+                                <div th:text="${problem.author.username}"></div>
                             </div>
-                            6 sec
-                        </div>
-                        <div class="info">
-                            <div class="info-title">
-                                Source Limit:
+                            <div class="info">
+                                <div class="info-title">
+                                    Time Limit:
+                                </div>
+                                6 sec
                             </div>
-                            50000 bytes
+                            <div class="info">
+                                <div class="info-title">
+                                    Source Limit:
+                                </div>
+                                50000 bytes
+                            </div>
                         </div>
-                    </div>
-                    <div style="text-align: center; margin: 10px 0;">
-                        <a class="button submit-button" th:href="@{'/problems/submit/'+ ${problem.code}}">Submit</a>
+                        <div style="text-align: center; margin: 10px 0;">
+                            <a class="button submit-button" th:href="@{'/problems/submit/'+ ${problem.code}}">Submit</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="sidebar">
-                <div th:replace="fragments/sidebar-boxes :: submit-box"></div>
+                <div class="sidebar">
+                    <div th:replace="fragments/sidebar-boxes :: submit-box"></div>
+                    <div th:replace="fragments/sidebar-boxes :: submissions-box"></div>
+                    <div th:replace="fragments/sidebar-boxes :: problem-tags-box"></div>
 
-                <div th:replace="fragments/sidebar-boxes :: problem-tags-box"></div>
-
-                <div th:replace="fragments/sidebar-boxes :: submissions-box"></div>
+                </div>
             </div>
+
         </div>
 
     </div>

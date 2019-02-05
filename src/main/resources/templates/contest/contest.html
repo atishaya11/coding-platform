@@ -9,6 +9,16 @@
 
 <div  class="body">
     <div class="container">
+        <div class="block">
+            <ul class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests}">Contests</a></li>
+                <li class="next">&#8811;</li>
+                <li th:text="${contest.name}"></li>
+                <!--<li><a th:href="@{/contests/__${contest.code}__/problems/__${problem.problemDto.code}__}" th:text="${problem.problemDto.name}"></a></li>-->
+            </ul>
+        </div>
         <div class="center block">
             <div>
                 <div>

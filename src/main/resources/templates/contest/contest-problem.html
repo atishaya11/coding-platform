@@ -8,73 +8,88 @@
 <div th:replace="fragments/header :: header"></div>
 
 <div  class="body">
+
     <div class="container">
-        <div class="center block">
-            <div class="problem-statement">
-                <div class="problem-head" >
-                    <div class="name" th:text="${problem.problemDto.name}"></div>
-                    <div class="code" th:text="'Problem Code - ' + ${problem.problemDto.code}"></div>
-                </div>
+        <div class="block">
+            <ul class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests}">Contests</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests/__${contest.code}__}" th:text="${contest.name}"></a></li>
+                <li class="next">&#8811;</li>
+                <li th:text="${problem.problemDto.name}"></li>
+                <!--<li><a th:href="@{/contests/__${contest.code}__/problems/__${problem.problemDto.code}__}" th:text="${problem.problemDto.name}"></a></li>-->
+                <li style="float: right;"><a th:href="@{/contests/__${contest.code}__/submit/__${problem.problemDto.code}__}">Code Editor</a></li>
+            </ul>
+        </div>
+        <div style="display: inline-flex">
+            <div class="center block">
+                <div class="problem-statement">
+                    <div class="problem-head" >
+                        <div class="name" th:text="${problem.problemDto.name}"></div>
+                        <div class="code" th:text="'Problem Code - ' + ${problem.problemDto.code}"></div>
+                    </div>
 
-                <div class="description" th:utext="${problem.problemDto.description}"></div>
+                    <div class="description" th:utext="${problem.problemDto.description}"></div>
 
-                <div class="input-specification">
-                    <div class="section-title">Input Format</div>
-                    <div  th:utext="${problem.problemDto.inputFormat}">Input format</div>
-                </div>
-                <div class="output-specification">
-                    <div class="section-title">Output Format</div>
-                    <div  th:utext="${problem.problemDto.outputFormat}">Output format</div>
-                </div>
-                <div class="constraints">
-                    <div class="section-title">Constraints</div>
-                    <div  th:utext="${problem.problemDto.constraints}">Constraints</div>
-                </div>
-                <div class="sample-tests">
-                    <div class="section-title">Example</div>
-                    <div class="sample-test" th:each="testCase : ${problem.problemDto.testCaseDtoList}">
-                        <div class="input">
-                            <div class="title">input</div>
-                            <pre th:text="${testCase.input}"></pre>
-                        </div>
-                        <div class="output">
-                            <div class="title">output</div>
-                            <pre th:text="${testCase.output}"></pre>
-                        </div>
-                        <!--<div class="explanation">
-                            <div class="title">explanation</div>
-                            <pre>Explanation</pre>
-                        </div>-->
+                    <div class="input-specification">
+                        <div class="section-title">Input Format</div>
+                        <div  th:utext="${problem.problemDto.inputFormat}">Input format</div>
                     </div>
-                </div>
-                <div class="info-bar">
-                    <div class="info">
-                        <div class="info-title">
-                            Author:
-                        </div>
-                        <div th:text="${problem.problemDto.author.username}"></div>
+                    <div class="output-specification">
+                        <div class="section-title">Output Format</div>
+                        <div  th:utext="${problem.problemDto.outputFormat}">Output format</div>
                     </div>
-                    <div class="info">
-                        <div class="info-title">
-                            Time Limit:
-                        </div>
-                        6 sec
+                    <div class="constraints">
+                        <div class="section-title">Constraints</div>
+                        <div  th:utext="${problem.problemDto.constraints}">Constraints</div>
                     </div>
-                    <div class="info">
-                        <div class="info-title">
-                            Source Limit:
+                    <div class="sample-tests">
+                        <div class="section-title">Sample</div>
+                        <div class="sample-test" th:each="testCase : ${problem.problemDto.testCaseDtoList}">
+                            <div class="input">
+                                <div class="title">input</div>
+                                <pre th:text="${testCase.input}"></pre>
+                            </div>
+                            <div class="output">
+                                <div class="title">output</div>
+                                <pre th:text="${testCase.output}"></pre>
+                            </div>
                         </div>
-                        50000 bytes
                     </div>
-                </div>
-                <div style="text-align: center; margin: 10px 0;">
-                    <a class="button submit-button" th:href="@{'/problems/submit/'+ ${problem.problemDto.code}}">Submit</a>
+                    <div class="info-bar">
+                        <div class="info">
+                            <div class="info-title">
+                                Author:
+                            </div>
+                            <div th:text="${problem.problemDto.author.username}"></div>
+                        </div>
+                        <div class="info">
+                            <div class="info-title">
+                                Time Limit:
+                            </div>
+                            6 sec
+                        </div>
+                        <div class="info">
+                            <div class="info-title">
+                                Source Limit:
+                            </div>
+                            50000 bytes
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin: 10px 0;">
+                        <a class="button submit-button" th:href="@{'/problems/submit/'+ ${problem.problemDto.code}}">Submit</a>
+                    </div>
                 </div>
             </div>
+            <div class="sidebar">
+                <div th:replace="fragments/sidebar-boxes :: contest-submit-box"></div>
+
+                <div th:replace="fragments/sidebar-boxes :: contest-submissions-box"></div>
+            </div>
         </div>
-        <div class="sidebar">
-            <div th:replace="fragments/sidebar-boxes :: contest-submit-box"></div>
-        </div>
+
     </div>
 
 </div>

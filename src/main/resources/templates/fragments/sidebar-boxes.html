@@ -57,10 +57,18 @@
 
         </div>
     </div>
-    <div th:fragment="submissions-box" class="sidebar-box block">
-        <div class="box-title">Problem Tags</div>
-        <div class="box-content">
-            <div><a th:href="@{'/status/' + ${problem.code}}" class="button" >All Submissions</a></div>
+
+    <div th:fragment="submissions-box" class="sidebar-box">
+        <div style="display: inline-flex; width: 100%;">
+            <a th:href="@{'/status/' + ${problem.code}}" class="button" style="margin-right:10px;width: 50%;">My Submissions</a>
+            <a th:href="@{'/status/' + ${problem.code}}" class="button" style="width: 50%;">All Submissions</a>
+        </div>
+    </div>
+
+    <div th:fragment="contest-submissions-box" class="sidebar-box">
+        <div style="display: inline-flex; width: 100%;">
+            <a th:href="@{'/contests/' + ${contest.code} + '/status/' + ${problem.problemDto.code}}" class="button" style="margin-right:10px;width: 50%;">My Submissions</a>
+            <a th:href="@{'/contests/' + ${contest.code} + '/status/' + ${problem.problemDto.code}}" class="button" style="width: 50%;">All Submissions</a>
         </div>
     </div>
 

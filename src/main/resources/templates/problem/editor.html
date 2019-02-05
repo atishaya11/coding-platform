@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="block">
+            <ul class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/problems}">Problems</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/problems/__${problem.code}__}" th:text="${problem.name}"></a></li>
+                <li class="next">&#8811;</li>
+                <li>Submit</li>
+            </ul>
+        </div>
+        <div style="display: inline-flex;width: 70%;">
+            <div class="center block" style="width: 100%">
+                <div>
+                    <form id="submission-form" method="post" th:action="@{'/submit/' + ${problem.id}}" enctype="multipart/form-data">
+                        <label>
+                            Select Language:
+                            <select id="lang" name="compilerId">
+                                <th:block th:each="compiler : ${compilers}">
+                                    <option th:if="${compiler.allowed}" th:value="${compiler.id}" th:attr="data-mode=${compiler.aceEditorMode}" th:text="${compiler.name}"></option>
+                                </th:block>
+                            </select>
+                        </label>
+
+                        <div id="editor">
+                        </div>
+                        <div style="margin: 10px 0; text-align: center;">
+                            <a href="javascript:void(0)" onclick="submitForm()" class=" button submit-button" >Submit</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="sidebar">
+                    <!--<div th:replace="fragments/sidebar-boxes :: submissions-box"></div>-->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script th:src="@{/js/ace-builds/src-noconflict/ace.js}" type="text/javascript" charset="utf-8"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(document).ready(function() {
+
+        var editor = ace.edit("editor");
+        editor.setOptions({
+            maxLines: 40,
+            minLines: 20,
+            autoScrollEditorIntoView: true
+        });
+
+        editor.setTheme("ace/theme/github");
+        document.getElementById('editor').style.fontSize='14px';
+        changeEditorState(editor);
+        $("#lang").change(function(){
+            changeEditorState(editor)
+        });
+        function changeEditorState(editor) {
+            $("#lang").find("option:selected").each(function() {
+                var mode =  $(this).data('mode');
+                editor.session.setMode("ace/mode/"+mode);
+            });
+        }
+    });
+    function submitForm(){
+        var editor = ace.edit("editor");
+        var source = editor.getValue();
+        var formData = new FormData();
+        formData.append('source', source);
+        formData.append('compilerId', $("#lang").find("option:selected").val());
+        var form = $('#submission-form');
+        $.ajax({
+            url : form.attr('action'),
+            type: "POST",
+            data : formData,
+            processData: false,
+            contentType: false,
+            success:function(data, textStatus, jqXHR){
+                console.log(data);
+                if(jqXHR.status === 201){
+                    window.location = '/submit/status/' + data.submission_id;
+                }
+            },
+            error: function(jqXoHR, textStatus, errorThrown){
+                //if fails
+            }
+        });
+    }
+    /*]]>*/
+</script>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

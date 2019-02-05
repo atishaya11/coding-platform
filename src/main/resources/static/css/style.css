@@ -50,7 +50,7 @@ select{
 }
 .container {
     width: 100%;
-    display: inline-flex;
+    margin-top: 70px;
 }
 .header{
     position: fixed;
@@ -69,7 +69,6 @@ select{
 }
 .block{
     box-shadow: 0 0 5px #36383f;
-    margin-top: 50px;
 }
 .block > div{
     padding: 10px;
@@ -135,14 +134,13 @@ select{
 }
 .sidebar{
     width: 30%;
-    margin-top: 50px;
 }
 .sidebar-box{
     padding: 0;
     margin: 0 0 10px 10px;
 }
 .sidebar-box .box-title{
-    border-bottom: 2px solid #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
     padding: 10px 15px;
     text-align: left;
     text-transform: uppercase;
@@ -248,7 +246,7 @@ table.problems tr:first-child{
 }
 .problem-statement > .problem-head{
     display: flex;
-    margin: 20px 0;
+    margin: 5px 0;
     border-bottom: 1px solid #E7E7E7;
     align-items: center;
     font-weight: 600;
@@ -259,6 +257,25 @@ table.problems tr:first-child{
 }
 .problem-statement > .problem-head > .code{
     font-size: 16px;
+}
+.sample-test pre{
+    line-height: 1.25em;
+    padding: 0.25em;
+    margin: 0;
+    background-color: #4e505a;
+    font-size: 14px;
+    color: white;
+}
+.sample-test .input{
+    border: 1px solid #36383f;
+}
+.sample-test .output {
+    border: 1px solid #36383f;
+    border-top: none;
+}
+.sample-test .title {
+    border-bottom: 1px solid #36383f;
+    padding: 5px;
 }
 /*Problem Page*/
 
@@ -449,3 +466,40 @@ table.test-cases tr:first-child{
 }
 
 /*Submission page*/
+
+/*Breadcrumbs Start*/
+
+ul.breadcrumb {
+    margin: 5px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+ul.breadcrumb li {
+    display: inline;
+    font-size: 12px;
+}
+
+ul.breadcrumb li.next{
+    font-size: 8px;
+    vertical-align: middle;
+}
+ul.breadcrumb li a {
+    color: #0275d8;
+    text-decoration: underline;
+}
+
+ul.breadcrumb li a:hover {
+    color: #01447e;
+    text-decoration: underline;
+}
+/*Breadcrumb End*/
+/*Editor Page Start*/
+#editor {
+    height: 600px;
+    font-size: 18px;
+    width: 100%;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+/*Editor Page End*/

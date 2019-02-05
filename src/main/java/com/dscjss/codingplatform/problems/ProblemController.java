@@ -56,4 +56,13 @@ public class ProblemController {
         return modelAndView;
     }
 
+    @GetMapping(value = "/submit/{code}")
+    public ModelAndView submit(@PathVariable String code){
+        ProblemDto problem = problemService.getProblemByCode(null, code, false);
+        ModelAndView modelAndView = new ModelAndView("problem/editor.html");
+        modelAndView.addObject("problem", problem);
+        modelAndView.addObject("compilers", problem.getCompilers());
+        return modelAndView;
+    }
+
 }

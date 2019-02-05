@@ -1,7 +1,6 @@
 package com.dscjss.codingplatform.config;
 
 
-import com.dscjss.codingplatform.users.CustomAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -122,7 +121,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/img/**");
+                .antMatchers( "/css/**", "/js/**", "/img/**");
     }
 
     @Bean

@@ -9,6 +9,13 @@
     <div th:replace="fragments/header :: header"></div>
     <div  class="body">
         <div class="container">
+            <div class="block">
+                <ul class="breadcrumb">
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li class="next">&#8811;</li>
+                    <li>Problems</li>
+                </ul>
+            </div>
             <div class="center block">
                 <div>
                     <table class="problems">

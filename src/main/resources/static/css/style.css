@@ -453,6 +453,13 @@ table.test-cases tr:first-child{
     width: 32px;
     height: 32px;
 }
+.submission .info{
+    display: inline-flex;
+    width: 100%;
+}
+.submission .info > div{
+    width: 50%;
+}
 .submission table img{
     width: 24px;
     height: 24px;
@@ -503,3 +510,53 @@ ul.breadcrumb li a:hover {
     margin: 10px 0;
 }
 /*Editor Page End*/
+
+/*Timer Start*/
+#timer{
+    font-family: sans-serif;
+    color: #000;
+    display: inline-block;
+    font-weight: 100;
+    text-align: center;
+    font-size: 24px;
+    width: 100%;
+}
+
+#timer > div{
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+#timer div > span{
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.small-text{
+    padding-top: 5px;
+    font-size: 16px;
+}
+/*Timer End*/
+
+/*Contest Landing start*/
+.background{
+    position: relative;
+    text-align: center;
+    color: white;
+}
+.background img {
+    height: 250px;
+    width: 100%;
+    margin: 5px 0;
+}
+
+.background .center{
+    position: absolute;
+    top: 50%;left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 36px;
+    font-weight: bold;
+}
+/*Contest Landing end*/

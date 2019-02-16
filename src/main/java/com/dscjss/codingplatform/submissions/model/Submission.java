@@ -1,6 +1,7 @@
 package com.dscjss.codingplatform.submissions.model;
 
 import com.dscjss.codingplatform.compilers.model.Compiler;
+import com.dscjss.codingplatform.contests.model.Contest;
 import com.dscjss.codingplatform.problems.model.Problem;
 import com.dscjss.codingplatform.users.model.User;
 import org.springframework.data.annotation.CreatedDate;
@@ -46,6 +47,10 @@ public class Submission {
 
     @Column(name = "for_contest")
     private boolean forContest;
+
+    @ManyToOne
+    @JoinColumn(name = "contest_id")
+    private Contest contest;
 
     public Integer getId() {
         return id;
@@ -125,5 +130,13 @@ public class Submission {
 
     public void setForContest(boolean forContest) {
         this.forContest = forContest;
+    }
+
+    public Contest getContest() {
+        return contest;
+    }
+
+    public void setContest(Contest contest) {
+        this.contest = contest;
     }
 }

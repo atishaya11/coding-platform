@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ContestProblemRepository extends JpaRepository<ContestProblem, Integer> {
 
 
-    ContestProblem findByProblemCode(String code);
+    ContestProblem findByProblemCodeAndContestId(String code, int contestId);
 
-    ContestProblem findByProblemId(int id);
+    ContestProblem findByProblemIdAndContestId(int id, int contestId);
 }

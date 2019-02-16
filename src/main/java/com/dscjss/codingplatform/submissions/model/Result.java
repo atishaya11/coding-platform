@@ -20,6 +20,8 @@ public class Result {
     private double score;
     private int time;
     private double memory;
+    @Column(name = "source_char_count")
+    private Integer sourceCharCount;
 
     public int getId() {
         return id;
@@ -59,5 +61,13 @@ public class Result {
 
     public void setMemory(double memory) {
         this.memory = memory;
+    }
+
+    public Integer getSourceCharCount() {
+        return sourceCharCount;
+    }
+
+    public void setSourceCharCount(Integer sourceCharCount) {
+        this.sourceCharCount = sourceCharCount;
     }
 }

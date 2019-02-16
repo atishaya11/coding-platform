@@ -23,7 +23,7 @@
                 <li style="float: right;"><a th:href="@{/contests/__${contest.code}__/submit/__${problem.problemDto.code}__}">Code Editor</a></li>
             </ul>
         </div>
-        <div style="display: inline-flex">
+        <div style="display: inline-flex; width: 100%;">
             <div class="center block">
                 <div class="problem-statement">
                     <div class="problem-head" >
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <div style="text-align: center; margin: 10px 0;">
-                        <a class="button submit-button" th:href="@{'/problems/submit/'+ ${problem.problemDto.code}}">Submit</a>
+                        <a class="button submit-button" th:href="@{/contests/__${contest.code}__/submit/__${problem.problemDto.code}__}">Submit</a>
                     </div>
                 </div>
             </div>
@@ -87,6 +87,8 @@
                 <div th:replace="fragments/sidebar-boxes :: contest-submit-box"></div>
 
                 <div th:replace="fragments/sidebar-boxes :: contest-submissions-box"></div>
+
+                <div th:replace="fragments/sidebar-boxes :: contest-leaderboard-box"></div>
             </div>
         </div>
 

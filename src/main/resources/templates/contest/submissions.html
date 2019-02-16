@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+<div  class="body">
+    <div class="container">
+        <div class="block">
+            <ul class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests}">Contests</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests/__${contest.code}__}" th:text="${contest.name}"></a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests/__${contest.code}__/problems/__${problem.problemDto.code}__}" th:text="${problem.problemDto.name}">Problems</a></li>
+                <li class="next">&#8811;</li>
+                <li>All Submissions</li>
+            </ul>
+        </div>
+        <div style="display: inline-flex; width: 100%;">
+            <div class="center block">
+            <div>
+                <table class="submissions">
+                    <tr>
+                        <th>Id</th>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Lang</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                        <th>Score</th>
+                        <th>&ensp;&ensp;</th>
+                    </tr>
+                    <tr style="cursor: pointer"   th:each="submission : ${page.getContent()}">
+                        <td th:text="${submission.id}"></td>
+                        <td th:text="${submission.date}"></td>
+                        <td th:text="${submission.userBean.username}"></td>
+                        <td th:text="${submission.compilerDto.name}"></td>
+                        <td>
+                            <th:block th:if="${submission.result != null}" th:switch="${submission.result.status}">
+                                <th:block th:case="${T(com.dscjss.codingplatform.util.Status).RUNNING}">
+                                    <img src="" th:src="@{/img/running_small.gif}" alt="Running"/>
+                                    <script>
+                                        window.setTimeout(function(){location.reload()},5000)
+                                    </script>
+                                </th:block>
+                                <th:block th:case="${T(com.dscjss.codingplatform.util.Status).CORRECT}">
+                                    <img src="" th:src="@{/img/correct.png}" alt="Correct"/>
+                                </th:block>
+                                <th:block th:case="${T(com.dscjss.codingplatform.util.Status).WRONG}">
+                                    <img src="" th:src="@{/img/wrong.png}" alt="Wrong"/>
+                                </th:block>
+                                <th:block th:case="${T(com.dscjss.codingplatform.util.Status).TIME_LIMIT_EXCEEDED}">
+                                    <img src="" th:src="@{/img/time_limit_exceeded.png}" alt="Time Limit Exceeded"/>
+                                </th:block>
+                                <th:block th:case="${T(com.dscjss.codingplatform.util.Status).RUNTIME_ERROR}">
+                                    <img src="" th:src="@{/img/runtime_error.png}" alt="Runtime Error"/>
+                                </th:block>
+                                <th:block th:case="${T(com.dscjss.codingplatform.util.Status).COMPILATION_ERROR}">
+                                    <img src="" th:src="@{/img/compilation_error.png}" alt="Compilation Error"/>
+                                </th:block>
+                                <th:block th:case="${T(com.dscjss.codingplatform.util.Status).INTERNAL_ERROR}">
+                                    <img src="" th:src="@{/img/internal_error.png}" alt="Submission Failed, try again."/>
+                                </th:block>
+                            </th:block>
+                            <th:block th:unless="${submission.result != null}">
+                                <img src="" th:src="@{/img/unknown_error.png}" alt="Unknown Error"/>
+                            </th:block>
+                        </td>
+
+                        <th:block th:if="${submission.result != null}">
+                            <td th:text="${T(java.lang.String).format('%.2f', __${submission.result.time/1000.0}__) + 's'}"></td>
+                        </th:block>
+                        <th:block th:unless="${submission.result != null}">
+                            <td th:text="0.0"></td>
+                        </th:block>
+
+                        <td th:text="${submission.result.score}"></td>
+
+                        <td><a th:href="@{'/submission/' + ${submission.id}}" class="button" >View</a></td>
+                    </tr>
+                </table>
+                <script>
+                    function goto(slug){
+                        console.log(slug);
+                        window.location = '/challenge/' + slug;
+                    }
+                </script>
+                <div class="pagination">
+
+                    <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()})}" th:if="${page.getNumber() > 0}">&laquo;</a>
+                    <a href="#"  th:unless="${page.getNumber() > 0}">&laquo;</a>
+
+                    <div>
+                        <div th:text="${page.getNumber() + 1} + ' of ' + ${page.getTotalPages()}"></div>
+                    </div>
+                    <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()+2})}" th:if="${page.hasNext()}">&raquo;</a>
+                    <a href="#"  th:unless="${page.hasNext()}">&raquo;</a>
+
+                </div>
+
+            </div>
+
+        </div>
+            <div class="sidebar">
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

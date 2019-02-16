@@ -4,7 +4,9 @@ package com.dscjss.codingplatform.util;
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
 import com.dscjss.codingplatform.compilers.model.Compiler;
 import com.dscjss.codingplatform.contests.dto.ContestDto;
+import com.dscjss.codingplatform.contests.dto.Row;
 import com.dscjss.codingplatform.contests.model.Contest;
+import com.dscjss.codingplatform.contests.model.RegisteredUser;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.TestCaseDto;
 import com.dscjss.codingplatform.problems.model.Problem;
@@ -106,6 +108,7 @@ public class Mapper {
         submissionDto.setCompilerDto(getCompilerDo(submission.getCompiler()));
         submissionDto.setDate(submission.getCreationDate());
         submissionDto.setResult(submission.getResult());
+        submissionDto.setForContest(submission.isForContest());
         return submissionDto;
     }
 
@@ -127,5 +130,15 @@ public class Mapper {
         contestDto.setStartDate(contest.getStartDate());
         contestDto.setEndDate(contest.getEndDate());
         return contestDto;
+    }
+
+
+    public static Row getLeaderboardRow(RegisteredUser registeredUser){
+        if(registeredUser == null)
+            return null;
+        Row row = new Row();
+        row.setScore(registeredUser.getScore());
+        row.setUser(getUserBean(registeredUser.getUser()));
+        return row;
     }
 }

@@ -10,5 +10,7 @@ public interface RegisteredUserRepository extends JpaRepository<RegisteredUser, 
 
     Page<RegisteredUser> findByContestCode(String code, Pageable pageable);
 
-    boolean existsByUserId(int id);
+    boolean existsByUserIdAndContestId(int id, int contestId);
+
+    boolean existsByUserUsernameAndContestId(String username, int contestId);
 }

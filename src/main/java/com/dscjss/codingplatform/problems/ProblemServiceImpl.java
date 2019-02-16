@@ -24,6 +24,8 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,9 +54,10 @@ public class ProblemServiceImpl implements ProblemService {
     private final UserRepository userRepository;
     private final AllowedCompilerRepository allowedCompilerRepository;
     private final TestCaseService testCaseService;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, CompilerRepository compilerRepository, FileManager fileManager, TestCaseRepository testCaseRepository, UserRepository userRepository, AllowedCompilerRepository allowedCompilerRepository, TestCaseService testCaseService) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, CompilerRepository compilerRepository, FileManager fileManager, TestCaseRepository testCaseRepository, UserRepository userRepository, AllowedCompilerRepository allowedCompilerRepository, TestCaseService testCaseService, CacheManager cacheManager) {
         this.problemRepository = problemRepository;
         this.compilerRepository = compilerRepository;
         this.fileManager = fileManager;
@@ -62,10 +65,11 @@ public class ProblemServiceImpl implements ProblemService {
         this.userRepository = userRepository;
         this.allowedCompilerRepository = allowedCompilerRepository;
         this.testCaseService = testCaseService;
+        this.cacheManager = cacheManager;
     }
 
     @Override
-    @Cacheable(value = "problems", key = "{#code, #onlySummary}")
+    @Cacheable(value = "problems", key = "#code + #onlySummary")
     public ProblemDto getProblemByCode(UserBean userBean, String code, boolean onlySummary) {
         logger.info("Check - Is cached problem.");
         Problem problem = problemRepository.findByCode(code);
@@ -149,6 +153,9 @@ public class ProblemServiceImpl implements ProblemService {
         problem.setBody(problemBody);
         problem.setModificationDate(new Date());
         problemRepository.save(problem);
+
+        cacheEvict("problems", problem.getCode() + "" + false);
+        cacheEvict("problems", problem.getCode() + "" + true);
     }
 
     @Override
@@ -183,7 +190,7 @@ public class ProblemServiceImpl implements ProblemService {
         }
         problem.getTestCases().add(testCase);
         problemRepository.save(problem);
-
+        cacheEvict("problems", problem.getCode() + "" + false);
         return Mapper.getTestCaseDto(testCase);
     }
 
@@ -313,5 +320,14 @@ public class ProblemServiceImpl implements ProblemService {
                 }
             }
         }
+
+        cacheEvict("problems", problem.getCode() + "" + false);
+    }
+
+    private void cacheEvict(String name, String key) {
+
+        cacheManager.getCache(name).evict(key);
+
+        cacheManager.getCache(name).evict(key);
     }
 }

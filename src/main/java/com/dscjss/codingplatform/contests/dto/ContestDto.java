@@ -32,6 +32,9 @@ public class ContestDto {
     @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
     private Date endDate;
 
+    private boolean registered;
+
+
     public int getId() {
         return id;
     }
@@ -110,5 +113,14 @@ public class ContestDto {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
     }
 }

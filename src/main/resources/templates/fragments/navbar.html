@@ -20,6 +20,8 @@
     <li sec:authorize="!isAuthenticated()" style="float: right"><a href="/login">Login</a></li>
     <li sec:authorize="!isAuthenticated()" style="float: right"><a href="/register">Sign Up</a></li>
     <li sec:authorize="isAuthenticated()" style="float: right"><a href="/perform_logout">Logout</a></li>
+    <li sec:authorize="isAuthenticated()" style="float: right"><a style="text-transform: none" th:text="${#authentication.getPrincipal().getUsername()}" th:href="@{'/users/' + ${#authentication.getPrincipal().getUsername()}}"></a></li>
+
 
 </ul>
 

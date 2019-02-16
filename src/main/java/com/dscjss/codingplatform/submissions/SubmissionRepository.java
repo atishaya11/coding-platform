@@ -8,5 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Integer>, PagingAndSortingRepository<Submission, Integer> {
 
-    Page<Submission> findByProblemCode(String code, Pageable pageable);
+    Page<Submission> findByProblemCodeAndForContestIsFalse(String code, Pageable pageable);
+
+    Page<Submission> findByContestCodeAndProblemCode(String contest, String problem, Pageable pageable);
 }

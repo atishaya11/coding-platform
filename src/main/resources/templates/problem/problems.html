@@ -18,20 +18,22 @@
             </div>
             <div class="center block">
                 <div>
-                    <table class="problems">
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th>Successful Submissions</th>
-                        </tr>
+                    <div style="min-height: 600px;">
+                        <table class="problems">
+                            <tr>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Successful Submissions</th>
+                            </tr>
 
 
-                        <tr style="cursor: pointer" th:each="problem : ${page.getContent()}">
-                            <td th:text="${problem.name}"></td>
-                            <td><a th:text="${problem.code}" th:href="@{/problems/__${problem.code}__}"></a></td>
-                            <td>5</td>
-                        </tr>
-                    </table>
+                            <tr style="cursor: pointer" th:each="problem : ${page.getContent()}">
+                                <td th:text="${problem.name}"></td>
+                                <td><a th:text="${problem.code}" th:href="@{/problems/__${problem.code}__}"></a></td>
+                                <td>5</td>
+                            </tr>
+                        </table>
+                    </div>
                     <div class="pagination" th:if="${page.getTotalPages()}  > 0">
 
                         <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()})}" th:if="${page.getNumber() > 0}">&laquo;</a>

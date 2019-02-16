@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ContestRepository extends JpaRepository<Contest, Integer> {
+public interface ContestRepository extends JpaRepository<Contest, Integer>, CustomContestRepository {
 
     Integer countByCodeIsStartingWith(String tempCode);
 
-    List<Contest> findByOwnerId(Integer id);
+    List<Contest> findByCreatedById(Integer id);
 
     Contest findByCode(String code);
 

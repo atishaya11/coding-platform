@@ -2,6 +2,7 @@ package com.dscjss.codingplatform.users;
 
 import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.dto.UserDto;
+import com.dscjss.codingplatform.users.exception.UsernameExistsException;
 import com.dscjss.codingplatform.users.model.Role;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.users.model.VerificationToken;
@@ -46,15 +47,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public User registerNewUserAccount(UserDto userDto) throws EmailExistsException {
+    public User registerNewUserAccount(UserDto userDto) throws EmailExistsException, UsernameExistsException {
 
         if (emailExist(userDto.getEmail())) {
             throw new EmailExistsException("There is an account with that email adress: " + userDto.getEmail());
         }
+
+        if(usernameExists(userDto.getUsername())){
+            throw new UsernameExistsException();
+        }
+
         User user = createUser(userDto);
         userRepository.save(user);
         return user;
     }
+
+    private boolean usernameExists(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
+
     private User createUser(UserDto userDto){
         User user = new User();
         user.setEmail(userDto.getEmail());

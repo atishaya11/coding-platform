@@ -10,65 +10,82 @@
 
 <div  class="body">
     <div class="container">
-        <div class="center block">
-            <div th:replace="admin/menu :: edit-contest-menu"></div>
-            <div class="edit-box">
+        <div  style="display: inline-flex; width: 100%;">
+            <div class="center block" >
+                <div th:replace="admin/menu :: edit-contest-menu"></div>
+                <div class="edit-box">
+                    <form id="problems-update-form" method="post" th:action="@{'/admin/contests/edit/' + ${contest.id} + '/problems'}"
+                          enctype="application/x-www-form-urlencoded">
+                        <div>
+                            <div>Problems Added to the contest:</div>
+                            <table class="problems">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Max Score</th>
+                                    <th></th>
+                                </tr>
+                                <tr th:if="${contest.problemDtoList == null || contest.problemDtoList.size() < 1}">
+                                    <td colspan="3">No problems added. Select from below or create new problems to add them.</td>
+                                </tr>
+                                <tr style="cursor: pointer" th:each="contestProblem, itr : ${contest.problemDtoList}">
+                                    <td th:text="${contestProblem.problemDto.name}"></td>
+                                    <td><a th:text="${contestProblem.problemDto.code}" th:href="@{/admin/problems/edit/__${contestProblem.problemDto.id}__/details}"></a></td>
+                                    <td>
+                                        <input type="text" hidden="hidden" th:value="${contestProblem.id}" th:name="'problemDetailsList['+ ${itr.index} + '].id'">
+                                        <input type="number" th:value="${contestProblem.maxScore}" th:name="'problemDetailsList['+ ${itr.index} + '].maxScore'">
+                                    </td>
+                                    <td>
+                                        <a onclick="removeProblem(this)" th:attr="data-id=${contestProblem.id}"><img class="icon" th:src="@{/img/delete.png}" src="" alt="Delete"></a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                    <div>
+                        <div>Problems Created by You:</div>
+                        <table class="problems">
+                            <tr>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
 
-                <div>
-                    <div>Problems Added to the contest:</div>
-                    <table class="problems">
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                        <tr th:if="${contest.problemDtoList == null || contest.problemDtoList.size() < 1}">
-                            <td colspan="3">No problems added. Select from below or create new problems to add them.</td>
-                        </tr>
-                        <tr style="cursor: pointer" th:each="contestProblem : ${contest.problemDtoList}">
-                            <td th:text="${contestProblem.problemDto.name}"></td>
-                            <td><a th:text="${contestProblem.problemDto.code}" th:href="@{/admin/problems/edit/__${contestProblem.problemDto.id}__/details}"></a></td>
-                            <td>
-                                <a onclick="removeProblem(this)" th:attr="data-id=${contestProblem.id}"><img class="icon" th:src="@{/img/delete.png}" src="" alt="Delete"></a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div>
-                    <div>Problems Created by You:</div>
-                    <table class="problems">
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
 
-
-                        <tr style="cursor: pointer" th:each="problem : ${problems}">
-                            <td th:text="${problem.name}"></td>
-                            <td><a th:text="${problem.code}" href="javascript:void(0)"></a></td>
-                            <td>
-                                <a th:href="@{/admin/problems/edit/__${problem.id}__/details}"><img class="icon" th:src="@{/img/edit.png}" src="" alt="Edit"></a>
-                            </td>
-                            <td><a href="#" onclick="addProblem(this)" th:attr="data-id=${problem.id}" class="button" >Add</a></td>
-                        </tr>
-                    </table>
+                            <tr style="cursor: pointer" th:each="problem : ${problems}">
+                                <td th:text="${problem.name}"></td>
+                                <td><a th:text="${problem.code}" href="javascript:void(0)"></a></td>
+                                <td>
+                                    <a th:href="@{/admin/problems/edit/__${problem.id}__/details}"><img class="icon" th:src="@{/img/edit.png}" src="" alt="Edit"></a>
+                                </td>
+                                <td><a href="#" onclick="addProblem(this)" th:attr="data-id=${problem.id}" class="button" >Add</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="text-align: right">
+                        <div style="display: inline-flex;margin: 10px;">
+                            <a href="javascript:void(0)" onclick="$('#problems-update-form').submit()" class="button submit-button" >Save</a>
+                        </div>
+                        <div style="display: inline-flex;margin: 10px;">
+                            <a href="javascript:void(0)" class="button" >Preview</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="sidebar">
-            <div class="sidebar-box block">
-                <div class="section-title box-title">Actions</div>
-                <div class="box-content" style="display: inline-flex;">
+            <div class="sidebar">
+                <div class="sidebar-box block">
+                    <div class="section-title box-title">Actions</div>
+                    <div class="box-content" style="display: inline-flex;">
 
-                    <div style="margin: 10px;">
-                        <a href="javascript:void(0)"  class="button" >Publish</a>
-                    </div>
-                    <div style="margin: 10px;">
-                        <a href="javascript:void(0)" class="button delete-button" >Delete</a>
-                    </div>
+                        <div style="margin: 10px;">
+                            <a href="javascript:void(0)"  class="button" >Publish</a>
+                        </div>
+                        <div style="margin: 10px;">
+                            <a href="javascript:void(0)" class="button delete-button" >Delete</a>
+                        </div>
 
+                    </div>
                 </div>
             </div>
         </div>

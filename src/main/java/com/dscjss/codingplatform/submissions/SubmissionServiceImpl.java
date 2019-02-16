@@ -3,9 +3,11 @@ package com.dscjss.codingplatform.submissions;
 
 import com.dscjss.codingplatform.compilers.CompilerRepository;
 import com.dscjss.codingplatform.compilers.model.Compiler;
+import com.dscjss.codingplatform.contests.ContestRepository;
+import com.dscjss.codingplatform.contests.ContestService;
+import com.dscjss.codingplatform.contests.model.Contest;
 import com.dscjss.codingplatform.problems.ProblemRepository;
 import com.dscjss.codingplatform.problems.ProblemService;
-import com.dscjss.codingplatform.problems.exception.TestDataDownloadException;
 import com.dscjss.codingplatform.problems.model.AllowedCompiler;
 import com.dscjss.codingplatform.problems.model.Problem;
 import com.dscjss.codingplatform.problems.model.TestCase;
@@ -28,8 +30,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,14 +39,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,21 +56,22 @@ public class SubmissionServiceImpl implements SubmissionService {
     private final CompilerRepository compilerRepository;
     private final ProblemRepository problemRepository;
     private final UserRepository userRepository;
-    private final TestCaseService testCaseService;
     private final RestTemplate restTemplate;
     private final ProblemService problemService;
+    private final ContestRepository contestRepository;
+
 
     @Autowired
     public SubmissionServiceImpl(SubmissionRepository submissionRepository, CompilerRepository compilerRepository,
                                  ProblemRepository problemRepository, UserRepository userRepository,
-                                 TestCaseService testCaseService, RestTemplate restTemplate, ProblemService problemService) {
+                                 TestCaseService testCaseService, RestTemplate restTemplate, ProblemService problemService, ContestRepository contestRepository) {
         this.submissionRepository = submissionRepository;
         this.compilerRepository = compilerRepository;
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
-        this.testCaseService = testCaseService;
         this.restTemplate = restTemplate;
         this.problemService = problemService;
+        this.contestRepository = contestRepository;
     }
 
     @Override
@@ -119,9 +118,11 @@ public class SubmissionServiceImpl implements SubmissionService {
 
         JudgeSubmissionRequest judgeSubmissionRequest = new JudgeSubmissionRequest();
         judgeSubmissionRequest.setCompilerId(compiler.getId());
-        judgeSubmissionRequest.setJudgeId(problem.getJudgeId());
+        judgeSubmissionRequest.setJudgeId(problem.getJudgeId()); // Test Case judge id
         judgeSubmissionRequest.setSource(submissionRequest.getSource());
         judgeSubmissionRequest.setTestCaseList(testCaseDtoList);
+        judgeSubmissionRequest.setMaxScore(submissionRequest.getMaxScore());
+        judgeSubmissionRequest.setMasterJudgeId(submissionRequest.getJudgeId()); // Submission master judge id
 
 
         String url = Constants.JUDGE_API_ENDPOINT + "/submission";
@@ -145,6 +146,9 @@ public class SubmissionServiceImpl implements SubmissionService {
             submission.setForContest(submissionRequest.isForContest());
             submission.setCreationDate(new Date());
             submission.setRemoteId(judgeId);
+            if(submission.isForContest()){
+                submission.setContest(contestRepository.getOne(submissionRequest.getContestId()));
+            }
             Result result = new Result();
             result.setStatus(Status.RUNNING);
             submission.setResult(result);
@@ -176,6 +180,9 @@ public class SubmissionServiceImpl implements SubmissionService {
     private SubmissionDto getSubmission(UserBean userBean, Submission submission, boolean onlySummary){
         SubmissionDto submissionDto = Mapper.getSubmissionDto(submission);
         submissionDto.setProblemDto(problemService.getProblemById(userBean, submission.getProblem().getId(), true));
+        if(submission.isForContest()){
+            submissionDto.setContestDto(Mapper.getContestDto(submission.getContest()));
+        }
         if(onlySummary){
             return submissionDto;
         }else{
@@ -229,12 +236,12 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     @Async
-    @Transactional
     public void updateSubmission(int id) {
         Submission submission = submissionRepository.getOne(id);
         String url = Constants.JUDGE_API_ENDPOINT + "/submission/" + submission.getRemoteId();
         String json = restTemplate.getForObject(url, String.class);
-
+        logger.debug("Json from judge api for id {}", id);
+        logger.debug("Json: {}", json);
         ObjectMapper objectMapper = new ObjectMapper();
         final ObjectNode objectNode;
         try {
@@ -242,17 +249,27 @@ public class SubmissionServiceImpl implements SubmissionService {
             if(objectNode.has("executing")){
                 final boolean executing = objectNode.get("executing").asBoolean();
                 if(!executing){
+                    logger.info("Submission id {} executing is false.", id);
                     Result result = submission.getResult();
                     JsonNode jsonNode = objectNode.get("result");
                     result.setStatus(Status.valueOf(jsonNode.get("status").asText()));
+                    logger.debug("Status received: {}", Status.valueOf(jsonNode.get("status").asText()).name());
                     result.setMemory(jsonNode.get("memory").asDouble());
                     result.setScore(jsonNode.get("score").asDouble());
                     result.setTime(jsonNode.get("time").asInt());
+                    if(jsonNode.has("sourceCharCount")) {
+                        result.setSourceCharCount(jsonNode.get("sourceCharCount").asInt());
+                    }
                     submissionRepository.save(submission);
+                    logger.debug("Submission {} saved.", id);
+
+                    if(submission.getContest().getContestType() == Constants.CONTEST_TYPE_CODE_IN_LESS){
+                        contestRepository.updateCliSubmissionsScores(submission.getContest().getId(), submission.getProblem().getId());
+                    }
                 }
             }
         } catch (IOException e) {
-            logger.error("Error parsing the response object for submission.");
+            logger.error("Error parsing the response object for submission {}", id);
             e.printStackTrace();
         }
 
@@ -261,7 +278,13 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Page<SubmissionDto> getSubmissions(UserBean userBean, String code, Pageable pageable) {
-        Page<Submission> submissionPage = submissionRepository.findByProblemCode(code, pageable);
+        Page<Submission> submissionPage = submissionRepository.findByProblemCodeAndForContestIsFalse(code, pageable);
+        return submissionPage.map(submission -> getSubmission(userBean, submission, true));
+    }
+
+    @Override
+    public Page<SubmissionDto> getSubmissions(UserBean userBean, String contest, String problem, Pageable pageable, boolean b) {
+        Page<Submission> submissionPage = submissionRepository.findByContestCodeAndProblemCode(contest, problem, pageable);
         return submissionPage.map(submission -> getSubmission(userBean, submission, true));
     }
 }

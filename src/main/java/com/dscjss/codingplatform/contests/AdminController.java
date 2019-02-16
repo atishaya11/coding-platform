@@ -2,6 +2,8 @@ package com.dscjss.codingplatform.contests;
 
 import com.dscjss.codingplatform.contests.dto.ContestDto;
 import com.dscjss.codingplatform.contests.dto.ContestProblemDto;
+import com.dscjss.codingplatform.contests.dto.ProblemsUpdateForm;
+import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.problems.ProblemService;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.users.UserService;
@@ -78,6 +80,7 @@ public class AdminController {
         if(principal != null){
             String username = principal.getName();
             contestService.updateContestDetails(new UserBean(username), contestDto, id);
+            return new ModelAndView("redirect:/admin/contests/edit/"+id+"/details");
         }
         return new ModelAndView("401.html");
     }
@@ -117,6 +120,21 @@ public class AdminController {
         return responseEntity;
     }
 
+    @RequestMapping(value = "/contests/edit/{id}/problems", method = RequestMethod.POST)
+    public ModelAndView updateProblemDetails(Principal principal, @PathVariable Integer id, @ModelAttribute ProblemsUpdateForm problemsUpdateForm){
+
+        if(principal != null){
+            String username = principal.getName();
+            try {
+                contestService.updateContestProblems(new UserBean(username), id, problemsUpdateForm);
+            } catch (InvalidRequestException e) {
+                e.printStackTrace();
+            }
+            return new ModelAndView("redirect:/admin/contests/edit/"+id+"/problems");
+        }
+
+        return new ModelAndView("error/401.html", HttpStatus.UNAUTHORIZED);
+    }
 
     @RequestMapping(value = "/contests/edit/{id}/remove_problem/{contestProblemId}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, String>> removeContestProblem(Principal principal, @PathVariable Integer id, @PathVariable Integer contestProblemId){
@@ -136,4 +154,7 @@ public class AdminController {
         }
         return responseEntity;
     }
+
+
+
 }

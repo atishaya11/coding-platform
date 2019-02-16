@@ -2,11 +2,12 @@ package com.dscjss.codingplatform.contests;
 
 import com.dscjss.codingplatform.contests.dto.ContestDto;
 import com.dscjss.codingplatform.contests.dto.ContestProblemDto;
+import com.dscjss.codingplatform.contests.dto.Leaderboard;
+import com.dscjss.codingplatform.contests.dto.ProblemsUpdateForm;
 import com.dscjss.codingplatform.contests.exception.NotFoundException;
-import com.dscjss.codingplatform.contests.model.RegisteredUser;
 import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.error.UserNotFoundException;
-import com.dscjss.codingplatform.problems.dto.ProblemDto;
+import com.dscjss.codingplatform.submissions.dto.SubmissionDto;
 import com.dscjss.codingplatform.submissions.dto.SubmissionRequest;
 import com.dscjss.codingplatform.submissions.exception.InvalidSubmissionException;
 import com.dscjss.codingplatform.submissions.exception.SubmissionFailedException;
@@ -40,7 +41,11 @@ public interface ContestService {
 
     int submit(SubmissionRequest submissionRequest) throws InvalidSubmissionException, SubmissionFailedException;
 
-    Page<RegisteredUser> getLeaderboard(UserBean userBean, String code, Pageable pageable);
+    Leaderboard getLeaderboard(UserBean userBean, String code, Pageable pageable);
 
     void registerUser(UserBean userBean, String code) throws UserNotFoundException, NotFoundException;
+
+    Page<SubmissionDto> getSubmissions(UserBean userBean, String code, String problem, Pageable pageable);
+
+    void updateContestProblems(UserBean userBean, Integer id, ProblemsUpdateForm problemsUpdateForm) throws InvalidRequestException;
 }

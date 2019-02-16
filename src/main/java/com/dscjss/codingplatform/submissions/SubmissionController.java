@@ -1,6 +1,7 @@
 package com.dscjss.codingplatform.submissions;
 
 
+import com.dscjss.codingplatform.problems.ProblemService;
 import com.dscjss.codingplatform.submissions.dto.SubmissionRequest;
 import com.dscjss.codingplatform.submissions.dto.SubmissionDto;
 import com.dscjss.codingplatform.submissions.exception.InvalidSubmissionException;
@@ -33,22 +34,24 @@ public class SubmissionController {
     private final Logger logger = LoggerFactory.getLogger(SubmissionController.class);
 
     private final SubmissionService submissionService;
+    private final ProblemService problemService;
 
     @Autowired
-    public SubmissionController(SubmissionService submissionService) {
+    public SubmissionController(SubmissionService submissionService, ProblemService problemService) {
         this.submissionService = submissionService;
+        this.problemService = problemService;
     }
 
     @RequestMapping(value = "/submit/{problemId}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, String>> createSubmission(Principal principal, @PathVariable int problemId, @RequestBody MultipartFile source,
-                                                                @RequestParam Integer compilerId){
+    public ResponseEntity<Map<String, String>> createSubmission(Principal principal, @PathVariable int problemId, @RequestBody MultipartFile sourceFile,
+                                                                @RequestParam Integer compilerId, @RequestParam(required = false) String source){
 
         ResponseEntity<Map<String, String>> responseEntity;
         Map<String, String> map = new HashMap<>();
         if(principal != null){
             String username = principal.getName();
             try {
-                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), source, problemId, compilerId, 0);
+                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), sourceFile, source, problemId, compilerId, 0);
                 int submissionId = submissionService.submit(submissionRequest);
                 map.put("submission_id", String.valueOf(submissionId));
                 responseEntity = new ResponseEntity<>(map, HttpStatus.CREATED);
@@ -122,11 +125,29 @@ public class SubmissionController {
             String username = principal.getName();
             Page<SubmissionDto> submissions = submissionService.getSubmissions(new UserBean(username), code, pageable);
             modelAndView.addObject("page", submissions);
+            modelAndView.addObject("problem", problemService.getProblemByCode(new UserBean(username), code, true));
             return modelAndView;
         }
         Page<SubmissionDto> submissions = submissionService.getSubmissions(null, code, pageable);
         modelAndView.addObject("page", submissions);
+        modelAndView.addObject("problem", problemService.getProblemByCode(null, code, true));
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/executing/status/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, String>> isExecuting(Principal principal, @PathVariable Integer id){
+
+        ResponseEntity<Map<String, String>> responseEntity;
+        Map<String, String> map = new HashMap<>();
+        String username = principal.getName();
+        SubmissionDto submissionDto = submissionService.getSubmission(new UserBean(username), id, true);
+        map.put("status", submissionDto.getResult().getStatus().name());
+        responseEntity = new ResponseEntity<>(map, HttpStatus.OK);
+        if(submissionDto.getResult().getStatus() == Status.RUNNING){
+            submissionService.updateSubmission(submissionDto.getId());
+        }
+        return responseEntity;
+
     }
 
 }

@@ -3,6 +3,7 @@ package com.dscjss.codingplatform.users;
 
 import com.dscjss.codingplatform.email.EmailService;
 import com.dscjss.codingplatform.users.dto.UserDto;
+import com.dscjss.codingplatform.users.exception.UsernameExistsException;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.users.model.VerificationToken;
 import com.dscjss.codingplatform.validation.EmailExistsException;
@@ -69,10 +70,13 @@ public class UserController {
 
         User registered = new User();
         if (!result.hasErrors()) {
-            registered = createUserAccount(userDto, result);
-        }
-        if (registered == null) {
-            result.rejectValue("email", "email.error.in_use");
+            try {
+                registered = createUserAccount(userDto, result);
+            } catch (UsernameExistsException e) {
+                result.rejectValue("username", "username.error.username_taken");
+            } catch (EmailExistsException e) {
+                result.rejectValue("email", "email.error.in_use");
+            }
         }
         if (result.hasErrors()) {
             return new ModelAndView("user/registration", "user", userDto);
@@ -86,18 +90,12 @@ public class UserController {
                 e.printStackTrace();
                 return new ModelAndView("emailError", "user", userDto);
             }
-            return new ModelAndView("redirect: /login", "user", userDto);
+            return new ModelAndView("redirect:/login", "user", userDto);
         }
     }
 
-    private User createUserAccount(UserDto accountDto, BindingResult result) {
-        User registered = null;
-        try {
-            registered = userService.registerNewUserAccount(accountDto);
-        } catch (EmailExistsException e) {
-            return null;
-        }
-        return registered;
+    private User createUserAccount(UserDto accountDto, BindingResult result) throws UsernameExistsException, EmailExistsException {
+        return userService.registerNewUserAccount(accountDto);
     }
 
     @RequestMapping(value = "/bad-user", method = RequestMethod.GET)

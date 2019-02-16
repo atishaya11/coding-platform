@@ -9,49 +9,114 @@
 
 <div  class="body">
     <div class="container">
-        <div class="center block">
+        <div class="block">
+            <ul class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li class="next">&#8811;</li>
+                <th:block th:if="${submission.forContest}">
+                    <li><a th:href="@{/contests}">Contests</a></li>
+                    <li class="next">&#8811;</li>
+                    <li><a th:href="@{/contests/__${submission.contestDto.code}__}" th:text="${submission.contestDto.name}"></a></li>
+                    <li class="next">&#8811;</li>
+                    <li><a th:href="@{/contests/__${submission.contestDto.code}__/problems/__${submission.problemDto.code}__}" th:text="${submission.problemDto.name}"></a></li>
+                    <li class="next">&#8811;</li>
+                    <li th:text="${'Submission(' + submission.id + ')'}"></li>
+                </th:block>
+                <th:block th:unless="${submission.forContest}">
+                    <li><a th:href="@{/problems}">Problems</a></li>
+                    <li class="next">&#8811;</li>
+                    <li><a th:href="@{/problems/__${submission.problemDto.code}__}" th:text="${submission.problemDto.name}">Problems</a></li>
+                    <li class="next">&#8811;</li>
+                    <li th:text="${'Submission(' + submission.id + ')'}"></li>
+                </th:block>
+            </ul>
+        </div>
+        <div class="center block" style="width: 100%">
 
             <div class="submission">
                 <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).RUNNING}">
-                    <div>
+                    <div class="info" style="display: block; text-align: center">
+                        <div style="width: 100%;">RUNNING</div>
                         <img style="width: 250px;" src="" th:src="@{/img/running.gif}" alt="Running"/>
-                        <div>RUNNING</div>
-                        <script>
-                            window.setTimeout(function(){location.reload()},3000)
+
+                        <script type="text/javascript" th:inline="javascript">
+                            $(document).ready(function () {
+                                setInterval(function(){
+                                    checkStatus();
+                                }, 3000);
+                            });
+                            function checkStatus(){
+                                var id = [[${submission.id}]];
+                                $.ajax({
+                                    url : '/executing/status/' + id,
+                                    type: "GET",
+                                    success:function(data, textStatus, jqXHR){
+                                        if(jqXHR.status === 200){
+                                           if(data['status'] !== 'RUNNING'){
+                                               window.location.reload();
+                                           }
+                                        }
+                                    },
+                                    error: function(jqXoHR, textStatus, errorThrown){
+                                        //if fails
+                                    }
+                                });
+                            }
                         </script>
                     </div>
                 </div>
                 <div th:unless="${submission.result.status == T(com.dscjss.codingplatform.util.Status).RUNNING}">
 
-                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).CORRECT}">
-                        <img src="" th:src="@{/img/correct.png}" alt="Correct"/>
-                        <div>Correct</div>
+                    <div class="info">
+
+                        <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).CORRECT}">
+                            <img src="" th:src="@{/img/correct.png}" alt="Correct"/>
+                            <div>Correct</div>
+                        </div>
+
+                        <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).WRONG}">
+                            <img src="" th:src="@{/img/wrong.png}" alt="Wrong"/>
+                            <div>Wrong</div>
+                        </div>
+
+                        <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).TIME_LIMIT_EXCEEDED}">
+                            <img src="" th:src="@{/img/time_limit_exceeded.png}" alt="Time Limit Exceeded"/>
+                            <div>Time Limit Exceeded</div>
+                        </div>
+
+
+                        <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).RUNTIME_ERROR}">
+                            <img src="" th:src="@{/img/runtime_error.png}" alt="Runtime Error"/>
+                            <div>Runtime Error</div>
+                        </div>
+
+                        <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).COMPILATION_ERROR}">
+                            <img src="" th:src="@{/img/compilation_error.png}" alt="Compilation Error"/>
+                            <div>Compilation Error</div>
+                        </div>
+                        <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).INTERNAL_ERROR}">
+                            <img src="" th:src="@{/img/internal_error.png}" alt="Failed, please try again."/>
+                            <div>Submission Failed, Please try again.</div>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <div>
+                                <span>User:&nbsp;</span>
+                                <span th:text="${submission.userBean.username}"></span>
+                            </div>
+                            <div>
+                                <span>Language:&nbsp;</span>
+                                <span  th:text="${submission.compilerDto.name}"></span>
+                            </div>
+                            <div>
+                                <span>Time:&nbsp;</span>
+                                <span th:text="${T(java.lang.String).format('%.2f', __${submission.result.time/1000.0}__) + 's'}"></span>
+                            </div>
+                        </div>
+
+
                     </div>
 
-                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).WRONG}">
-                        <img src="" th:src="@{/img/wrong.png}" alt="Wrong"/>
-                        <div>Wrong</div>
-                    </div>
-
-                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).TIME_LIMIT_EXCEEDED}">
-                        <img src="" th:src="@{/img/time_limit_exceeded.png}" alt="Time Limit Exceeded"/>
-                        <div>Time Limit Exceeded</div>
-                    </div>
-
-
-                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).RUNTIME_ERROR}">
-                        <img src="" th:src="@{/img/runtime_error.png}" alt="Runtime Error"/>
-                        <div>Runtime Error</div>
-                    </div>
-
-                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).COMPILATION_ERROR}">
-                        <img src="" th:src="@{/img/compilation_error.png}" alt="Compilation Error"/>
-                        <div>Compilation Error</div>
-                    </div>
-                    <div th:if="${submission.result.status == T(com.dscjss.codingplatform.util.Status).INTERNAL_ERROR}">
-                        <img src="" th:src="@{/img/internal_error.png}" alt="Failed, please try again."/>
-                        <div>Submission Failed, Please try again.</div>
-                    </div>
                 </div>
             </div>
         </div>

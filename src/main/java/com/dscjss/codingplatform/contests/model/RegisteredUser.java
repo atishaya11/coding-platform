@@ -20,9 +20,7 @@ public class RegisteredUser {
     @JoinColumn(name = "contest_id")
     private Contest contest;
 
-
-
-    private Double score;
+    private double score;
 
 
     public Integer getId() {

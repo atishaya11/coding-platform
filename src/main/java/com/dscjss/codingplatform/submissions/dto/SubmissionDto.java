@@ -1,6 +1,7 @@
 package com.dscjss.codingplatform.submissions.dto;
 
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
+import com.dscjss.codingplatform.contests.dto.ContestDto;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.submissions.model.Result;
 import com.dscjss.codingplatform.users.dto.UserBean;
@@ -20,6 +21,8 @@ public class SubmissionDto {
     private boolean isPublic;
     private boolean visible;
     private List<TestCaseResult> testCaseResultList;
+    private boolean forContest;
+    private ContestDto contestDto;
 
     public int getId() {
         return id;
@@ -99,5 +102,21 @@ public class SubmissionDto {
 
     public void setTestCaseResultList(List<TestCaseResult> testCaseResultList) {
         this.testCaseResultList = testCaseResultList;
+    }
+
+    public boolean isForContest() {
+        return forContest;
+    }
+
+    public void setForContest(boolean forContest) {
+        this.forContest = forContest;
+    }
+
+    public ContestDto getContestDto() {
+        return contestDto;
+    }
+
+    public void setContestDto(ContestDto contestDto) {
+        this.contestDto = contestDto;
     }
 }

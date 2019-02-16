@@ -22,14 +22,12 @@ public class ContestProblem {
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
-
     @ManyToOne
     @JoinColumn(name = "contest_id")
     private Contest contest;
 
     @Column(name = "max_score")
     private int maxScore;
-
 
     public Integer getId() {
         return id;

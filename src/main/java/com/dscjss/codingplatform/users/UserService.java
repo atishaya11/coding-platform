@@ -3,6 +3,7 @@ package com.dscjss.codingplatform.users;
 
 import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.dto.UserDto;
+import com.dscjss.codingplatform.users.exception.UsernameExistsException;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.users.model.VerificationToken;
 import com.dscjss.codingplatform.validation.EmailExistsException;
@@ -12,7 +13,7 @@ public interface UserService {
 
     User findUserByEmail(String email);
 
-    User registerNewUserAccount(UserDto userDto) throws EmailExistsException;
+    User registerNewUserAccount(UserDto userDto) throws EmailExistsException, UsernameExistsException;
 
     User getUser(String verificationToken);
 

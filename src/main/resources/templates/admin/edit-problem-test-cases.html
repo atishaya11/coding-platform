@@ -11,7 +11,8 @@
 
 <div  class="body">
     <div class="container">
-        <div class="center block">
+        <div style="display: inline-flex; width: 100%">
+            <div class="center block">
             <div th:replace="admin/menu :: edit-problem-menu"></div>
             <div class="edit-box">
                 <a href="javascript:void(0)" class="button" id="add-test-case">+Add Test Case</a>
@@ -97,9 +98,43 @@
                             </div>
 
                             <div style="margin: 10px 0; text-align: center;">
-                                <a href="javascript:void(0)" onclick="document.getElementById('form-add-test-case').submit()" class=" button submit-button" >Add</a>
+                                <a href="javascript:void(0)" onclick="submitForm(this)" class=" button submit-button" >Add</a>
                             </div>
+                            <script>
 
+                                function validFormData(form) {
+
+
+                                    var formData = new FormData(form.get(0));
+                                    var sample = formData.get('sample');
+                                    var inputFile = formData.get('inputFile');
+                                    var outputFile = formData.get('outputFile');
+                                    if(inputFile === '' || outputFile === ''){
+                                        $(form).before('<strong class="error">Please select a file.</strong>')
+                                        return false;
+                                    }
+                                    if(sample){
+                                        var inputFileSize = inputFile.size;
+                                        var outputFileSize = outputFile.size;
+
+                                        if(inputFileSize > 100 || outputFileSize > 100){
+                                            $(form).before('<strong class="error">Sample test data cannot have more than 100 characters.</strong>')
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+
+                                }
+                                function submitForm(btn){
+                                    $('.error').remove();
+                                    var form = $('#form-add-test-case');
+                                    if(validFormData(form)){
+                                       form.submit();
+                                       $(form).trigger('reset');
+                                    }
+
+                                }
+                            </script>
                         </form>
 
                     </div>
@@ -112,7 +147,7 @@
             <!-- Create the editor container -->
 
         </div>
-        <div class="sidebar">
+            <div class="sidebar">
             <div class="sidebar-box block">
                 <div class="section-title box-title">Actions</div>
                 <div class="box-content" style="display: inline-flex;">
@@ -126,6 +161,7 @@
 
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </div>

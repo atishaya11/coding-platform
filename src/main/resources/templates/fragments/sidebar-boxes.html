@@ -20,30 +20,46 @@
                     </select>
                 </label>
                 <label>Select file:
-                    <input id="submit-source" type="file" name="source">
+                    <input id="submit-source" type="file" name="sourceFile">
                 </label>
                 <div style="margin: 10px 0;text-align: center">
                     <a href="javascript:void(0)" onclick="submitForm()" class=" button submit-button" >Submit</a>
                     <script>
-                           function submitForm(){
-                               var form = $('#source-submit-form');
+                           function validSubmissionFormData(form) {
                                var formData = new FormData(form.get(0));
-                               $.ajax({
-                                   url : form.attr('action'),
-                                   type: "POST",
-                                   data : formData,
-                                   processData: false,
-                                   contentType: false,
-                                   success:function(data, textStatus, jqXHR){
-                                       console.log(data);
-                                       if(jqXHR.status === 201){
-                                          window.location = '/submit/status/' + data.submission_id;
-                                      }
-                                   },
-                                   error: function(jqXoHR, textStatus, errorThrown){
-                                       //if fails
-                                   }
-                               });
+                               var sourceFile = formData.get('sourceFile');
+                               if(sourceFile === ''){
+                                   $(form).before('<strong class="error">Please select a file.</strong>');
+                                   return false;
+                               }
+                               return true;
+                           }
+                           function submitForm(){
+                               $('.error').remove();
+                               var form = $('#source-submit-form');
+                               if(validSubmissionFormData(form)){
+                                   var formData = new FormData(form.get(0));
+                                   $.ajax({
+                                       url : form.attr('action'),
+                                       type: "POST",
+                                       data : formData,
+                                       processData: false,
+                                       contentType: false,
+                                       success:function(data, textStatus, jqXHR){
+                                           console.log(data);
+                                           if(jqXHR.status === 201){
+                                               window.location = '/submit/status/' + data.submission_id;
+                                           }
+                                       },
+                                       error: function(jqXoHR, textStatus, errorThrown){
+                                           //if fails
+                                           $(form).before('<strong class="error">Failed, please ty again.</strong>')
+                                       }
+                                   });
+
+                                   $(form).trigger('reset');
+                               }
+
                            }
                     </script>
                 </div>
@@ -87,34 +103,141 @@
                     </select>
                 </label>
                 <label>Select file:
-                    <input id="submit-source" type="file" name="source">
+                    <input id="submit-source" type="file" name="sourceFile">
                 </label>
                 <div style="margin: 10px 0;text-align: center">
                     <a href="javascript:void(0)" onclick="submitForm()" class=" button submit-button" >Submit</a>
                     <script>
-                        function submitForm(){
-                            var form = $('#source-submit-form');
+                        function validSubmissionFormData(form) {
                             var formData = new FormData(form.get(0));
-                            $.ajax({
-                                url : form.attr('action'),
-                                type: "POST",
-                                data : formData,
-                                processData: false,
-                                contentType: false,
-                                success:function(data, textStatus, jqXHR){
-                                    console.log(data);
-                                    if(jqXHR.status === 201){
-                                        window.location = '/submit/status/' + data.submission_id;
+                            var sourceFile = formData.get('sourceFile');
+                            if(sourceFile === ''){
+                                $(form).before('<strong class="error">Please select a file.</strong>');
+                                return false;
+                            }
+                            return true;
+                        }
+                        function submitForm(){
+                            $('.error').remove();
+                            var form = $('#source-submit-form');
+                            if(validSubmissionFormData(form)){
+                                var formData = new FormData(form.get(0));
+                                $.ajax({
+                                    url : form.attr('action'),
+                                    type: "POST",
+                                    data : formData,
+                                    processData: false,
+                                    contentType: false,
+                                    success:function(data, textStatus, jqXHR){
+                                        if(jqXHR.status === 201){
+                                            window.location = '/submit/status/' + data.submission_id;
+                                        }
+                                    },
+                                    error: function(jqXoHR, textStatus, errorThrown){
+                                        //if fails
+                                        $(form).before('<strong class="error">Failed, please ty again.</strong>')
                                     }
-                                },
-                                error: function(jqXoHR, textStatus, errorThrown){
-                                    //if fails
-                                }
-                            });
+                                });
+                                $(form).trigger('reset');
+                            }
+
                         }
                     </script>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div th:fragment="contest-timer-box" class="sidebar-box block">
+
+        <div class="box-content">
+            <th:block th:if="${contest.endDate.before(#dates.createNow())}">
+                <div style="text-align: center;">Contest Ended</div>
+            </th:block>
+            <th:block th:unless="${contest.endDate.before(#dates.createNow())}">
+                <th:block th:if="${contest.startDate.after(#dates.createNow())}">
+                    <div style="text-align: center;">Contest Starts in:</div>
+                    <script th:inline="javascript">
+                        var time = /*[[${contest.startDate.getTime()}]]*/
+                    </script>
+                </th:block>
+                <th:block th:if="${contest.endDate.after(#dates.createNow()) &&
+                                contest.startDate.before(#dates.createNow())}">
+                    <div style="text-align: center;">Contest Ends in:</div>
+                    <script th:inline="javascript">
+                        var time = /*[[${contest.endDate.getTime()}]]*/
+                    </script>
+                </th:block>
+                <div id="timer">
+                    <div>
+                        <span class="days"></span>
+                        <div class="small-text">Days</div>
+                    </div>
+                    <div>
+                        <span class="hours"></span>
+                        <div class="small-text">Hours</div>
+                    </div>
+                    <div>
+                        <span class="minutes"></span>
+                        <div class="small-text">Minutes</div>
+                    </div>
+                    <div>
+                        <span class="seconds"></span>
+                        <div class="small-text">Seconds</div>
+                    </div>
+                </div>
+
+
+                <script th:inline="javascript">
+                    function getTimeRemaining(time) {
+                        var t = Date.parse(time) - Date.parse(new Date());
+                        var seconds = Math.floor((t / 1000) % 60);
+                        var minutes = Math.floor((t / 1000 / 60) % 60);
+                        var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+                        var days = Math.floor(t / (1000 * 60 * 60 * 24));
+                        return {
+                            'total': t,
+                            'days': days,
+                            'hours': hours,
+                            'minutes': minutes,
+                            'seconds': seconds
+                        };
+                    }
+
+                    function initializeClock(id, time) {
+                        var clock = document.getElementById(id);
+                        var daysSpan = clock.querySelector('.days');
+                        var hoursSpan = clock.querySelector('.hours');
+                        var minutesSpan = clock.querySelector('.minutes');
+                        var secondsSpan = clock.querySelector('.seconds');
+
+                        function updateClock() {
+                            var t = getTimeRemaining(time);
+
+                            daysSpan.innerHTML = t.days;
+                            hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+                            minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+                            secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+                            if (t.total <= 0) {
+                                clearInterval(timeinterval);
+                            }
+                        }
+
+                        updateClock();
+                        var timeinterval = setInterval(updateClock, 1000);
+                    }
+
+                    var endTime = new Date(Date.parse(new Date(time)));
+                    initializeClock('timer', endTime);
+                </script>
+            </th:block>
+        </div>
+    </div>
+
+    <div th:fragment="contest-leaderboard-box" class="sidebar-box">
+        <div style="display: inline-flex; width: 100%;">
+            <a th:href="@{'/contests/' + ${contest.code} + '/leaderboard'}" class="button" style="margin-right:10px;width: 50%;">Leaderboard</a>
         </div>
     </div>
 </body>

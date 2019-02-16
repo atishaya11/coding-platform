@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+        <div class="block">
+            <ul class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests}">Contests</a></li>
+                <li class="next">&#8811;</li>
+                <li th:text="${contest.name}"></li>
+                <th:block th:if="${contest.registered}">
+                    <li style="float: right;"><a th:href="@{/contests/__${contest.code}__/problems}">Enter Contest</a></li>
+                </th:block>
+            </ul>
+        </div>
+        <div style="display: inline-flex; width: 100%">
+
+
+            <div class="center block">
+                <div>
+                    <div class="background">
+                        <img th:src="@{/img/default_contest.jpg}">
+                        <div class="center">
+                            <th:block th:text="${contest.name}"></th:block>
+                            <th:block th:if="${not contest.registered}">
+                                <div>
+                                    <a class="button submit-button" th:href="@{'/contests/'+ ${contest.code} +'/register'}">Register</a>
+                                </div>
+                            </th:block>
+                        </div>
+
+                    </div>
+
+
+                    <div>
+                        <div>
+                            <div class="section-title">Description</div>
+                            <div  th:utext="${contest.description}"></div>
+                        </div>
+                        <div>
+                            <div class="section-title">Prizes</div>
+                            <div  th:utext="${contest.prizes}"></div>
+                        </div>
+                        <div>
+                            <div class="section-title">Rules</div>
+                            <div  th:utext="${contest.rules}">Constraints</div>
+                        </div>
+                        <div>
+                            <div class="section-title">Scoring</div>
+                            <div  th:utext="${contest.scoring}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div th:replace="fragments/sidebar-boxes :: contest-timer-box"></div>
+                <div th:replace="fragments/sidebar-boxes :: contest-leaderboard-box"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

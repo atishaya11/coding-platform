@@ -9,6 +9,8 @@ public class JudgeSubmissionRequest {
     private int compilerVersionId;
     private List<TestCaseDto> testCaseList;
     private int judgeId;
+    private int maxScore;
+    private int masterJudgeId;
 
 
     public String getSource() {
@@ -49,5 +51,21 @@ public class JudgeSubmissionRequest {
 
     public void setJudgeId(int judgeId) {
         this.judgeId = judgeId;
+    }
+
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
+    }
+
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public int getMasterJudgeId() {
+        return masterJudgeId;
+    }
+
+    public void setMasterJudgeId(int masterJudgeId) {
+        this.masterJudgeId = masterJudgeId;
     }
 }

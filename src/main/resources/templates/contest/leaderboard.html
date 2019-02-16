@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<div th:replace="fragments/header :: header"></div>
 
+<div  class="body">
+    <div class="container">
+        <div class="block">
+            <ul class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests}">Contests</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests/__${contest.code}__}" th:text="${contest.name}"></a></li>
+                <li class="next">&#8811;</li>
+                <li th:text="Leaderboard"></li>
+                <!--<li><a th:href="@{/contests/__${contest.code}__/problems/__${problem.problemDto.code}__}" th:text="${problem.problemDto.name}"></a></li>-->
+            </ul>
+        </div>
+        <div class="center block">
+            <div>
+                <div>
+                    <table>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Score</th>
+                        </tr>
+
+
+                        <tr style="cursor: pointer" th:each="row, itr : ${leaderboard.page.getContent()}">
+                            <td th:text="${itr.index + 1}"></td>
+                            <td th:text="${row.user.username}"></td>
+                            <td th:text="${row.score}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+
+        </div>
+    </div>
+
+</div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

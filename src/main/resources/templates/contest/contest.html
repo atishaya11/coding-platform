@@ -19,35 +19,42 @@
                 <!--<li><a th:href="@{/contests/__${contest.code}__/problems/__${problem.problemDto.code}__}" th:text="${problem.problemDto.name}"></a></li>-->
             </ul>
         </div>
-        <div class="center block">
-            <div>
+        <div style="display: inline-flex; width: 100%">
+
+
+            <div class="center block">
+
                 <div>
-                    <table class="problems">
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
+                    <div>
+                        <table class="problems">
+                            <tr>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th></th>
+                            </tr>
 
 
-                        <tr style="cursor: pointer" th:each="contestProblem : ${contest.problemDtoList}">
-                            <td th:text="${contestProblem.problemDto.name}"></td>
-                            <td><a th:text="${contestProblem.problemDto.code}" href="javascript:void(0)"></a></td>
-                            <td>
-                                <a th:href="@{/contests/__${contest.code}__/problems/__${contestProblem.problemDto.code}__}"><img class="icon" th:src="@{/img/link.png}" src="" alt="Link"></a>
-                            </td>
-                        </tr>
-                    </table>
+                            <tr style="cursor: pointer" th:each="contestProblem : ${contest.problemDtoList}">
+                                <td th:text="${contestProblem.problemDto.name}"></td>
+                                <td><a th:text="${contestProblem.problemDto.code}" href="javascript:void(0)"></a></td>
+                                <td>
+                                    <a th:href="@{/contests/__${contest.code}__/problems/__${contestProblem.problemDto.code}__}"><img class="icon" th:src="@{/img/link.png}" src="" alt="Link"></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
                 </div>
             </div>
-        </div>
-        <div class="sidebar">
+            <div class="sidebar">
+                <div th:replace="fragments/sidebar-boxes :: contest-timer-box"></div>
 
+                <div th:replace="fragments/sidebar-boxes :: contest-leaderboard-box"></div>
+            </div>
         </div>
     </div>
 
 </div>
 <div th:replace="fragments/footer :: footer"></div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </body>
 </html>

@@ -18,4 +18,6 @@ public interface SubmissionService {
     Page<SubmissionDto> getSubmissions(UserBean userBean, String code, Pageable pageable);
 
     void updateSubmission(int id);
+
+    Page<SubmissionDto> getSubmissions(UserBean userBean, String contest, String problem, Pageable pageable, boolean b);
 }

@@ -17,13 +17,14 @@ public class Contest {
 
     private String name;
 
+    @Column(unique = true, nullable = false)
     private String code;
 
     @Embedded
     private ContestBody body;
 
     @ManyToOne(targetEntity = User.class)
-    private User owner;
+    private User createdBy;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "contest", targetEntity = ContestProblem.class)
     private List<ContestProblem> contestProblems;
@@ -44,6 +45,8 @@ public class Contest {
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
 
+    @Column(name = "contest_type")
+    private int contestType;
 
     public Integer getId() {
         return id;
@@ -77,12 +80,12 @@ public class Contest {
         this.body = body;
     }
 
-    public User getOwner() {
-        return owner;
+    public User getCreatedBy() {
+        return createdBy;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     public List<ContestProblem> getContestProblems() {
@@ -131,5 +134,13 @@ public class Contest {
 
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public int getContestType() {
+        return contestType;
+    }
+
+    public void setContestType(int contestType) {
+        this.contestType = contestType;
     }
 }

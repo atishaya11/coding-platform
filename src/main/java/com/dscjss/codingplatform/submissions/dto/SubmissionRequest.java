@@ -14,6 +14,7 @@ public class SubmissionRequest {
     private boolean forContest;
     private int contestProblemId; // Contest problems are separately stored but submissions are mapped only by actual problem. See ContestProblem.java for more details
     private int maxScore;
+    private int judgeId;
 
     public UserBean getUserBean() {
         return userBean;
@@ -93,5 +94,13 @@ public class SubmissionRequest {
 
     public void setMaxScore(int maxScore) {
         this.maxScore = maxScore;
+    }
+
+    public int getJudgeId() {
+        return judgeId;
+    }
+
+    public void setJudgeId(int judgeId) {
+        this.judgeId = judgeId;
     }
 }

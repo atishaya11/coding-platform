@@ -13,6 +13,10 @@
             <ul class="breadcrumb">
                 <li><a th:href="@{/}">Home</a></li>
                 <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests}">Contests</a></li>
+                <li class="next">&#8811;</li>
+                <li><a th:href="@{/contests/__${contest.code}__}" th:text="${contest.name}"></a></li>
+                <li class="next">&#8811;</li>
                 <li><a th:href="@{/problems}">Problems</a></li>
                 <li class="next">&#8811;</li>
                 <li><a th:href="@{/problems/__${problem.code}__}" th:text="${problem.name}"></a></li>
@@ -23,7 +27,7 @@
         <div style="display: inline-flex;width: 70%;">
             <div class="center block" style="width: 100%">
                 <div>
-                    <form id="submission-form" method="post" th:action="@{'/submit/' + ${problem.id}}" enctype="multipart/form-data">
+                    <form id="submission-form" method="post" th:action="@{'/contests/' + ${contest.id} + '/submit/' + ${problem.id}}" enctype="multipart/form-data">
                         <label>
                             Select Language:
                             <select id="lang" name="compilerId">
@@ -73,6 +77,7 @@
             $("#lang").find("option:selected").each(function() {
                 var mode =  $(this).data('mode');
                 var templateId = $(this).data('template');
+
                 editor.session.setMode("ace/mode/"+mode);
                 $.get('/templates/' + templateId, function(data, textStatus, jqXHR){
                     if(jqXHR.status === 200 && data.body != null){
@@ -85,6 +90,8 @@
                         editor.setValue("");
                     }
                 });
+
+
             });
         }
     });

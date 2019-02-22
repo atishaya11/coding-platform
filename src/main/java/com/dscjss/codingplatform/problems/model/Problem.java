@@ -54,7 +54,6 @@ public class Problem {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modificationDate;
 
-
     public Integer getId() {
         return id;
     }
@@ -142,4 +141,5 @@ public class Problem {
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
+
 }

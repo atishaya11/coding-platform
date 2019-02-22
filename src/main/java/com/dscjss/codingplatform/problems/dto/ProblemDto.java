@@ -2,7 +2,6 @@ package com.dscjss.codingplatform.problems.dto;
 
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
 import com.dscjss.codingplatform.users.dto.UserBean;
-import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.util.Status;
 import org.hibernate.validator.constraints.SafeHtml;
 
@@ -32,12 +31,18 @@ public class ProblemDto {
     @SafeHtml
     private String constraints;
 
+    @SafeHtml
+    private String explanation;
+
     private List<CompilerDto> compilers;
 
     private List<TestCaseDto> testCaseDtoList;
 
     private UserBean author;
 
+    private int minTimeLimit;
+
+    private int maxTimeLimit;
 
     public Integer getId() {
         return id;
@@ -111,6 +116,14 @@ public class ProblemDto {
         this.constraints = constraints;
     }
 
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
     public List<CompilerDto> getCompilers() {
         return compilers;
     }
@@ -133,5 +146,21 @@ public class ProblemDto {
 
     public void setAuthor(UserBean author) {
         this.author = author;
+    }
+
+    public int getMinTimeLimit() {
+        return minTimeLimit;
+    }
+
+    public void setMinTimeLimit(int minTimeLimit) {
+        this.minTimeLimit = minTimeLimit;
+    }
+
+    public int getMaxTimeLimit() {
+        return maxTimeLimit;
+    }
+
+    public void setMaxTimeLimit(int maxTimeLimit) {
+        this.maxTimeLimit = maxTimeLimit;
     }
 }

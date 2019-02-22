@@ -159,6 +159,9 @@ table {
 td{
     text-align: center;
 }
+tr.clickable{
+    cursor: pointer;
+}
 td img{
     width: 24px;
     height: 24px;
@@ -258,6 +261,9 @@ table.problems tr:first-child{
 .problem-statement > .problem-head > .code{
     font-size: 16px;
 }
+.sample-test{
+    margin: 14px 0;
+}
 .sample-test pre{
     line-height: 1.25em;
     padding: 0.25em;
@@ -265,6 +271,7 @@ table.problems tr:first-child{
     background-color: #4e505a;
     font-size: 14px;
     color: white;
+    white-space: pre-line;
 }
 .sample-test .input{
     border: 1px solid #36383f;
@@ -276,6 +283,13 @@ table.problems tr:first-child{
 .sample-test .title {
     border-bottom: 1px solid #36383f;
     padding: 5px;
+}
+.info {
+    display: flex;
+}
+.info-title {
+    font-weight: 600;
+    width: 150px;
 }
 /*Problem Page*/
 

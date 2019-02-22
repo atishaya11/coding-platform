@@ -129,13 +129,14 @@ public class ContestController {
     public ModelAndView submit(Principal principal, @PathVariable String code, @PathVariable("problem_code") String problemCode){
 
         String username = null;
-        ModelAndView modelAndView = new ModelAndView("contest/submit.html");
+        ModelAndView modelAndView = new ModelAndView("contest/editor.html");
         if(principal != null){
             username = principal.getName();
         }
         ContestProblemDto contestProblemDto = contestService.getProblem(new UserBean(username), code, problemCode);
-        modelAndView.addObject("problem", contestProblemDto);
-
+        modelAndView.addObject("problem", contestProblemDto.getProblemDto());
+        modelAndView.addObject("contest", contestProblemDto.getContestDto());
+        modelAndView.addObject("compilers", contestProblemDto.getProblemDto().getCompilers());
         return modelAndView;
     }
 

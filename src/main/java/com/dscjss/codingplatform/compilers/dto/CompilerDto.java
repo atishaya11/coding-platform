@@ -14,6 +14,8 @@ public class CompilerDto {
 
     private boolean allowed;
 
+    private int templateId;
+
     public int getId() {
         return id;
     }
@@ -60,5 +62,13 @@ public class CompilerDto {
 
     public void setAllowed(boolean allowed) {
         this.allowed = allowed;
+    }
+
+    public int getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(int templateId) {
+        this.templateId = templateId;
     }
 }

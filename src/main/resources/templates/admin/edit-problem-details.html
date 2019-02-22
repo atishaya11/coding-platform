@@ -56,6 +56,13 @@
                         </div>
 
                     </div>
+                    <div>
+                        <div class="section-title">Explanation</div>
+                        <div class="editor-wrapper">
+                            <textarea class="summernote" name="explanation" th:text="${problem.explanation}"></textarea>
+                        </div>
+
+                    </div>
                     <div style="text-align: right">
                         <div style="display: inline-flex;margin: 10px;">
                             <a href="javascript:void(0)" onclick="$('#details-form').submit()" class="button submit-button" >Save</a>
@@ -77,8 +84,13 @@
                 <div class="box-content" style="display: inline-flex;">
 
                     <div style="margin: 10px;">
-                        <a href="javascript:void(0)"  class="button" >Publish</a>
+                        <a href="javascript:void(0)" onclick="addToPractice()" class="button" >Add to Practice</a>
                     </div>
+                    <script>
+                        function addToPractice() {
+
+                        }
+                    </script>
                     <div style="margin: 10px;">
                         <a href="javascript:void(0)" class="button delete-button" >Delete</a>
                     </div>

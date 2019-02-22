@@ -106,13 +106,6 @@ public class SubmissionServiceImpl implements SubmissionService {
             testCaseDto.setId(testCase.getId());
             testCaseDto.setFetchData(true);
             testCaseDto.setTimeLimit(map.get(compiler.getId()).getTimeLimit());
-            /*try {
-                testCaseDto.setInput(testCaseService.getInputData(testCase.getId()));
-                testCaseDto.setOutput(testCaseService.getOutputData(testCase.getId()));
-            } catch (TestDataDownloadException e) {
-                e.printStackTrace();
-                throw new SubmissionFailedException("Can't create submission, failed to download tests");
-            }*/
             testCaseDtoList.add(testCaseDto);
         }
 

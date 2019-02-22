@@ -12,7 +12,7 @@
         <div class="block">
             <ul class="breadcrumb">
                 <li><a th:href="@{/}">Home</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&laquo;</li>
                 <li><a th:href="@{/problems}">Problems</a></li>
                 <li class="next">&#8811;</li>
                 <li><a th:href="@{/problems/__${problem.code}__}" th:text="${problem.name}">Problems</a></li>
@@ -35,7 +35,7 @@
                         </tr>
                         <tr style="cursor: pointer"   th:each="submission : ${page.getContent()}">
                             <td th:text="${submission.id}"></td>
-                            <td th:text="${submission.date}"></td>
+                            <td th:text="${#dates.format(submission.date, 'dd-MMM-yyyy hh:mm a')}"></td>
                             <td th:text="${submission.userBean.username}"></td>
                             <td th:text="${submission.compilerDto.name}"></td>
                             <td>

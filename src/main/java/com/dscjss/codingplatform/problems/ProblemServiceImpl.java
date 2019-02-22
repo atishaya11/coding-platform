@@ -80,6 +80,14 @@ public class ProblemServiceImpl implements ProblemService {
             List<CompilerDto> compilerDtoList = getCompilerList(problemDto.getId());
             problemDto.setCompilers(compilerDtoList);
             problemDto.setTestCaseDtoList(getSampleTests(problem));
+            int min = Integer.MAX_VALUE;
+            int max = Integer.MIN_VALUE;
+            for(CompilerDto compiler : compilerDtoList){
+                min = Math.min(compiler.getTimeLimit(), min);
+                max = Math.max(compiler.getTimeLimit(), max);
+            }
+            problemDto.setMinTimeLimit(min);
+            problemDto.setMaxTimeLimit(max);
         }
         return problemDto;
     }
@@ -149,6 +157,7 @@ public class ProblemServiceImpl implements ProblemService {
         problemBody.setInputFormat(problemDto.getInputFormat());
         problemBody.setOutputFormat(problemDto.getOutputFormat());
         problemBody.setConstraints(problemDto.getConstraints());
+        problemBody.setExplanation(problemDto.getExplanation());
 
         problem.setBody(problemBody);
         problem.setModificationDate(new Date());
@@ -297,7 +306,6 @@ public class ProblemServiceImpl implements ProblemService {
         Map<Integer, AllowedCompiler> map = problem.getAllowedCompilers().stream().
                 collect(Collectors.toMap(a -> a.getCompiler().getId(), Function.identity()));
 
-
         for(CompilerDto compilerDto : compilers){
             int id = compilerDto.getId();
             if(map.get(id) == null){
@@ -320,6 +328,7 @@ public class ProblemServiceImpl implements ProblemService {
                 }
             }
         }
+
 
         cacheEvict("problems", problem.getCode() + "" + false);
     }

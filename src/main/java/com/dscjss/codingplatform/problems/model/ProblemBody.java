@@ -20,6 +20,9 @@ public class ProblemBody {
     @Lob
     private String constraints;
 
+    @Lob
+    private String explanation;
+
 
     public String getDescription() {
         return description;
@@ -51,5 +54,13 @@ public class ProblemBody {
 
     public void setConstraints(String constraints) {
         this.constraints = constraints;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 }

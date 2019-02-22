@@ -30,18 +30,23 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Code</th>
-                                <th></th>
+                                <th>Submissions</th>
                             </tr>
 
 
-                            <tr style="cursor: pointer" th:each="contestProblem : ${contest.problemDtoList}">
+                            <tr class="clickable" th:each="contestProblem : ${contest.problemDtoList}" th:attr="data-href=@{/contests/__${contest.code}__/problems/__${contestProblem.problemDto.code}__}">
                                 <td th:text="${contestProblem.problemDto.name}"></td>
-                                <td><a th:text="${contestProblem.problemDto.code}" href="javascript:void(0)"></a></td>
-                                <td>
-                                    <a th:href="@{/contests/__${contest.code}__/problems/__${contestProblem.problemDto.code}__}"><img class="icon" th:src="@{/img/link.png}" src="" alt="Link"></a>
-                                </td>
+                                <td th:text="${contestProblem.problemDto.code}"></td>
+                                <td></td>
                             </tr>
                         </table>
+                        <script>
+                            $(document).ready(function () {
+                                $('.clickable').click(function () {
+                                    window.location = $(this).data('href');
+                                });
+                            });
+                        </script>
                     </div>
 
                 </div>

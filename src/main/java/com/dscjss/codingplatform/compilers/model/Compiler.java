@@ -25,6 +25,9 @@ public class Compiler {
     @Column(name = "default_time_limit")
     private int defaultTimeLimit;
 
+    @Column(name = "template_id")
+    private int templateId;
+
     public Integer getId() {
         return id;
     }
@@ -71,5 +74,13 @@ public class Compiler {
 
     public void setDefaultTimeLimit(int defaultTimeLimit) {
         this.defaultTimeLimit = defaultTimeLimit;
+    }
+
+    public int getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(int templateId) {
+        this.templateId = templateId;
     }
 }

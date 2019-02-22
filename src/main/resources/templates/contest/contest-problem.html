@@ -69,13 +69,25 @@
                             <div class="info-title">
                                 Time Limit:
                             </div>
-                            6 sec
+                            <div th:text="${T(java.lang.String).format('%.2f',__${problem.problemDto.minTimeLimit/1000.0}__) + 's' + ' - '
+                            + T(java.lang.String).format('%.2f',__${problem.problemDto.maxTimeLimit/1000.0}__) + 's'}"></div>
                         </div>
                         <div class="info">
                             <div class="info-title">
                                 Source Limit:
                             </div>
-                            50000 bytes
+                            <div>50000 bytes</div>
+                        </div>
+                        <div class="info">
+                            <div class="info-title">
+                                Languages:
+                            </div>
+                            <div>
+                                <th:block th:text="${problem.problemDto.compilers[0].name}"/>
+                                <th:block th:each="compiler, itr : ${problem.problemDto.compilers}">
+                                    <th:block th:if="${itr.index > 0}" th:text="${', ' + compiler.name}"/>
+                                </th:block>
+                            </div>
                         </div>
                     </div>
                     <div style="text-align: center; margin: 10px 0;">

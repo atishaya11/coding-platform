@@ -90,6 +90,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").permitAll()
                 .antMatchers("/user/registration/token/resend").permitAll()
                 .antMatchers("/problems/**").permitAll()
+                .antMatchers("/status/**").permitAll()
                 .antMatchers("/contests/**").permitAll()
                 .antMatchers("/test_case/**").permitAll()
                 .anyRequest().authenticated()

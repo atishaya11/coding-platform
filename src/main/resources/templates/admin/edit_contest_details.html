@@ -37,11 +37,11 @@
                             </div>
                             <div>
                                 <div class="section-title">Start Date</div>
-                                <input id="start" type="text" class="date" th:attr="data-date=${#dates.format(contest.startDate, 'dd-MM-yyyy hh:mm')}" th:name="startDate" th:value="${#dates.format(contest.startDate, 'dd-MM-yyyy hh:mm')}">
+                                <input id="start" type="text" class="date"  th:name="startDate" th:value="${#dates.format(contest.startDate, 'dd-MM-yyyy hh:mm a')}">
                             </div>
                             <div>
                                 <div class="section-title">End Date</div>
-                                <input id="end" type="text" class="date" th:attr="data-date=${#dates.format(contest.endDate, 'dd-MM-yyyy hh:mm')}" th:name="endDate" th:value="${#dates.format(contest.endDate, 'dd-MM-yyyy hh:mm')}">
+                                <input id="end" type="text" class="date" th:name="endDate" th:value="${#dates.format(contest.endDate, 'dd-MM-yyyy hh:mm a')}">
                             </div>
                             <div>
                                 <div class="section-title">Description</div>
@@ -109,13 +109,14 @@
 <script>
         $(document).ready(function() {
             $('.summernote').summernote();
+
             $('#start').flatpickr({
                 enableTime: true,
-                dateFormat: "d-m-Y h:i"
+                dateFormat: "d-m-Y h:i K"
             });
             $('#end').flatpickr({
                 enableTime: true,
-                dateFormat: "d-m-Y h:i"
+                dateFormat: "d-m-Y h:i K"
             });
         });
 </script>

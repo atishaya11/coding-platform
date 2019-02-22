@@ -26,10 +26,10 @@ public class ContestDto {
 
     private List<ContestProblemDto> problemDtoList;
 
-    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm a")
     private Date startDate;
 
-    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
+    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm a")
     private Date endDate;
 
     private boolean registered;

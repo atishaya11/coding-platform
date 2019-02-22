@@ -38,7 +38,7 @@
                     </tr>
                     <tr style="cursor: pointer"   th:each="submission : ${page.getContent()}">
                         <td th:text="${submission.id}"></td>
-                        <td th:text="${submission.date}"></td>
+                        <td th:text="${#dates.format(submission.date, 'dd-MMM-yyyy hh:mm a')}"></td>
                         <td th:text="${submission.userBean.username}"></td>
                         <td th:text="${submission.compilerDto.name}"></td>
                         <td>

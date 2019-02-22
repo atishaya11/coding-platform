@@ -27,12 +27,19 @@
                             </tr>
 
 
-                            <tr style="cursor: pointer" th:each="problem : ${page.getContent()}">
+                            <tr class="clickable" th:each="problem : ${page.getContent()}" th:attr="data-href=@{/problems/__${problem.code}__}">
                                 <td th:text="${problem.name}"></td>
-                                <td><a th:text="${problem.code}" th:href="@{/problems/__${problem.code}__}"></a></td>
+                                <td th:text="${problem.code}"></td>
                                 <td>5</td>
                             </tr>
                         </table>
+                        <script>
+                            $(document).ready(function () {
+                                $('.clickable').click(function () {
+                                    window.location = $(this).data('href');
+                                });
+                            });
+                        </script>
                     </div>
                     <div class="pagination" th:if="${page.getTotalPages()}  > 0">
 

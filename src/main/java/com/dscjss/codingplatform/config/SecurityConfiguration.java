@@ -60,7 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
-    //TODO secure "/test_cases" with JWT
+    //TODO secure "/test_cases" with proper authentication mechanism
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -92,7 +92,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/problems/**").permitAll()
                 .antMatchers("/status/**").permitAll()
                 .antMatchers("/contests/**").permitAll()
-                .antMatchers("/test_case/**").permitAll()
+                .antMatchers("/test_case/**").hasIpAddress("127.0.0.1")
+                .antMatchers("/templates/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -122,7 +123,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers( "/css/**", "/js/**", "/img/**");
+                .antMatchers( "/css/**", "/js/**", "/img/**", "/favicon.ico");
     }
 
     @Bean

@@ -37,14 +37,13 @@ public class EmailClient {
     }
 
     private void sendHtmlMail(Email email) throws MessagingException {
-        boolean isHtml = true;
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setTo(email.getTo());
         helper.setReplyTo(email.getFrom());
         helper.setFrom(email.getFrom());
         helper.setSubject(email.getSubject());
-        helper.setText(email.getBody(), isHtml);
+        helper.setText(email.getBody(), true);
         javaMailSender.send(message);
     }
 

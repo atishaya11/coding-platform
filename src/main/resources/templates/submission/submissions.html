@@ -14,9 +14,9 @@
                 <li><a th:href="@{/}">Home</a></li>
                 <li class="next">&laquo;</li>
                 <li><a th:href="@{/problems}">Problems</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li><a th:href="@{/problems/__${problem.code}__}" th:text="${problem.name}">Problems</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li>All Submissions</li>
             </ul>
         </div>
@@ -32,6 +32,9 @@
                             <th>Status</th>
                             <th>Time</th>
                             <th>&ensp;&ensp;</th>
+                        </tr>
+                        <tr th:if="${page.getContent() == null || page.getContent().size() < 1}">
+                            <td colspan="7">No submissions present for this problem.</td>
                         </tr>
                         <tr style="cursor: pointer"   th:each="submission : ${page.getContent()}">
                             <td th:text="${submission.id}"></td>
@@ -80,13 +83,7 @@
                             <td><a th:href="@{'/submission/' + ${submission.id}}" class="button" >View</a></td>
                         </tr>
                     </table>
-                    <script>
-                        function goto(slug){
-                            console.log(slug);
-                            window.location = '/challenge/' + slug;
-                        }
-                    </script>
-                    <div class="pagination">
+                    <div class="pagination" th:unless="${page.getContent() == null || page.getContent().size() < 1}">
 
                         <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()})}" th:if="${page.getNumber() > 0}">&laquo;</a>
                         <a href="#"  th:unless="${page.getNumber() > 0}">&laquo;</a>

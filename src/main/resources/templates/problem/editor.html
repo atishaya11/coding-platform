@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="layout :: head">
+<head>
+    <title th:text="${problem.code + ' -' + problem.name}"></title>
+    <th:block th:include="layout :: head"/>
     <meta charset="UTF-8">
-    <title>Title</title>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
@@ -12,11 +13,11 @@
         <div class="block">
             <ul class="breadcrumb">
                 <li><a th:href="@{/}">Home</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li><a th:href="@{/problems}">Problems</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li><a th:href="@{/problems/__${problem.code}__}" th:text="${problem.name}"></a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li>Submit</li>
             </ul>
         </div>
@@ -89,6 +90,8 @@
         }
     });
     function submitForm(){
+
+        $('.error').remove();
         var editor = ace.edit("editor");
         var source = editor.getValue();
         var formData = new FormData();
@@ -106,10 +109,13 @@
                 console.log(data);
                 if(jqXHR.status === 201){
                     window.location = '/submit/status/' + data.submission_id;
+                }else {
+                    $(form).before('<strong class="error">Please login to submit.</strong>')
                 }
             },
             error: function(jqXoHR, textStatus, errorThrown){
                 //if fails
+                $(form).before('<strong class="error">Failed, please ty again.</strong>')
             }
         });
     }

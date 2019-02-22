@@ -12,21 +12,21 @@
         <div class="block">
             <ul class="breadcrumb">
                 <li><a th:href="@{/}">Home</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <th:block th:if="${submission.forContest}">
                     <li><a th:href="@{/contests}">Contests</a></li>
-                    <li class="next">&#8811;</li>
+                    <li class="next">&raquo;</li>
                     <li><a th:href="@{/contests/__${submission.contestDto.code}__}" th:text="${submission.contestDto.name}"></a></li>
-                    <li class="next">&#8811;</li>
+                    <li class="next">&raquo;</li>
                     <li><a th:href="@{/contests/__${submission.contestDto.code}__/problems/__${submission.problemDto.code}__}" th:text="${submission.problemDto.name}"></a></li>
-                    <li class="next">&#8811;</li>
+                    <li class="next">&raquo;</li>
                     <li th:text="${'Submission(' + submission.id + ')'}"></li>
                 </th:block>
                 <th:block th:unless="${submission.forContest}">
                     <li><a th:href="@{/problems}">Problems</a></li>
-                    <li class="next">&#8811;</li>
+                    <li class="next">&raquo;</li>
                     <li><a th:href="@{/problems/__${submission.problemDto.code}__}" th:text="${submission.problemDto.name}">Problems</a></li>
-                    <li class="next">&#8811;</li>
+                    <li class="next">&raquo;</li>
                     <li th:text="${'Submission(' + submission.id + ')'}"></li>
                 </th:block>
 

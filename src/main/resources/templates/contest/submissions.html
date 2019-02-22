@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="layout :: head">
+<head>
+    <title th:text="${contest.name}"></title>
+    <th:block th:include="layout :: head"/>
     <meta charset="UTF-8">
-    <title>Title</title>
 </head>
 <body>
 
@@ -12,13 +13,13 @@
         <div class="block">
             <ul class="breadcrumb">
                 <li><a th:href="@{/}">Home</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li><a th:href="@{/contests}">Contests</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li><a th:href="@{/contests/__${contest.code}__}" th:text="${contest.name}"></a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li><a th:href="@{/contests/__${contest.code}__/problems/__${problem.problemDto.code}__}" th:text="${problem.problemDto.name}">Problems</a></li>
-                <li class="next">&#8811;</li>
+                <li class="next">&raquo;</li>
                 <li>All Submissions</li>
             </ul>
         </div>

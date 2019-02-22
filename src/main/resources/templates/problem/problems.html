@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="layout :: head">
+<head>
+    <title>Problems</title>
+    <th:block  th:include="layout :: head"/>
     <meta charset="UTF-8">
-    <title>Title</title>
 </head>
 <body>
 
@@ -12,35 +13,33 @@
             <div class="block">
                 <ul class="breadcrumb">
                     <li><a th:href="@{/}">Home</a></li>
-                    <li class="next">&#8811;</li>
+                    <li class="next">&raquo;</li>
                     <li>Problems</li>
                 </ul>
             </div>
             <div class="center block">
                 <div>
-                    <div style="min-height: 600px;">
-                        <table class="problems">
-                            <tr>
-                                <th>Name</th>
-                                <th>Code</th>
-                                <th>Successful Submissions</th>
-                            </tr>
+                    <table class="problems large">
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Successful Submissions</th>
+                        </tr>
 
 
-                            <tr class="clickable" th:each="problem : ${page.getContent()}" th:attr="data-href=@{/problems/__${problem.code}__}">
-                                <td th:text="${problem.name}"></td>
-                                <td th:text="${problem.code}"></td>
-                                <td>5</td>
-                            </tr>
-                        </table>
-                        <script>
-                            $(document).ready(function () {
-                                $('.clickable').click(function () {
-                                    window.location = $(this).data('href');
-                                });
+                        <tr class="clickable" th:each="problem : ${page.getContent()}" th:attr="data-href=@{/problems/__${problem.code}__}">
+                            <td th:text="${problem.name}"></td>
+                            <td th:text="${problem.code}"></td>
+                            <td>5</td>
+                        </tr>
+                    </table>
+                    <script>
+                        $(document).ready(function () {
+                            $('.clickable').click(function () {
+                                window.location = $(this).data('href');
                             });
-                        </script>
-                    </div>
+                        });
+                    </script>
                     <div class="pagination" th:if="${page.getTotalPages()}  > 0">
 
                         <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()})}" th:if="${page.getNumber() > 0}">&laquo;</a>

@@ -46,9 +46,10 @@
                                        processData: false,
                                        contentType: false,
                                        success:function(data, textStatus, jqXHR){
-                                           console.log(data);
                                            if(jqXHR.status === 201){
                                                window.location = '/submit/status/' + data.submission_id;
+                                           }else{
+                                               $(form).before('<strong class="error">Please login to submit.</strong>')
                                            }
                                        },
                                        error: function(jqXoHR, textStatus, errorThrown){
@@ -57,7 +58,7 @@
                                        }
                                    });
 
-                                  // $(form).trigger('reset');
+                                  $(form).trigger('reset');
                                }
 
                            }
@@ -131,6 +132,8 @@
                                     success:function(data, textStatus, jqXHR){
                                         if(jqXHR.status === 201){
                                             window.location = '/submit/status/' + data.submission_id;
+                                        }else{
+                                            $(form).before('<strong class="error">Please login to submit.</strong>')
                                         }
                                     },
                                     error: function(jqXoHR, textStatus, errorThrown){

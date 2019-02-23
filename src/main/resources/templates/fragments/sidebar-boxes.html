@@ -28,7 +28,7 @@
                            function validSubmissionFormData(form) {
                                var formData = new FormData(form.get(0));
                                var sourceFile = formData.get('sourceFile');
-                               if(sourceFile === ''){
+                               if(sourceFile === '' || $('#submit-source').files.length === 0){
                                    $(form).before('<strong class="error">Please select a file.</strong>');
                                    return false;
                                }
@@ -112,7 +112,7 @@
                         function validSubmissionFormData(form) {
                             var formData = new FormData(form.get(0));
                             var sourceFile = formData.get('sourceFile');
-                            if(sourceFile === ''){
+                            if(sourceFile === '' || $('#submit-source').files.length === 0){
                                 $(form).before('<strong class="error">Please select a file.</strong>');
                                 return false;
                             }

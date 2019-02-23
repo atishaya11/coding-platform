@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,11 +68,9 @@ public class ContestController {
     public ModelAndView contest(Principal principal, @PathVariable String code){
         ModelAndView modelAndView = new ModelAndView("contest/landing.html");
         String username = null;
-
         if(principal != null){
             username = principal.getName();
         }
-
         ContestDto contestDto = contestService.getContestByCode(new UserBean(username), code, false);
 
         modelAndView.addObject("contest", contestDto);
@@ -87,6 +86,9 @@ public class ContestController {
         }
         ContestDto contestDto = contestService.getContestByCode(new UserBean(username), code, false);
         List<ContestProblemDto> contestProblemDtoList = contestService.getContestProblems(new UserBean(username), contestDto.getId());
+        if(new Date().before(contestDto.getStartDate()) || !contestDto.isRegistered()){
+            return new ModelAndView("redirect:/contests/" + code);
+        }
         contestDto.setProblemDtoList(contestProblemDtoList);
         modelAndView.addObject("contest", contestDto);
         return modelAndView;
@@ -102,6 +104,11 @@ public class ContestController {
         ContestProblemDto contestProblemDto = contestService.getProblem(new UserBean(username), code, problemCode);
         if(contestProblemDto == null)
             return new ModelAndView("404.html");
+
+        if(new Date().before(contestProblemDto.getContestDto().getStartDate()) || !contestProblemDto.getContestDto().isRegistered()){
+            return new ModelAndView("redirect:/contests/" + code);
+        }
+
         modelAndView.addObject("contest", contestProblemDto.getContestDto());
         modelAndView.addObject("problem", contestProblemDto);
         modelAndView.addObject("compilers", contestProblemDto.getProblemDto().getCompilers());
@@ -119,7 +126,6 @@ public class ContestController {
         if(principal != null){
             username = principal.getName();
         }
-
         Leaderboard leaderboard = contestService.getLeaderboard(new UserBean(username), code, pageable);
         modelAndView.addObject("leaderboard", leaderboard);
         modelAndView.addObject("contest", contestService.getContestByCode(new UserBean(username), code, true));
@@ -134,6 +140,10 @@ public class ContestController {
             username = principal.getName();
         }
         ContestProblemDto contestProblemDto = contestService.getProblem(new UserBean(username), code, problemCode);
+        Date now = new Date();
+        if(now.before(contestProblemDto.getContestDto().getStartDate()) || now.after(contestProblemDto.getContestDto().getEndDate()) || !contestProblemDto.getContestDto().isRegistered()){
+            return new ModelAndView("redirect:/contests/" + code);
+        }
         modelAndView.addObject("problem", contestProblemDto.getProblemDto());
         modelAndView.addObject("contest", contestProblemDto.getContestDto());
         modelAndView.addObject("compilers", contestProblemDto.getProblemDto().getCompilers());

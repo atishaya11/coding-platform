@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="layout :: head"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.js"></script>
+    <script th:src="@{/static/js/summernote-ext-specialchars.js}"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div  class="body">
+    <div class="container">
+
+        <div  style="display: inline-flex; width: 100%;">
+            <div class="center block">
+                <div th:replace="admin/menu :: edit-contest-menu"></div>
+                <div class="edit-box">
+                    <form id="settings-form" method="post" th:action="@{'/admin/contests/edit/' + ${contest.id} + '/settings'}" enctype="application/x-www-form-urlencoded">
+                        <div class="contest-edit-box">
+
+                            <div>
+                                <label>
+                                    Contest Type:
+                                    <select name="contestType">
+                                        <option value="1">Default</option>
+                                        <option value="2">Code in Less</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div style="text-align: right">
+                                <div style="display: inline-flex;margin: 10px;">
+                                    <a href="javascript:void(0)" onclick="$('#settings-form').submit()" class="button submit-button" >Save</a>
+                                </div>
+                                <div style="display: inline-flex;margin: 10px;">
+                                    <a href="javascript:void(0)" class="button" >Preview</a>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="sidebar">
+                <div class="sidebar-box block">
+                    <div class="section-title box-title">Actions</div>
+                    <div class="box-content" style="display: inline-flex;">
+
+                        <div style="margin: 10px;">
+                            <a href="javascript:void(0)"  class="button" >Publish</a>
+                        </div>
+                        <div style="margin: 10px;">
+                            <a href="javascript:void(0)" class="button delete-button" >Delete</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

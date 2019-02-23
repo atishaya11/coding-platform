@@ -42,7 +42,7 @@
                     </tr>
                     <tr th:each="submission : ${page.getContent()}">
                         <td th:text="${submission.id}"></td>
-                        <td th:text="${#dates.format(submission.date, 'dd-MMM-yyyy hh:mm a')}"></td>
+                        <td class="utc-date" th:attr="data-val=${#dates.formatISO(submission.date)}" th:text="${#dates.format(submission.date, 'dd-MMM-yyyy hh:mm a')}"></td>
                         <td th:text="${submission.userBean.username}"></td>
                         <td th:text="${submission.compilerDto.name}"></td>
                         <td>
@@ -84,17 +84,20 @@
                             <td th:text="0.0"></td>
                         </th:block>
 
-                        <td th:text="${submission.result.score}"></td>
+                        <td th:text="${T(java.lang.String).format('%.2f', __${submission.result.score}__)}"></td>
 
                         <td th:if="${submission.public}"><a th:href="@{'/submission/' + ${submission.id}}"  class="button" >View</a></td>
                         <td th:unless="${submission.public}"><a href="javascript:void(0)"  class="button disabled" >View</a></td>
                     </tr>
                 </table>
                 <script>
-                    function goto(slug){
-                        console.log(slug);
-                        window.location = '/challenge/' + slug;
-                    }
+                    $(document).ready(function () {
+                        $('.utc-date').each(function () {
+                            var utcDate = $(this).data('val');
+                            var localDate = new Date(utcDate);
+                            $(this).text(localDate.toLocaleString('en-us', {day:'numeric', month: 'long', year : 'numeric', hour : 'numeric', hour12 : true, minute : 'numeric' }));
+                        });
+                    });
                 </script>
                 <div class="pagination" th:unless="${page.getContent() == null || page.getContent().size() < 1}">
 

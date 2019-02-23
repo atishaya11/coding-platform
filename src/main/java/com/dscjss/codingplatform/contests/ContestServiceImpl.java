@@ -1,9 +1,6 @@
 package com.dscjss.codingplatform.contests;
 
-import com.dscjss.codingplatform.contests.dto.ContestDto;
-import com.dscjss.codingplatform.contests.dto.ContestProblemDto;
-import com.dscjss.codingplatform.contests.dto.Leaderboard;
-import com.dscjss.codingplatform.contests.dto.ProblemsUpdateForm;
+import com.dscjss.codingplatform.contests.dto.*;
 import com.dscjss.codingplatform.contests.exception.NotFoundException;
 import com.dscjss.codingplatform.contests.model.*;
 import com.dscjss.codingplatform.error.InvalidRequestException;
@@ -24,13 +21,14 @@ import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.util.Constants;
 import com.dscjss.codingplatform.util.Mapper;
-import org.apache.tomcat.util.bcel.Const;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -99,6 +97,7 @@ public class ContestServiceImpl implements ContestService {
         contest.setCreatedBy(user);
         contest.setCreationDate(new Date());
         contest.setLastModifiedDate(new Date());
+        contest.setContestType(Constants.CONTEST_TYPE_DEFAULT);
         Integer countSimilar = contestRepository.countByCodeIsStartingWith(tempCode);
         if(countSimilar != 0)
             tempCode += "-" + countSimilar + 1;
@@ -241,9 +240,25 @@ public class ContestServiceImpl implements ContestService {
     public int submit(SubmissionRequest submissionRequest) throws InvalidSubmissionException, SubmissionFailedException {
 
         Contest contest = contestRepository.findById(submissionRequest.getContestId()).orElse(null);
+
         if(contest == null){
             throw  new NotFoundException("Contest not found.");
         }
+
+        User user = userRepository.findByUsername(submissionRequest.getUserBean().getUsername());
+        if(user == null){
+            throw new InvalidRequestException("User not found.");
+        }
+
+        Date now = new Date();
+        if(now.before(contest.getStartDate())){
+            throw new InvalidSubmissionException("Contest has yet not started.");
+        } else if(now.after(contest.getEndDate())){
+            throw new InvalidSubmissionException("Contest has ended.");
+        } else if(!registeredUserRepository.existsByUserIdAndContestId(user.getId(), contest.getId())){
+            throw new InvalidSubmissionException("User should register before submitting.");
+        }
+
         ContestProblem contestProblem = contestProblemRepository.findByProblemIdAndContestId(submissionRequest.getProblemId(), submissionRequest.getContestId());
         if(contestProblem == null)
             throw new NotFoundException("Contest problem not found.");
@@ -288,16 +303,19 @@ public class ContestServiceImpl implements ContestService {
             throw new NotFoundException("Contest not found.");
         }
 
-        if(!registeredUserRepository.existsByUserIdAndContestId(user.getId(), contest.getId())){
-            RegisteredUser registeredUser = new RegisteredUser();
-            registeredUser.setContest(contest);
-            registeredUser.setUser(user);
-            List<RegisteredUser> registeredUsers = contest.getRegisteredUsers();
-            if(registeredUsers == null){
-                contest.setRegisteredUsers(new ArrayList<>());
+        Date now = new Date();
+        if(!now.after(contest.getEndDate())){
+            if(!registeredUserRepository.existsByUserIdAndContestId(user.getId(), contest.getId())){
+                RegisteredUser registeredUser = new RegisteredUser();
+                registeredUser.setContest(contest);
+                registeredUser.setUser(user);
+                List<RegisteredUser> registeredUsers = contest.getRegisteredUsers();
+                if(registeredUsers == null){
+                    contest.setRegisteredUsers(new ArrayList<>());
+                }
+                contest.getRegisteredUsers().add(registeredUser);
+                contestRepository.save(contest);
             }
-            contest.getRegisteredUsers().add(registeredUser);
-            contestRepository.save(contest);
         }
     }
 
@@ -331,5 +349,16 @@ public class ContestServiceImpl implements ContestService {
             contestProblemRepository.save(contestProblem);
         }
 
+    }
+
+    @Override
+    public void updateContestSettings(UserBean userBean, Integer id, Settings settings) {
+        Contest contest = contestRepository.findById(id).orElse(null);
+
+        if(contest == null)
+            throw new NotFoundException("Contest not found.");
+
+        contest.setContestType(settings.getContestType() == 0 ? Constants.CONTEST_TYPE_DEFAULT : settings.getContestType());
+        contestRepository.save(contest);
     }
 }

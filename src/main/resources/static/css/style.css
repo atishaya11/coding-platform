@@ -442,7 +442,7 @@ table.problems tr:first-child{
 table.test-cases{
     width: 100%;
     border: 1px solid #36383f;
-    font-size: 10px;
+    font-size: 14px;
 }
 .test-cases td{
     text-align: center;

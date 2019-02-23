@@ -3,6 +3,7 @@ package com.dscjss.codingplatform.contests;
 import com.dscjss.codingplatform.contests.dto.ContestDto;
 import com.dscjss.codingplatform.contests.dto.ContestProblemDto;
 import com.dscjss.codingplatform.contests.dto.ProblemsUpdateForm;
+import com.dscjss.codingplatform.contests.dto.Settings;
 import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.problems.ProblemService;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
@@ -154,7 +155,25 @@ public class AdminController {
         }
         return responseEntity;
     }
-
-
+    @GetMapping(value = "/contests/edit/{id}/settings")
+    public ModelAndView contestSettings(Principal principal, @PathVariable Integer id, @ModelAttribute Settings settings){
+        if(principal != null){
+            UserBean userBean = userService.getUserByUsername(principal.getName());
+            ContestDto contestDto = contestService.getContestById(userBean, id, false);
+            ModelAndView modelAndView = new ModelAndView("admin/edit_contest_settings.html");
+            modelAndView.addObject("contest", contestDto);
+            return modelAndView;
+        }
+        return new ModelAndView("error/401.html");
+    }
+    @PostMapping(value = "/contests/edit/{id}/settings")
+    public ModelAndView editContestSettings(Principal principal, @PathVariable Integer id, @ModelAttribute Settings settings){
+        if(principal != null){
+            UserBean userBean = userService.getUserByUsername(principal.getName());
+            contestService.updateContestSettings(userBean, id, settings);
+            return new ModelAndView("redirect:/admin/contests/edit/" + id + "/settings");
+        }
+        return new ModelAndView("error/401.html");
+    }
 
 }

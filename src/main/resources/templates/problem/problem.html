@@ -70,8 +70,13 @@
                                 <div class="info-title">
                                     Time Limit:
                                 </div>
-                                <div th:text="${T(java.lang.String).format('%.2f',__${problem.minTimeLimit/1000.0}__) + 's' + ' - ' + T(java.lang.String).format('%.2f',__${problem.maxTimeLimit/1000.0}__) + 's'}"></div>
-                            </div>
+                                <th:block th:if="${problem.minTimeLimit eq problem.maxTimeLimit}">
+                                    <div th:text="${T(java.lang.String).format('%.2f',__${problem.minTimeLimit/1000.0}__) + 's'}"></div>
+                                </th:block>
+                                <th:block th:unless="${problem.minTimeLimit eq problem.maxTimeLimit}">
+                                    <div th:text="${T(java.lang.String).format('%.2f',__${problem.minTimeLimit/1000.0}__) + 's' + ' - ' + T(java.lang.String).format('%.2f',__${problem.maxTimeLimit/1000.0}__) + 's'}"></div>
+                                </th:block>
+                                 </div>
                             <div class="info">
                                 <div class="info-title">
                                     Source Limit:

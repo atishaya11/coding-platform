@@ -36,7 +36,7 @@
                         <tr th:each="row, itr : ${leaderboard.page.getContent()}">
                             <td th:text="${itr.index + 1}"></td>
                             <td th:text="${row.user.username}"></td>
-                            <td th:text="${row.score}"></td>
+                            <td th:text="${T(java.lang.String).format('%.2f', __${row.score}__)}"></td>
                         </tr>
                     </table>
                 </div>

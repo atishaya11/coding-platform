@@ -1,9 +1,6 @@
 package com.dscjss.codingplatform.contests;
 
-import com.dscjss.codingplatform.contests.dto.ContestDto;
-import com.dscjss.codingplatform.contests.dto.ContestProblemDto;
-import com.dscjss.codingplatform.contests.dto.Leaderboard;
-import com.dscjss.codingplatform.contests.dto.ProblemsUpdateForm;
+import com.dscjss.codingplatform.contests.dto.*;
 import com.dscjss.codingplatform.contests.exception.NotFoundException;
 import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.error.UserNotFoundException;
@@ -48,4 +45,6 @@ public interface ContestService {
     Page<SubmissionDto> getSubmissions(UserBean userBean, String code, String problem, Pageable pageable);
 
     void updateContestProblems(UserBean userBean, Integer id, ProblemsUpdateForm problemsUpdateForm) throws InvalidRequestException;
+
+    void updateContestSettings(UserBean userBean, Integer id, Settings settings);
 }

@@ -157,7 +157,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     //TODO Implement the below method
     private boolean isValid(SubmissionRequest submissionRequest) {
-        return true;
+        return submissionRequest.getSource().length() != 0;
     }
 
     @Override

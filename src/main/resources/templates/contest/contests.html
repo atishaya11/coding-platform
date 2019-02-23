@@ -40,7 +40,6 @@
                         });
                         $('.utc-date').each(function () {
                             var utcDate = $(this).data('val');
-                            console.log(utcDate);
                             var localDate = new Date(utcDate);
                             $(this).text(localDate.toLocaleString('en-us', {day:'numeric', month: 'long', year : 'numeric', hour : 'numeric', hour12 : true, minute : 'numeric' }));
                         });

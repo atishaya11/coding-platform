@@ -38,7 +38,7 @@
                         </tr>
                         <tr style="cursor: pointer"   th:each="submission : ${page.getContent()}">
                             <td th:text="${submission.id}"></td>
-                            <td th:text="${#dates.format(submission.date, 'dd-MMM-yyyy hh:mm a')}"></td>
+                            <td class="utc-date" th:attr="data-val=${#dates.formatISO(submission.date)}" th:text="${#dates.format(submission.date, 'dd-MMM-yyyy hh:mm a')}"></td>
                             <td th:text="${submission.userBean.username}"></td>
                             <td th:text="${submission.compilerDto.name}"></td>
                             <td>
@@ -84,6 +84,15 @@
                             <td th:unless="${submission.public}"><a href="javascript:void(0)"  class="button disabled" >View</a></td>
                         </tr>
                     </table>
+                    <script>
+                        $(document).ready(function () {
+                            $('.utc-date').each(function () {
+                                var utcDate = $(this).data('val');
+                                var localDate = new Date(utcDate);
+                                $(this).text(localDate.toLocaleString('en-us', {day:'numeric', month: 'long', year : 'numeric', hour : 'numeric', hour12 : true, minute : 'numeric' }));
+                            });
+                        });
+                    </script>
                     <div class="pagination" th:unless="${page.getContent() == null || page.getContent().size() < 1}">
 
                         <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()})}" th:if="${page.getNumber() > 0}">&laquo;</a>

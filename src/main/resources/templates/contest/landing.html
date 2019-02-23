@@ -30,7 +30,7 @@
                     <div class="background">
                         <img th:src="@{/img/default_contest.jpg}">
                         <div class="center">
-                            <th:block th:text="${contest.name}"></th:block>
+                            <th:block th:text="${contest.name}"/>
                             <th:block th:if="${not contest.registered}">
                                 <div>
                                     <a class="button submit-button" th:href="@{'/contests/'+ ${contest.code} +'/register'}">Register</a>

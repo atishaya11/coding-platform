@@ -33,12 +33,30 @@
                         </tr>
 
 
-                        <tr th:each="row, itr : ${leaderboard.page.getContent()}">
-                            <td th:text="${itr.index + 1}"></td>
+                        <tr th:each="row: ${page.getContent()}">
+                            <th:block th:if="${row.rank == 0}">
+                                <td th:text="${'-'}"></td>
+                            </th:block>
+                            <th:block th:unless="${row.rank == 0}">
+                                <td th:text="${row.rank}"></td>
+                            </th:block>
                             <td th:text="${row.user.username}"></td>
                             <td th:text="${T(java.lang.String).format('%.2f', __${row.score}__)}"></td>
                         </tr>
+
                     </table>
+                    <div class="pagination" th:unless="${page.getContent() == null || page.getContent().size() < 1}">
+
+                        <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()})}" th:if="${page.getNumber() > 0}">&laquo;</a>
+                        <a href="#"  th:unless="${page.getNumber() > 0}">&laquo;</a>
+
+                        <div>
+                            <div th:text="${page.getNumber() + 1} + ' of ' + ${page.getTotalPages()}"></div>
+                        </div>
+                        <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()+2})}" th:if="${page.hasNext()}">&raquo;</a>
+                        <a href="#"  th:unless="${page.hasNext()}">&raquo;</a>
+
+                    </div>
                 </div>
             </div>
         </div>

@@ -141,6 +141,7 @@ public class Mapper {
             return null;
         Row row = new Row();
         row.setScore(registeredUser.getScore());
+        row.setRank(registeredUser.getRank());
         row.setUser(getUserBean(registeredUser.getUser()));
         return row;
     }

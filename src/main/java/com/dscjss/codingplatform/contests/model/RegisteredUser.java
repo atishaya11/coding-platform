@@ -22,6 +22,8 @@ public class RegisteredUser {
 
     private double score;
 
+    @Column(name = "position")
+    private int rank;
 
     public Integer getId() {
         return id;
@@ -47,11 +49,19 @@ public class RegisteredUser {
         this.contest = contest;
     }
 
-    public Double getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(Double score) {
+    public void setScore(double score) {
         this.score = score;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

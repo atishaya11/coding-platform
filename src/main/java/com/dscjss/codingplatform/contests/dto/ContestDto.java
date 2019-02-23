@@ -34,6 +34,7 @@ public class ContestDto {
 
     private boolean registered;
 
+    private Row currentUserLeaderboardRow;
 
     public int getId() {
         return id;
@@ -122,5 +123,13 @@ public class ContestDto {
 
     public void setRegistered(boolean registered) {
         this.registered = registered;
+    }
+
+    public Row getCurrentUserLeaderboardRow() {
+        return currentUserLeaderboardRow;
+    }
+
+    public void setCurrentUserLeaderboardRow(Row currentUserLeaderboardRow) {
+        this.currentUserLeaderboardRow = currentUserLeaderboardRow;
     }
 }

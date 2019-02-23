@@ -112,7 +112,7 @@
                         function validSubmissionFormData(form) {
                             var formData = new FormData(form.get(0));
                             var sourceFile = formData.get('sourceFile');
-                            if(sourceFile === '' || $('#submit-source').files.length === 0){
+                            if(sourceFile === '' || document.getElementById('submit-source').files.length === 0){
                                 $(form).before('<strong class="error">Please select a file.</strong>');
                                 return false;
                             }
@@ -238,9 +238,12 @@
         </div>
     </div>
 
-    <div th:fragment="contest-leaderboard-box" class="sidebar-box">
-        <div style="display: inline-flex; width: 100%;">
-            <a th:href="@{'/contests/' + ${contest.code} + '/leaderboard'}" class="button" style="margin-right:10px;width: 50%;">Leaderboard</a>
+    <div th:fragment="contest-leaderboard-box" class="sidebar-box block">
+        <div class="box-title">Leaderboard</div>
+        <div class="box-content">
+            <div style="text-align: center;">
+                <a th:href="@{'/contests/' + ${contest.code} + '/leaderboard'}" class="button" style="margin-right:10px;width: 50%;">Leaderboard</a>
+            </div>
         </div>
     </div>
 </body>

@@ -6,6 +6,7 @@ public class Row {
 
     private UserBean user;
     private double score;
+    private int rank;
 
     public UserBean getUser() {
         return user;
@@ -21,5 +22,13 @@ public class Row {
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

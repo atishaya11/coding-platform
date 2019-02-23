@@ -21,7 +21,6 @@ import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.users.model.User;
 import com.dscjss.codingplatform.util.Constants;
 import com.dscjss.codingplatform.util.Mapper;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,9 +74,11 @@ public class ContestServiceImpl implements ContestService {
         if(contest == null)
             throw new NotFoundException("Contest not found.");
         ContestDto contestDto = Mapper.getContestDto(contest);
-        if(userBean != null)
-            contestDto.setRegistered(registeredUserRepository.existsByUserUsernameAndContestId(userBean.getUsername(), contest.getId()));
-
+        if(userBean != null) {
+            RegisteredUser registeredUser = registeredUserRepository.findByContestIdAndUserUsername(contest.getId(), userBean.getUsername());
+            contestDto.setRegistered(registeredUser != null);
+            contestDto.setCurrentUserLeaderboardRow(Mapper.getLeaderboardRow(registeredUser));
+        }
         if(onlySummary){
             return contestDto;
         }else{
@@ -229,7 +230,7 @@ public class ContestServiceImpl implements ContestService {
         ContestProblemDto contestProblemDto = new ContestProblemDto();
         contestProblemDto.setId(contestProblem.getId());
         contestProblemDto.setProblemDto(problemService.getProblemByCode(userBean, contestProblem.getProblem().getCode(), false));
-        contestProblemDto.setContestDto(Mapper.getContestDto(contest));
+        contestProblemDto.setContestDto(getContestByCode(userBean, code, true));
         contestProblemDto.setMaxScore(contestProblem.getMaxScore());
         return contestProblemDto;
 
@@ -280,12 +281,11 @@ public class ContestServiceImpl implements ContestService {
     @Override
     public Leaderboard getLeaderboard(UserBean userBean, String code, Pageable pageable) {
         Contest contest = contestRepository.findByCode(code);
-
         contestRepository.updateLeaderboard(contest.getId(), contest.getContestType());
-
         Page<RegisteredUser> registeredUserPage = registeredUserRepository.findByContestCode(code, pageable);
         Leaderboard leaderboard = new Leaderboard();
         leaderboard.setPage(registeredUserPage.map(Mapper::getLeaderboardRow));
+        leaderboard.setContestDto(getContestById(userBean, contest.getId(), true));
         return leaderboard;
     }
 

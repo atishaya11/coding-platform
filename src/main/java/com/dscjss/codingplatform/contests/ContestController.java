@@ -120,15 +120,15 @@ public class ContestController {
                                     @RequestParam(name = "sort_by", required = false, defaultValue = "score") String sort,
                                     @RequestParam(name = "sort_order", required = false, defaultValue = "desc") String order){
         ModelAndView modelAndView = new ModelAndView("contest/leaderboard.html");
-        int pageSize = 20;
+        int pageSize = 2;
         Pageable pageable = createPageable(page == null ? 0 : page, sort, order, pageSize);
         String username = null;
         if(principal != null){
             username = principal.getName();
         }
         Leaderboard leaderboard = contestService.getLeaderboard(new UserBean(username), code, pageable);
-        modelAndView.addObject("leaderboard", leaderboard);
-        modelAndView.addObject("contest", contestService.getContestByCode(new UserBean(username), code, true));
+        modelAndView.addObject("page", leaderboard.getPage());
+        modelAndView.addObject("contest", leaderboard.getContestDto());
         return modelAndView;
     }
     @GetMapping("/contests/{code}/submit/{problem_code}")

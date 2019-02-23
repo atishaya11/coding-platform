@@ -29,8 +29,10 @@
 
                         <tr class="clickable" th:each="problem : ${page.getContent()}" th:attr="data-href=@{/problems/__${problem.code}__}">
                             <td th:text="${problem.name}"></td>
-                            <td th:text="${problem.code}"></td>
-                            <td>5</td>
+                            <td>
+                                <a th:href="@{/problems/__${problem.code}__}" th:text="${problem.code}"></a>
+                            </td>
+                            <td th:text="${problem.submissionCount}"></td>
                         </tr>
                     </table>
                     <script>

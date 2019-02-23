@@ -37,8 +37,10 @@
 
                             <tr class="clickable" th:each="contestProblem : ${contest.problemDtoList}" th:attr="data-href=@{/contests/__${contest.code}__/problems/__${contestProblem.problemDto.code}__}">
                                 <td th:text="${contestProblem.problemDto.name}"></td>
-                                <td th:text="${contestProblem.problemDto.code}"></td>
-                                <td></td>
+                                <td >
+                                    <a th:href="@{/contests/__${contest.code}__/problems/__${contestProblem.problemDto.code}__}" th:text="${contestProblem.problemDto.code}"></a>
+                                </td>
+                                <td th:text="${contestProblem.problemDto.submissionCount}"></td>
                             </tr>
                         </table>
                         <script>

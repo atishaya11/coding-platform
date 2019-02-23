@@ -1,6 +1,7 @@
 package com.dscjss.codingplatform.problems.dto;
 
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
+import com.dscjss.codingplatform.submissions.model.Result;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import com.dscjss.codingplatform.util.Status;
 import org.hibernate.validator.constraints.SafeHtml;
@@ -15,9 +16,9 @@ public class ProblemDto {
 
     private String name;
 
-    private boolean hasSolved; //If the current user has solved the problem
+    private boolean hasSolved;
 
-    private Status status;
+    private Result result;
 
     @SafeHtml
     private String description;
@@ -43,6 +44,10 @@ public class ProblemDto {
     private int minTimeLimit;
 
     private int maxTimeLimit;
+
+    private boolean practice;
+
+    private int submissionCount;
 
     public Integer getId() {
         return id;
@@ -76,12 +81,12 @@ public class ProblemDto {
         this.hasSolved = hasSolved;
     }
 
-    public Status getStatus() {
-        return status;
+    public Result getResult() {
+        return result;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setResult(Result result) {
+        this.result = result;
     }
 
     public String getDescription() {
@@ -162,5 +167,21 @@ public class ProblemDto {
 
     public void setMaxTimeLimit(int maxTimeLimit) {
         this.maxTimeLimit = maxTimeLimit;
+    }
+
+    public boolean isPractice() {
+        return practice;
+    }
+
+    public void setPractice(boolean practice) {
+        this.practice = practice;
+    }
+
+    public int getSubmissionCount() {
+        return submissionCount;
+    }
+
+    public void setSubmissionCount(int submissionCount) {
+        this.submissionCount = submissionCount;
     }
 }

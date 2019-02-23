@@ -93,7 +93,7 @@
     <div th:fragment="contest-submit-box" class="sidebar-box block">
         <div class="section-title box-title">Submit</div>
         <div class="box-content">
-            <form id="source-submit-form" method="post" th:action="@{'/contests/' + ${contest.id} + '/submit/' + ${problem.id}}" enctype="multipart/form-data">
+            <form id="source-submit-form" method="post" th:action="@{'/contests/' + ${contest.id} + '/submit/' + ${problem.problemDto.id}}" enctype="multipart/form-data">
                 <label>
                     Select Language:
                     <select name="compilerId">

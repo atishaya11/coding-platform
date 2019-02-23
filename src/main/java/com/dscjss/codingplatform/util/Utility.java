@@ -21,14 +21,13 @@ public class Utility {
                         sortBy != null ? sortBy : "id"));
     }
 
-    public static SubmissionRequest createSubmissionRequest(UserBean userBean, MultipartFile multipartFile, String source, int problemId, int compilerId, int contestProblemId) throws IOException {
+    public static SubmissionRequest createSubmissionRequest(UserBean userBean, MultipartFile multipartFile, String source, int problemId, int compilerId) throws IOException {
 
         SubmissionRequest submissionRequest = new SubmissionRequest();
 
         submissionRequest.setUserBean(userBean);
         submissionRequest.setCompilerId(compilerId);
         submissionRequest.setProblemId(problemId);
-        submissionRequest.setContestProblemId(contestProblemId);
 
         if(multipartFile != null){
             submissionRequest.setSource(getString(multipartFile));

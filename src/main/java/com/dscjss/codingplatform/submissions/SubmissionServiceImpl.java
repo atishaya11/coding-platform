@@ -5,7 +5,9 @@ import com.dscjss.codingplatform.compilers.CompilerRepository;
 import com.dscjss.codingplatform.compilers.model.Compiler;
 import com.dscjss.codingplatform.contests.ContestRepository;
 import com.dscjss.codingplatform.contests.ContestService;
+import com.dscjss.codingplatform.contests.exception.NotFoundException;
 import com.dscjss.codingplatform.contests.model.Contest;
+import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.problems.ProblemRepository;
 import com.dscjss.codingplatform.problems.ProblemService;
 import com.dscjss.codingplatform.problems.model.AllowedCompiler;
@@ -81,11 +83,11 @@ public class SubmissionServiceImpl implements SubmissionService {
         if(!isValid(submissionRequest)){
             throw new InvalidSubmissionException("Invalid submission request.");
         }
-        Problem problem = problemRepository.getOne(submissionRequest.getProblemId());
+        Problem problem = problemRepository.findById(submissionRequest.getProblemId()).orElse(null);
         if(problem == null){
             throw new InvalidSubmissionException("Invalid submission request.");
         }
-        Compiler compiler = compilerRepository.getOne(submissionRequest.getCompilerId());
+        Compiler compiler = compilerRepository.findById(submissionRequest.getCompilerId()).orElse(null);
         if(compiler == null) {
             throw new InvalidSubmissionException("Invalid submission request.");
         }
@@ -160,13 +162,13 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     @Cacheable(value = "submissions", key = "{#submissionId, #onlySummary}", unless = "#result.result.status.name() == 'RUNNING'")
-    public SubmissionDto getSubmission(UserBean userBean, Integer submissionId, boolean onlySummary) {
+    public SubmissionDto getSubmission(UserBean userBean, Integer submissionId, boolean onlySummary){
         logger.info("Check - Is cached submission.");
         if(submissionId == null)
-            return null;
-        Submission submission = submissionRepository.getOne(submissionId);
+            throw new InvalidRequestException("Invalid request.");
+        Submission submission = submissionRepository.findById(submissionId).orElse(null);
         if(submission == null)
-            return null;
+            throw new NotFoundException("Submission not found.");
         return getSubmission(userBean, submission, onlySummary);
     }
 
@@ -271,13 +273,13 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Page<SubmissionDto> getSubmissions(UserBean userBean, String code, Pageable pageable) {
-        Page<Submission> submissionPage = submissionRepository.findByProblemCodeAndForContestIsFalse(code, pageable);
+        Page<Submission> submissionPage = submissionRepository.findPracticeSubmissions(code, pageable);
         return submissionPage.map(submission -> getSubmission(userBean, submission, true));
     }
 
     @Override
     public Page<SubmissionDto> getSubmissions(UserBean userBean, String contest, String problem, Pageable pageable, boolean b) {
-        Page<Submission> submissionPage = submissionRepository.findByContestCodeAndProblemCode(contest, problem, pageable);
+        Page<Submission> submissionPage = submissionRepository.findContestSubmissions(contest, problem, pageable);
         return submissionPage.map(submission -> getSubmission(userBean, submission, true));
     }
 }

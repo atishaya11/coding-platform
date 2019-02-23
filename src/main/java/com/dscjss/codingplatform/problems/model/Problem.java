@@ -54,6 +54,9 @@ public class Problem {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modificationDate;
 
+    @Column(name = "is_practice")
+    private boolean practice;
+
     public Integer getId() {
         return id;
     }
@@ -140,6 +143,14 @@ public class Problem {
 
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
+    }
+
+    public boolean isPractice() {
+        return practice;
+    }
+
+    public void setPractice(boolean practice) {
+        this.practice = practice;
     }
 
 }

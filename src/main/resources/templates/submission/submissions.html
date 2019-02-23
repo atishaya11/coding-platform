@@ -12,7 +12,7 @@
         <div class="block">
             <ul class="breadcrumb">
                 <li><a th:href="@{/}">Home</a></li>
-                <li class="next">&laquo;</li>
+                <li class="next">&raquo;</li>
                 <li><a th:href="@{/problems}">Problems</a></li>
                 <li class="next">&raquo;</li>
                 <li><a th:href="@{/problems/__${problem.code}__}" th:text="${problem.name}">Problems</a></li>
@@ -34,7 +34,7 @@
                             <th>&ensp;&ensp;</th>
                         </tr>
                         <tr th:if="${page.getContent() == null || page.getContent().size() < 1}">
-                            <td colspan="7">No submissions present for this problem.</td>
+                            <td colspan="7">No submissions for this problem.</td>
                         </tr>
                         <tr style="cursor: pointer"   th:each="submission : ${page.getContent()}">
                             <td th:text="${submission.id}"></td>
@@ -80,7 +80,8 @@
                                 <td th:text="0.0"></td>
                             </th:block>
 
-                            <td><a th:href="@{'/submission/' + ${submission.id}}" class="button" >View</a></td>
+                            <td th:if="${submission.public}"><a th:href="@{'/submission/' + ${submission.id}}"  class="button" >View</a></td>
+                            <td th:unless="${submission.public}"><a href="javascript:void(0)"  class="button disabled" >View</a></td>
                         </tr>
                     </table>
                     <div class="pagination" th:unless="${page.getContent() == null || page.getContent().size() < 1}">

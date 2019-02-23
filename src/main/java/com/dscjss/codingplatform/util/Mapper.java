@@ -42,7 +42,7 @@ public class Mapper {
         problemDto.setCode(problem.getCode());
         problemDto.setName(problem.getName());
         problemDto.setAuthor(getUserBean(problem.getAuthor()));
-
+        problemDto.setPractice(problem.isPractice());
         if(problem.getBody() != null){
             problemDto.setDescription(problem.getBody().getDescription());
             problemDto.setConstraints(problem.getBody().getConstraints());
@@ -110,6 +110,8 @@ public class Mapper {
         submissionDto.setDate(submission.getCreationDate());
         submissionDto.setResult(submission.getResult());
         submissionDto.setForContest(submission.isForContest());
+        submissionDto.setPublic(submission.isPublic());
+        submissionDto.setVisible(submission.isVisible());
         return submissionDto;
     }
 

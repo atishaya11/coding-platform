@@ -20,7 +20,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public TemplateDto getTemplate(int id) {
-        Template template = templateRepository.getOne(id);
+        Template template = templateRepository.findById(id).orElse(null);
         if(template == null)
             throw new NotFoundException("Template not found, id :" + id + ".");
         TemplateDto templateDto = new TemplateDto();
@@ -43,7 +43,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public void updateTemplate(TemplateDto templateDto) {
-        Template template = templateRepository.getOne(templateDto.getId());
+        Template template = templateRepository.findById(templateDto.getId()).orElse(null);
         if(template == null)
             throw new NotFoundException("Template not found, id :" + templateDto.getId() + ".");
 

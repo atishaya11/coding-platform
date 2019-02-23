@@ -37,7 +37,10 @@
                         <th>Score</th>
                         <th>&ensp;&ensp;</th>
                     </tr>
-                    <tr style="cursor: pointer"   th:each="submission : ${page.getContent()}">
+                    <tr th:if="${page.getContent() == null || page.getContent().size() < 1}">
+                        <td colspan="8">No submissions for this problem.</td>
+                    </tr>
+                    <tr th:each="submission : ${page.getContent()}">
                         <td th:text="${submission.id}"></td>
                         <td th:text="${#dates.format(submission.date, 'dd-MMM-yyyy hh:mm a')}"></td>
                         <td th:text="${submission.userBean.username}"></td>
@@ -83,7 +86,8 @@
 
                         <td th:text="${submission.result.score}"></td>
 
-                        <td><a th:href="@{'/submission/' + ${submission.id}}" class="button" >View</a></td>
+                        <td th:if="${submission.public}"><a th:href="@{'/submission/' + ${submission.id}}"  class="button" >View</a></td>
+                        <td th:unless="${submission.public}"><a href="javascript:void(0)"  class="button disabled" >View</a></td>
                     </tr>
                 </table>
                 <script>
@@ -92,7 +96,7 @@
                         window.location = '/challenge/' + slug;
                     }
                 </script>
-                <div class="pagination">
+                <div class="pagination" th:unless="${page.getContent() == null || page.getContent().size() < 1}">
 
                     <a class="" th:href="@{${#httpServletRequest.requestURI}(page=${page.getNumber()})}" th:if="${page.getNumber() > 0}">&laquo;</a>
                     <a href="#"  th:unless="${page.getNumber() > 0}">&laquo;</a>

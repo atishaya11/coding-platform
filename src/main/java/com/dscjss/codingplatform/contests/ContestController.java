@@ -152,8 +152,8 @@ public class ContestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/contests/{id}/submit/{contestProblemId}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, String>> createSubmission(Principal principal, @PathVariable int id, @PathVariable int contestProblemId, @RequestBody MultipartFile sourceFile,
+    @RequestMapping(value = "/contests/{id}/submit/{problemId}", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, String>> createSubmission(Principal principal, @PathVariable int id, @PathVariable int problemId, @RequestBody MultipartFile sourceFile,
                                                                 @RequestParam Integer compilerId, @RequestParam (required = false) String source){
 
         ResponseEntity<Map<String, String>> responseEntity;
@@ -161,7 +161,7 @@ public class ContestController {
         if(principal != null){
             String username = principal.getName();
             try {
-                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), sourceFile, source, 0, compilerId, contestProblemId);
+                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), sourceFile, source, problemId, compilerId);
                 submissionRequest.setContestId(id);
                 int submissionId = contestService.submit(submissionRequest);
                 map.put("submission_id", String.valueOf(submissionId));

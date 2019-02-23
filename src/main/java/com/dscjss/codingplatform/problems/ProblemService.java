@@ -32,4 +32,8 @@ public interface ProblemService {
     List<CompilerDto> getCompilerList();
 
     void updateAllowedCompilers(UserBean userBean, List<CompilerDto> compilers, Integer id);
+
+    void addToPractice(UserBean userBean, int problemId);
+
+    void removeFromPractice(UserBean userBean, int id);
 }

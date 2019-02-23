@@ -1,6 +1,8 @@
 package com.dscjss.codingplatform.submissions;
 
 
+import com.dscjss.codingplatform.contests.exception.NotFoundException;
+import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.problems.ProblemService;
 import com.dscjss.codingplatform.submissions.dto.SubmissionRequest;
 import com.dscjss.codingplatform.submissions.dto.SubmissionDto;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,6 +45,17 @@ public class SubmissionController {
         this.problemService = problemService;
     }
 
+
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView handleNotFoundException() {
+        throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    public ModelAndView handleInvalidRequestException() {
+        throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+    }
+
     @RequestMapping(value = "/submit/{problemId}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, String>> createSubmission(Principal principal, @PathVariable int problemId, @RequestBody MultipartFile sourceFile,
                                                                 @RequestParam Integer compilerId, @RequestParam(required = false) String source){
@@ -51,7 +65,9 @@ public class SubmissionController {
         if(principal != null){
             String username = principal.getName();
             try {
-                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), sourceFile, source, problemId, compilerId, 0);
+                SubmissionRequest submissionRequest = Utility.createSubmissionRequest(new UserBean(username), sourceFile, source, problemId, compilerId);
+                submissionRequest.setVisible(true);
+                submissionRequest.setPublic(true);
                 int submissionId = submissionService.submit(submissionRequest);
                 map.put("submission_id", String.valueOf(submissionId));
                 responseEntity = new ResponseEntity<>(map, HttpStatus.CREATED);
@@ -80,7 +96,8 @@ public class SubmissionController {
 
         if(principal != null) {
             String username = principal.getName();
-            SubmissionDto submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, true);
+            SubmissionDto submissionDto;
+            submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, true);
             if(submissionDto.getResult().getStatus() == Status.RUNNING){
                 submissionService.updateSubmission(submissionDto.getId());
             }
@@ -90,29 +107,29 @@ public class SubmissionController {
             return modelAndView;
 
         }
-        modelAndView = new ModelAndView("401.html");
-        return modelAndView;
+        return new ModelAndView("error/401.html");
     }
 
     @RequestMapping(value = "/submission/{id}", method = RequestMethod.GET)
     public ModelAndView getSubmission(Principal principal, @PathVariable("id") Integer submissionId){
 
-        ModelAndView modelAndView;
 
-        if(principal != null) {
-            String username = principal.getName();
-            SubmissionDto submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, false);
-            if(submissionDto.getResult().getStatus() == Status.RUNNING){
-                submissionService.updateSubmission(submissionDto.getId());
-            }
+        String username = principal.getName();
+        SubmissionDto submissionDto;
 
-            modelAndView = new ModelAndView("submission/submission.html");
-
-            modelAndView.addObject("submission", submissionDto);
-            return modelAndView;
+        submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, false);
+        if(submissionDto.getResult().getStatus() == Status.RUNNING) {
+            submissionService.updateSubmission(submissionDto.getId());
         }
-        modelAndView = new ModelAndView("401.html");
+
+        if(!submissionDto.isPublic() && !submissionDto.getUserBean().getUsername().equals(username)){
+            return new ModelAndView("error/403.html");
+        }
+
+        ModelAndView modelAndView = new ModelAndView("submission/submission.html");
+        modelAndView.addObject("submission", submissionDto);
         return modelAndView;
+
     }
     @RequestMapping(value = {"/status/{code}/", "/status/{code}"})
     public ModelAndView submissions(Principal principal, @PathVariable String code, Integer page,

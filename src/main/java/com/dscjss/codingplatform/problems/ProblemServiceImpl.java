@@ -13,6 +13,8 @@ import com.dscjss.codingplatform.problems.model.AllowedCompiler;
 import com.dscjss.codingplatform.problems.model.Problem;
 import com.dscjss.codingplatform.problems.model.ProblemBody;
 import com.dscjss.codingplatform.problems.model.TestCase;
+import com.dscjss.codingplatform.submissions.SubmissionRepository;
+import com.dscjss.codingplatform.submissions.model.Result;
 import com.dscjss.codingplatform.testcase.TestCaseRepository;
 import com.dscjss.codingplatform.testcase.TestCaseService;
 import com.dscjss.codingplatform.users.UserRepository;
@@ -55,9 +57,10 @@ public class ProblemServiceImpl implements ProblemService {
     private final AllowedCompilerRepository allowedCompilerRepository;
     private final TestCaseService testCaseService;
     private final CacheManager cacheManager;
+    private final SubmissionRepository submissionRepository;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, CompilerRepository compilerRepository, FileManager fileManager, TestCaseRepository testCaseRepository, UserRepository userRepository, AllowedCompilerRepository allowedCompilerRepository, TestCaseService testCaseService, CacheManager cacheManager) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, CompilerRepository compilerRepository, FileManager fileManager, TestCaseRepository testCaseRepository, UserRepository userRepository, AllowedCompilerRepository allowedCompilerRepository, TestCaseService testCaseService, CacheManager cacheManager, SubmissionRepository submissionRepository) {
         this.problemRepository = problemRepository;
         this.compilerRepository = compilerRepository;
         this.fileManager = fileManager;
@@ -66,6 +69,7 @@ public class ProblemServiceImpl implements ProblemService {
         this.allowedCompilerRepository = allowedCompilerRepository;
         this.testCaseService = testCaseService;
         this.cacheManager = cacheManager;
+        this.submissionRepository = submissionRepository;
     }
 
     @Override
@@ -133,8 +137,12 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public Page<ProblemDto> getProblems(UserBean userBean, Pageable pageable) {
-        Page<Problem> page = problemRepository.findAll(pageable);
-        return page.map(Mapper::getProblemDto);
+        Page<Problem> page = problemRepository.findAllByPracticeIsTrue(pageable);
+        return page.map(problem -> {
+            ProblemDto problemDto = Mapper.getProblemDto(problem);
+            problemDto.setSubmissionCount(submissionRepository.countPracticeSubmissions(problem.getId()));
+            return problemDto;
+        });
     }
 
     @Override
@@ -232,6 +240,7 @@ public class ProblemServiceImpl implements ProblemService {
             problem.setJudgeId(1);
             problem.setCreationDate(new Date());
             problem.setModificationDate(new Date());
+            problem.setPractice(false);
             Integer countSimilar = problemRepository.countByCodeIsStartingWith(tempCode);
             if(countSimilar != 0)
                 tempCode += "-"+countSimilar + 1;
@@ -338,5 +347,17 @@ public class ProblemServiceImpl implements ProblemService {
         cacheManager.getCache(name).evict(key);
 
         cacheManager.getCache(name).evict(key);
+    }
+
+    @Override
+    @Transactional
+    public void addToPractice(UserBean userBean, int problemId) {
+        problemRepository.setPracticeById(true, problemId);
+    }
+
+    @Override
+    @Transactional
+    public void removeFromPractice(UserBean userBean, int problemId) {
+        problemRepository.setPracticeById(false, problemId);
     }
 }

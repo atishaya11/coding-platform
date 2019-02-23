@@ -81,20 +81,28 @@
             <div class="sidebar">
             <div class="sidebar-box block">
                 <div class="section-title box-title">Actions</div>
-                <div class="box-content" style="display: inline-flex;">
-
-                    <div style="margin: 10px;">
-                        <a href="javascript:void(0)" onclick="addToPractice()" class="button" >Add to Practice</a>
+                <div id="actions" class="box-content" style="display: inline-flex;">
+                    <div style="margin: 10px;" th:if="${! problem.practice}">
+                        <a th:attr='data-href=@{/admin/problems/edit/add/__${problem.id}__}' onclick="performAsync(this)" class="button" >Add</a>
                     </div>
-                    <script>
-                        function addToPractice() {
-
-                        }
-                    </script>
+                    <div style="margin: 10px;" th:unless="${! problem.practice}">
+                        <a th:attr='data-href=@{/admin/problems/edit/remove/__${problem.id}__}' onclick="performAsync(this)" class="button" >Remove</a>
+                    </div>
                     <div style="margin: 10px;">
                         <a href="javascript:void(0)" class="button delete-button" >Delete</a>
                     </div>
-
+                    <script>
+                        function performAsync(elem) {
+                            var url = $(elem).data('href');
+                            $.get(url,  function(data, textStatus, jqXHR){
+                                if(jqXHR.status === 200){
+                                    //window.location.reload();
+                                } else{
+                                    $('#actions').before('<strong class="error">Unable to perform the action.</strong>');
+                                }
+                            });
+                        }
+                    </script>
                 </div>
             </div>
         </div>

@@ -48,6 +48,10 @@ select{
     min-width: 50px;
     background-color: #36383f;
 }
+.button.disabled {
+    background-color: #76787F;
+    cursor: initial;
+}
 .container {
     width: 100%;
     margin-top: 70px;
@@ -506,7 +510,6 @@ ul.breadcrumb li {
 
 ul.breadcrumb li.next{
     font-size: 14px;
-    vertical-align: middle;
     font-weight: 600;
 }
 ul.breadcrumb li a {

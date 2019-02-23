@@ -9,13 +9,17 @@ import com.dscjss.codingplatform.problems.exception.TestDataUploadException;
 import com.dscjss.codingplatform.users.UserService;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -146,5 +150,26 @@ public class AdminController {
         }
         return new ModelAndView("error.html");
 
+    }
+
+
+    @GetMapping("/problems/edit/add/{id}")
+    public ResponseEntity<Map<String, String>> addToPractice(Principal principal, @PathVariable int id){
+        if(principal != null){
+            String username = principal.getName();
+            problemService.addToPractice(new UserBean(username), id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/problems/edit/remove/{id}")
+    public ResponseEntity<Map<String, String>> removeFromPractice(Principal principal, @PathVariable int id){
+        if(principal != null){
+            String username = principal.getName();
+            problemService.removeFromPractice(new UserBean(username), id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }

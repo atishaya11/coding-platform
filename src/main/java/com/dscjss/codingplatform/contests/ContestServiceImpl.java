@@ -10,6 +10,7 @@ import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.error.UserNotFoundException;
 import com.dscjss.codingplatform.problems.ProblemRepository;
 import com.dscjss.codingplatform.problems.ProblemService;
+import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.model.Problem;
 import com.dscjss.codingplatform.submissions.SubmissionRepository;
 import com.dscjss.codingplatform.submissions.SubmissionService;
@@ -158,11 +159,11 @@ public class ContestServiceImpl implements ContestService {
 
     @Override
     public boolean addProblem(UserBean userBean, Integer id, Integer problemId) {
-        Problem problem = problemRepository.getOne(problemId);
+        Problem problem = problemRepository.findById(problemId).orElse(null);
         if(problem == null)
             return false;
 
-        Contest contest = contestRepository.getOne(id);
+        Contest contest = contestRepository.findById(id).orElse(null);
         if(contest == null)
             return false;
 
@@ -198,7 +199,9 @@ public class ContestServiceImpl implements ContestService {
         for(ContestProblem contestProblem : contestProblems){
             ContestProblemDto contestProblemDto = new ContestProblemDto();
             contestProblemDto.setId(contestProblem.getId());
-            contestProblemDto.setProblemDto(Mapper.getProblemDto(contestProblem.getProblem()));
+            ProblemDto problemDto = Mapper.getProblemDto(contestProblem.getProblem());
+            contestProblemDto.setProblemDto(problemDto);
+            contestProblemDto.getProblemDto().setSubmissionCount(submissionRepository.countContestSubmissions(contest.getId(), problemDto.getId()));
             contestProblemDto.setMaxScore(contestProblem.getMaxScore());
             contestProblemDtoList.add(contestProblemDto);
         }
@@ -237,17 +240,18 @@ public class ContestServiceImpl implements ContestService {
     @Override
     public int submit(SubmissionRequest submissionRequest) throws InvalidSubmissionException, SubmissionFailedException {
 
-        Contest contest = contestRepository.getOne(submissionRequest.getContestId());
+        Contest contest = contestRepository.findById(submissionRequest.getContestId()).orElse(null);
         if(contest == null){
             throw  new NotFoundException("Contest not found.");
         }
-        ContestProblem contestProblem = contestProblemRepository.getOne(submissionRequest.getContestProblemId());
+        ContestProblem contestProblem = contestProblemRepository.findByProblemIdAndContestId(submissionRequest.getProblemId(), submissionRequest.getContestId());
         if(contestProblem == null)
             throw new NotFoundException("Contest problem not found.");
 
         submissionRequest.setProblemId(contestProblem.getProblem().getId());
         submissionRequest.setForContest(true);
         submissionRequest.setPublic(false);
+        submissionRequest.setVisible(true);
         submissionRequest.setMaxScore(contestProblem.getMaxScore());
         submissionRequest.setContestId(contest.getId());
         if(contest.getContestType() == Constants.CONTEST_TYPE_CODE_IN_LESS){
@@ -300,6 +304,11 @@ public class ContestServiceImpl implements ContestService {
     @Override
     public Page<SubmissionDto> getSubmissions(UserBean userBean, String code, String problem, Pageable pageable) {
         Page<SubmissionDto> page = submissionService.getSubmissions(userBean, code, problem, pageable, true);
+        for(SubmissionDto submissionDto : page.getContent()){
+            if(submissionDto.getUserBean().getUsername().equals(userBean.getUsername())){
+                submissionDto.setPublic(true);
+            }
+        }
         return page;
     }
 

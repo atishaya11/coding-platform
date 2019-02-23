@@ -37,4 +37,11 @@ public class FileManager {
         s3Services.downloadFile(fileName, tempFile.getAbsolutePath());
         return tempFile;
     }
+
+
+    public void deleteTestDataFiles(String[] files){
+        for(String file : files){
+            s3Services.deleteFile(file);
+        }
+    }
 }

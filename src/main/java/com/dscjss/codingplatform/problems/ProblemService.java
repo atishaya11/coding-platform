@@ -36,4 +36,6 @@ public interface ProblemService {
     void addToPractice(UserBean userBean, int problemId);
 
     void removeFromPractice(UserBean userBean, int id);
+
+    void deleteTestCase(UserBean userBean, int id, int testCaseId);
 }

@@ -89,7 +89,6 @@ public class AdminController {
     }
     @GetMapping(value = "/problems/edit/{id}/settings")
     public ModelAndView editProblemSettings(Principal principal, @PathVariable Integer id){
-
         ModelAndView modelAndView = new ModelAndView("admin/edit-problem-languages.html");
         return modelAndView;
     }
@@ -168,6 +167,16 @@ public class AdminController {
         if(principal != null){
             String username = principal.getName();
             problemService.removeFromPractice(new UserBean(username), id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @DeleteMapping("/problems/edit/{id}/test_cases/{test_case_id}")
+    public ResponseEntity<Map<String, String>> deleteTestCase(Principal principal, @PathVariable int id, @PathVariable("test_case_id") int testCaseId){
+        if(principal != null){
+            String username = principal.getName();
+            problemService.deleteTestCase(new UserBean(username), id, testCaseId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

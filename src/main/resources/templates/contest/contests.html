@@ -28,8 +28,8 @@
 
                     <tr class="clickable" th:each="contest : ${contests}" th:attr="data-href=@{/contests/__${contest.code}__}">
                         <td th:text="${contest.name}"></td>
-                        <td class="utc-date" th:attr="data-millis=${contest.startDate.getTime()}" th:text="${#dates.format(contest.startDate, 'dd-MMM-yyyy hh:mm a')}"></td>
-                        <td class="utc-date" th:attr="data-millis=${contest.endDate.getTime()}" th:text="${#dates.format(contest.endDate, 'dd-MMM-yyyy hh:mm a')}"></td>
+                        <td class="utc-date" th:attr="data-val=${#dates.formatISO(contest.startDate)}" th:text="${#dates.format(contest.startDate, 'dd-MMM-yyyy hh:mm a')}"></td>
+                        <td class="utc-date" th:attr="data-val=${#dates.formatISO(contest.endDate)}" th:text="${#dates.format(contest.endDate, 'dd-MMM-yyyy hh:mm a')}"></td>
 
                     </tr>
                 </table>
@@ -37,22 +37,13 @@
                     $(document).ready(function () {
                         $('.clickable').click(function () {
                             window.location = $(this).data('href');
-                        });/*
-                        function convertUTCDateToLocalDate(date) {
-                            var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-
-                            var offset = date.getTimezoneOffset() / 60;
-                            var hours = date.getHours();
-
-                            newDate.setHours(hours - offset);
-                            return newDate;
-                        }*/
-                        /*$('.utc-date').each(function () {
-                            var utcDate = $(this).data('millis');
+                        });
+                        $('.utc-date').each(function () {
+                            var utcDate = $(this).data('val');
                             console.log(utcDate);
-                            var localDate = convertUTCDateToLocalDate(new Date(utcDate));
+                            var localDate = new Date(utcDate);
                             $(this).text(localDate.toLocaleString('en-us', {day:'numeric', month: 'long', year : 'numeric', hour : 'numeric', hour12 : true, minute : 'numeric' }));
-                        });*/
+                        });
                     });
                 </script>
 

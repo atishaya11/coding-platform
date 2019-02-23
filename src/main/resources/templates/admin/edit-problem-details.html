@@ -96,7 +96,7 @@
                             var url = $(elem).data('href');
                             $.get(url,  function(data, textStatus, jqXHR){
                                 if(jqXHR.status === 200){
-                                    //window.location.reload();
+                                    window.location.reload();
                                 } else{
                                     $('#actions').before('<strong class="error">Unable to perform the action.</strong>');
                                 }

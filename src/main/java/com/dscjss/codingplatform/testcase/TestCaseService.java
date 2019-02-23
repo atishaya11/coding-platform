@@ -6,4 +6,6 @@ public interface TestCaseService {
     String getInputData(Integer id) throws TestDataDownloadException;
 
     String getOutputData(Integer id) throws TestDataDownloadException;
+
+    void deleteTestCase(int testCaseId);
 }

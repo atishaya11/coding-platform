@@ -4,7 +4,6 @@
     <th:block th:replace="layout :: head"/>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
@@ -45,12 +44,31 @@
                                     <input type="checkbox" disabled="disabled" th:checked="${testCase.sample}">
                                 </td>
                                 <td>
-                                    <a><img class="icon" th:src="@{/img/edit.png}" src="" alt="Edit"></a>
-                                    <a><img class="icon" th:src="@{/img/delete.png}" src="" alt="Delete"></a>
+                                    <a th:attr='data-href=@{/admin/problems/edit/__${problem.id}__/test_cases/__${testCase.id}__}' onclick="deleteTestCase(this)">
+                                        <img class="icon" th:src="@{/img/delete.png}" src="" alt="Delete">
+                                    </a>
+                                    <!--<a><img class="icon" th:src="@{/img/edit.png}" src="" alt="Edit"></a>-->
                                 </td>
                             </tr>
                             </thead>
                         </table>
+                        <script>
+                            function deleteTestCase(elem) {
+                                var url = $(elem).data('href');
+                                $.ajax({
+                                    url: url,
+                                    type: 'DELETE',
+                                    success: function(data, textStatus, jqXHR) {
+                                        if(jqXHR.status === 200){
+                                            window.location.reload();
+                                        }
+                                    },
+                                    error : function (data, textStatus, jqXHR) {
+                                        
+                                    }
+                                });
+                            }
+                        </script>
                     </div>
                 </div>
                 <div style="text-align: right">

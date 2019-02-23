@@ -1,6 +1,9 @@
 package com.dscjss.codingplatform.s3;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.Download;
@@ -52,5 +55,15 @@ public class S3ServicesImpl implements S3Services {
         Download download = transferManager.download(request, new File(downloadFilePath));
 
         download.waitForCompletion();
+    }
+
+    @Override
+    public void deleteFile(String keyName) {
+        try {
+            amazonS3Config.s3Client().deleteObject(new DeleteObjectRequest(amazonS3Config.getTestCasesBucketName(), keyName));
+        } catch(SdkClientException e) {
+            e.printStackTrace();
+        }
+
     }
 }

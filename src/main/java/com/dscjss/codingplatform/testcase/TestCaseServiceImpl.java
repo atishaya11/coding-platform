@@ -19,10 +19,12 @@ public class TestCaseServiceImpl implements TestCaseService {
     private final Logger logger = LoggerFactory.getLogger(TestCaseServiceImpl.class);
 
     private final FileManager fileManager;
+    private final TestCaseRepository testCaseRepository;
 
     @Autowired
-    public TestCaseServiceImpl(FileManager fileManager) {
+    public TestCaseServiceImpl(FileManager fileManager, TestCaseRepository testCaseRepository) {
         this.fileManager = fileManager;
+        this.testCaseRepository = testCaseRepository;
     }
 
 
@@ -53,5 +55,13 @@ public class TestCaseServiceImpl implements TestCaseService {
         }catch (InterruptedException | IOException e){
             throw new TestDataDownloadException("Test data download failed.");
         }
+    }
+
+    @Override
+    public void deleteTestCase(int testCaseId) {
+        String inputFile = testCaseId + "/input.txt";
+        String outputFile = testCaseId + "/output.txt";
+        fileManager.deleteTestDataFiles(new String[]{inputFile, outputFile});
+        testCaseRepository.deleteById(testCaseId);
     }
 }

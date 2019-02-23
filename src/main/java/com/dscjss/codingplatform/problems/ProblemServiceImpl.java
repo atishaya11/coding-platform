@@ -4,6 +4,7 @@ package com.dscjss.codingplatform.problems;
 import com.dscjss.codingplatform.compilers.CompilerRepository;
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
 import com.dscjss.codingplatform.compilers.model.Compiler;
+import com.dscjss.codingplatform.contests.exception.NotFoundException;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.TestCaseDto;
 import com.dscjss.codingplatform.problems.dto.UploadTestCaseDto;
@@ -359,5 +360,24 @@ public class ProblemServiceImpl implements ProblemService {
     @Transactional
     public void removeFromPractice(UserBean userBean, int problemId) {
         problemRepository.setPracticeById(false, problemId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTestCase(UserBean userBean, int id, int testCaseId) {
+        Problem problem = problemRepository.findById(id).orElse(null);
+        if(problem == null)
+            throw new NotFoundException("Problem not found.");
+        TestCase toDelete = null;
+        for(TestCase testCase : problem.getTestCases()){
+            if(testCase.getId() == testCaseId){
+               toDelete = testCase;
+            }
+        }
+        if(toDelete != null){
+            testCaseService.deleteTestCase(testCaseId);
+            problem.getTestCases().remove(toDelete);
+            problemRepository.save(problem);
+        }
     }
 }

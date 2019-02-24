@@ -34,4 +34,16 @@ public interface SubmissionRepository extends JpaRepository<Submission, Integer>
     default int countContestSubmissions(int contestId, int problemId){
         return countByProblemIdAndContestIdAndVisibleIsTrueAndForContestIsTrueAndResultStatus(problemId, contestId, Status.CORRECT);
     }
+
+    Page<Submission> findByProblemCodeAndUserIdAndForContestIsFalseAndVisibleIsTrue(String code, int userId, Pageable pageable);
+
+    default Page<Submission> findPracticeSubmissionsForUser(String code, Pageable pageable, Integer id){
+        return findByProblemCodeAndUserIdAndForContestIsFalseAndVisibleIsTrue(code, id, pageable);
+    }
+
+    Page<Submission> findByContestCodeAndUserIdAndProblemCodeAndVisibleIsTrue(String contest, int userId, String problem, Pageable pageable);
+
+    default Page<Submission> findContestSubmissionsForUser(String contest, String problem, int id, Pageable pageable){
+        return findByContestCodeAndUserIdAndProblemCodeAndVisibleIsTrue(contest, id, problem, pageable);
+    }
 }

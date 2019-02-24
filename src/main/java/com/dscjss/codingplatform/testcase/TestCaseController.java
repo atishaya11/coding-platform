@@ -1,6 +1,8 @@
 package com.dscjss.codingplatform.testcase;
 
 import com.dscjss.codingplatform.problems.exception.TestDataDownloadException;
+import com.dscjss.codingplatform.util.Constants;
+import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,11 @@ public class TestCaseController {
 
     @ResponseBody
     @RequestMapping(value = "/test_case/{id}/input", method = RequestMethod.GET)
-    public ResponseEntity<String> getInputTestData(@PathVariable Integer id){
+    public ResponseEntity<String> getInputTestData(@PathVariable Integer id, @RequestParam String token){
         ResponseEntity<String> responseEntity;
+        if(!token.equals(Constants.AUTH_TOKEN)){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         try {
             responseEntity = new ResponseEntity<>(testCaseService.getInputData(id), HttpStatus.OK);
             return responseEntity;
@@ -41,13 +46,16 @@ public class TestCaseController {
     }
     @ResponseBody
     @RequestMapping(value = "/test_case/{id}/output", method = RequestMethod.GET)
-    public String getOutputTestData(@PathVariable Integer id){
+    public ResponseEntity<String> getOutputTestData(@PathVariable Integer id, @RequestParam String token){
+        if(!token.equals(Constants.AUTH_TOKEN)){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         try {
-            return testCaseService.getOutputData(id);
+            return new ResponseEntity<>(testCaseService.getOutputData(id), HttpStatus.OK);
         } catch (TestDataDownloadException e) {
             e.printStackTrace();
             logger.error("Unable to get test data for id {}", id);
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

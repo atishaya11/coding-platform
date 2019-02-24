@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -28,7 +29,7 @@
                            function validSubmissionFormData(form) {
                                var formData = new FormData(form.get(0));
                                var sourceFile = formData.get('sourceFile');
-                               if(sourceFile === '' || $('#submit-source').files.length === 0){
+                               if(sourceFile === '' || document.getElementById('submit-source').files.length === 0){
                                    $(form).before('<strong class="error">Please select a file.</strong>');
                                    return false;
                                }
@@ -77,14 +78,14 @@
 
     <div th:fragment="submissions-box" class="sidebar-box">
         <div style="display: inline-flex; width: 100%;">
-            <a th:href="@{'/status/' + ${problem.code}}" class="button" style="margin-right:10px;width: 50%;">My Submissions</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{'/status/' + ${problem.code} + '/' + ${#authentication.getPrincipal().getUsername()}}" class="button" style="margin-right:10px;width: 50%;">My Submissions</a>
             <a th:href="@{'/status/' + ${problem.code}}" class="button" style="width: 50%;">All Submissions</a>
         </div>
     </div>
 
     <div th:fragment="contest-submissions-box" class="sidebar-box">
         <div style="display: inline-flex; width: 100%;">
-            <a th:href="@{'/contests/' + ${contest.code} + '/status/' + ${problem.problemDto.code}}" class="button" style="margin-right:10px;width: 50%;">My Submissions</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{'/contests/' + ${contest.code} + '/status/' + ${problem.problemDto.code} + '/' + ${#authentication.getPrincipal().getUsername()}}" class="button" style="margin-right:10px;width: 50%;">My Submissions</a>
             <a th:href="@{'/contests/' + ${contest.code} + '/status/' + ${problem.problemDto.code}}" class="button" style="width: 50%;">All Submissions</a>
         </div>
     </div>

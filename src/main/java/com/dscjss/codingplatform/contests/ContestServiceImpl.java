@@ -322,6 +322,10 @@ public class ContestServiceImpl implements ContestService {
     @Override
     public Page<SubmissionDto> getSubmissions(UserBean userBean, String code, String problem, Pageable pageable) {
         Page<SubmissionDto> page = submissionService.getSubmissions(userBean, code, problem, pageable, true);
+        return makeCurrentUserSubmissionPublic(userBean, page);
+    }
+
+    private Page<SubmissionDto> makeCurrentUserSubmissionPublic(UserBean userBean, Page<SubmissionDto> page) {
         for(SubmissionDto submissionDto : page.getContent()){
             if(submissionDto.getUserBean().getUsername().equals(userBean.getUsername())){
                 submissionDto.setPublic(true);
@@ -330,6 +334,11 @@ public class ContestServiceImpl implements ContestService {
         return page;
     }
 
+    @Override
+    public Page<SubmissionDto> getSubmissionsForUser(UserBean userBean, String code, String problem, String user, Pageable pageable) {
+        Page<SubmissionDto> page = submissionService.getSubmissionsByUser(userBean, code, problem, pageable, user);
+        return makeCurrentUserSubmissionPublic(userBean, page);
+    }
 
     @Override
     public void updateContestProblems(UserBean userBean, Integer id, ProblemsUpdateForm problemsUpdateForm) throws InvalidRequestException {

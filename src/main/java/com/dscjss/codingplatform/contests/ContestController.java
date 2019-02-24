@@ -120,7 +120,7 @@ public class ContestController {
                                     @RequestParam(name = "sort_by", required = false, defaultValue = "score") String sort,
                                     @RequestParam(name = "sort_order", required = false, defaultValue = "desc") String order){
         ModelAndView modelAndView = new ModelAndView("contest/leaderboard.html");
-        int pageSize = 2;
+        int pageSize = 20;
         Pageable pageable = createPageable(page == null ? 0 : page, sort, order, pageSize);
         String username = null;
         if(principal != null){
@@ -206,6 +206,24 @@ public class ContestController {
             username = principal.getName();
         }
         Page<SubmissionDto> submissions = contestService.getSubmissions(new UserBean(username), code, problem, pageable);
+        modelAndView.addObject("page", submissions);
+        modelAndView.addObject("contest", contestService.getContestByCode(null, code, true));
+        modelAndView.addObject("problem", contestService.getProblem(null, code, problem));
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/contests/{code}/status/{problem}/{user}")
+    public ModelAndView userSubmissions(Principal principal, @PathVariable String code, @PathVariable String problem, @PathVariable String user, Integer page,
+                                    @RequestParam(name = "sort_by", required = false, defaultValue = "creationDate") String sort,
+                                    @RequestParam(name = "sort_order", required = false, defaultValue = "desc") String order) {
+        ModelAndView modelAndView = new ModelAndView("contest/submissions.html");
+        int pageSize = 20;
+        Pageable pageable = createPageable(page == null ? 0 : page, sort, order, pageSize);
+        String username = null;
+        if (principal != null) {
+            username = principal.getName();
+        }
+        Page<SubmissionDto> submissions = contestService.getSubmissionsForUser(new UserBean(username), code, problem, user, pageable);
         modelAndView.addObject("page", submissions);
         modelAndView.addObject("contest", contestService.getContestByCode(null, code, true));
         modelAndView.addObject("problem", contestService.getProblem(null, code, problem));

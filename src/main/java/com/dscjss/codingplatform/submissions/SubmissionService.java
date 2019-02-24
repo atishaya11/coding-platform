@@ -22,4 +22,8 @@ public interface SubmissionService {
     void updateSubmission(int id);
 
     Page<SubmissionDto> getSubmissions(UserBean userBean, String contest, String problem, Pageable pageable, boolean b);
+
+    Page<SubmissionDto> getSubmissionsByUser(UserBean userBean, String code, Pageable pageable, String user);
+
+    Page<SubmissionDto> getSubmissionsByUser(UserBean userBean, String contest, String code, Pageable pageable, String user);
 }

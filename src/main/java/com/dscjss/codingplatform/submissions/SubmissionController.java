@@ -113,11 +113,15 @@ public class SubmissionController {
     @RequestMapping(value = "/submission/{id}", method = RequestMethod.GET)
     public ModelAndView getSubmission(Principal principal, @PathVariable("id") Integer submissionId){
 
-
-        String username = principal.getName();
+        String username = null;
         SubmissionDto submissionDto;
+        if(principal != null){
+            username = principal.getName();
+            submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, false);
+        } else{
+            submissionDto = submissionService.getSubmission(null, submissionId, false);
+        }
 
-        submissionDto = submissionService.getSubmission(new UserBean(username), submissionId, false);
         if(submissionDto.getResult().getStatus() == Status.RUNNING) {
             submissionService.updateSubmission(submissionDto.getId());
         }
@@ -150,6 +154,24 @@ public class SubmissionController {
         modelAndView.addObject("problem", problemService.getProblemByCode(null, code, true));
         return modelAndView;
     }
+
+    @RequestMapping(value = {"/status/{code}/{user}"})
+    public ModelAndView userSubmissions(Principal principal, @PathVariable String code, @PathVariable String user, Integer page,
+                                    @RequestParam(name = "sort_by", required = false, defaultValue = "creationDate") String sort,
+                                    @RequestParam(name = "sort_order", required = false, defaultValue = "desc") String order) {
+        ModelAndView modelAndView = new ModelAndView("submission/submissions.html");
+        int pageSize = 20;
+        Pageable pageable = createPageable(page == null ? 0 : page, sort, order, pageSize);
+        if (principal != null) {
+            String username = principal.getName();
+            Page<SubmissionDto> submissions = submissionService.getSubmissionsByUser(new UserBean(username), code, pageable, user);
+            modelAndView.addObject("page", submissions);
+            modelAndView.addObject("problem", problemService.getProblemByCode(new UserBean(username), code, true));
+            return modelAndView;
+        }
+        return new ModelAndView("error/404.html");
+    }
+
 
     @RequestMapping(value = "/executing/status/{id}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, String>> isExecuting(Principal principal, @PathVariable Integer id){

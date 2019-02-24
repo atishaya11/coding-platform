@@ -5,31 +5,30 @@ package com.dscjss.codingplatform.users.dto;
 import com.dscjss.codingplatform.validation.annotation.PasswordMatches;
 import com.dscjss.codingplatform.validation.annotation.ValidEmail;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 
 @PasswordMatches
 public class UserDto {
 
-        @NotNull(message = "{password.error.invalid}")
-        @Size(min = 6, max = 18, message = "{password.error.size}")
-        private String password;
+    @Pattern(regexp = "^[^\\s]+$", message = "{password.error.white_spaces}")
+    @NotNull(message = "{password.error.invalid}")
+    @Size(min = 6, max = 18, message = "{password.error.size}")
+    private String password;
 
-        @NotNull
-        @NotEmpty(message = "{field.error.empty}")
-        private String matchingPassword;
+    @NotNull
+    @NotEmpty(message = "{field.error.empty}")
+    private String matchingPassword;
 
-        @NotNull
-        @NotEmpty(message = "{field.error.empty}")
-        @ValidEmail
-        private String email;
+    @NotNull
+    @NotEmpty(message = "{field.error.empty}")
+    @ValidEmail
+    private String email;
 
-        @NotNull
-        @NotEmpty(message = "{field.error.empty}")
-        private String username;
+    @Pattern(regexp = "^[A-Za-z0-9_]+$", message = "{username.error.special_characters}")
+    @NotNull
+    @NotEmpty(message = "{field.error.empty}")
+    private String username;
 
 
     public String getPassword() {

@@ -46,7 +46,7 @@
                         <div class="section-title">Constraints</div>
                         <div  th:utext="${problem.problemDto.constraints}">Constraints</div>
                     </div>
-                    <div class="sample-tests">
+                    <div class="sample-tests" th:if="${problem.problemDto.testCaseDtoList != null && problem.problemDto.testCaseDtoList.size() > 0}">
                         <div class="section-title">Sample</div>
                         <div class="sample-test" th:each="testCase : ${problem.problemDto.testCaseDtoList}">
                             <div class="input">

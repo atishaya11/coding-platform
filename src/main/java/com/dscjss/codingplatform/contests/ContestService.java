@@ -47,4 +47,6 @@ public interface ContestService {
     void updateContestProblems(UserBean userBean, Integer id, ProblemsUpdateForm problemsUpdateForm) throws InvalidRequestException;
 
     void updateContestSettings(UserBean userBean, Integer id, Settings settings);
+
+    Page<SubmissionDto> getSubmissionsForUser(UserBean userBean, String code, String problem, String user, Pageable pageable);
 }

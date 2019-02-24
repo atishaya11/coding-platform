@@ -120,7 +120,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         judgeSubmissionRequest.setMasterJudgeId(submissionRequest.getJudgeId()); // Submission master judge id
 
 
-        String url = Constants.JUDGE_API_ENDPOINT + "/submission";
+        String url = Constants.JUDGE_API_ENDPOINT + "submission";
         HttpEntity<JudgeSubmissionRequest> judgeSubmissionRequestHttpEntity = new HttpEntity<>(judgeSubmissionRequest);
 
         ResponseEntity<Integer> responseEntity = restTemplate.exchange(url, HttpMethod.POST, judgeSubmissionRequestHttpEntity, Integer.class);
@@ -187,8 +187,8 @@ public class SubmissionServiceImpl implements SubmissionService {
                 String url = Constants.JUDGE_API_ENDPOINT + "submission/" + submission.getRemoteId() + "?withSource=true";
                 final String json= restTemplate.getForObject(url, String.class);
                 try {
-                    submissionDto.setSource(getSourceFromJson(json));
-
+                    String source = getSourceFromJson(json);
+                    submissionDto.setSource(source);
                 } catch (IOException e) {
                     e.printStackTrace();
                     logger.error("Error fetching source code.");
@@ -233,7 +233,7 @@ public class SubmissionServiceImpl implements SubmissionService {
     @Async
     public void updateSubmission(int id) {
         Submission submission = submissionRepository.getOne(id);
-        String url = Constants.JUDGE_API_ENDPOINT + "/submission/" + submission.getRemoteId();
+        String url = Constants.JUDGE_API_ENDPOINT + "submission/" + submission.getRemoteId();
         String json = restTemplate.getForObject(url, String.class);
         logger.debug("Json from judge api for id {}", id);
         logger.debug("Json: {}", json);
@@ -258,7 +258,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                     submissionRepository.save(submission);
                     logger.debug("Submission {} saved.", id);
 
-                    if(submission.getContest().getContestType() == Constants.CONTEST_TYPE_CODE_IN_LESS){
+                    if(submission.isForContest() && submission.getContest().getContestType() == Constants.CONTEST_TYPE_CODE_IN_LESS){
                         contestRepository.updateCliSubmissionsScores(submission.getContest().getId(), submission.getProblem().getId());
                     }
                 }
@@ -270,7 +270,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
 
     }
-
+//TODO Improve code quality by generalizing query submissions page
     @Override
     public Page<SubmissionDto> getSubmissions(UserBean userBean, String code, Pageable pageable) {
         Page<Submission> submissionPage = submissionRepository.findPracticeSubmissions(code, pageable);
@@ -280,6 +280,25 @@ public class SubmissionServiceImpl implements SubmissionService {
     @Override
     public Page<SubmissionDto> getSubmissions(UserBean userBean, String contest, String problem, Pageable pageable, boolean b) {
         Page<Submission> submissionPage = submissionRepository.findContestSubmissions(contest, problem, pageable);
+        return submissionPage.map(submission -> getSubmission(userBean, submission, true));
+    }
+
+    @Override
+    public Page<SubmissionDto> getSubmissionsByUser(UserBean userBean, String problem, Pageable pageable, String user) {
+        User userObj = userRepository.findByUsername(user);
+        if(userObj == null){
+           throw new InvalidRequestException("User not found");
+        }
+        Page<Submission> submissionPage = submissionRepository.findPracticeSubmissionsForUser(problem, pageable, userObj.getId());
+        return submissionPage.map(submission -> getSubmission(userBean, submission, true));
+    }
+    @Override
+    public Page<SubmissionDto> getSubmissionsByUser(UserBean userBean, String contest, String problem, Pageable pageable, String user) {
+        User userObj = userRepository.findByUsername(user);
+        if(userObj == null){
+            throw new InvalidRequestException("User not found");
+        }
+        Page<Submission> submissionPage = submissionRepository.findContestSubmissionsForUser(contest, problem,  userObj.getId(), pageable);
         return submissionPage.map(submission -> getSubmission(userBean, submission, true));
     }
 }

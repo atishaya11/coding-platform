@@ -48,6 +48,7 @@ END;
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS update_scores;
+
 DELIMITER $$
 CREATE PROCEDURE update_scores (p_contest_id INT)
 BEGIN
@@ -60,5 +61,5 @@ BEGIN
         users.contest_id = scores.contest_id
   SET users.score = scores.total_score, users.position = scores.position  WHERE users.user_id = scores.user_id;
 
-END;
+END $$
 DELIMITER ;

@@ -91,6 +91,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/registration/token/resend").permitAll()
                 .antMatchers("/problems/**").permitAll()
                 .antMatchers("/status/**").permitAll()
+                .antMatchers("/submission/**").permitAll()
                 .antMatchers("/contests/**").permitAll()
                 .antMatchers("/test_case/**").hasIpAddress("127.0.0.1")
                 .antMatchers("/templates/**").permitAll()

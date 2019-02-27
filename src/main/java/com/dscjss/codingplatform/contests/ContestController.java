@@ -86,11 +86,15 @@ public class ContestController {
         }
         ContestDto contestDto = contestService.getContestByCode(new UserBean(username), code, false);
         List<ContestProblemDto> contestProblemDtoList = contestService.getContestProblems(new UserBean(username), contestDto.getId());
+
+        contestDto.setProblemDtoList(contestProblemDtoList);
+        modelAndView.addObject("contest", contestDto);
+        if(!contestDto.isRegistered() && contestDto.getEndDate().before(new Date())){
+            return modelAndView;
+        }
         if(new Date().before(contestDto.getStartDate()) || !contestDto.isRegistered()){
             return new ModelAndView("redirect:/contests/" + code);
         }
-        contestDto.setProblemDtoList(contestProblemDtoList);
-        modelAndView.addObject("contest", contestDto);
         return modelAndView;
     }
 
@@ -103,15 +107,21 @@ public class ContestController {
         }
         ContestProblemDto contestProblemDto = contestService.getProblem(new UserBean(username), code, problemCode);
         if(contestProblemDto == null)
-            return new ModelAndView("404.html");
+            return new ModelAndView("error/404.html");
+        ContestDto contestDto = contestProblemDto.getContestDto();
+
+        modelAndView.addObject("contest", contestDto );
+        modelAndView.addObject("problem", contestProblemDto);
+        modelAndView.addObject("compilers", contestProblemDto.getProblemDto().getCompilers());
+
+        if(!contestDto.isRegistered() && contestDto.getEndDate().before(new Date())){
+            return modelAndView;
+        }
 
         if(new Date().before(contestProblemDto.getContestDto().getStartDate()) || !contestProblemDto.getContestDto().isRegistered()){
             return new ModelAndView("redirect:/contests/" + code);
         }
 
-        modelAndView.addObject("contest", contestProblemDto.getContestDto());
-        modelAndView.addObject("problem", contestProblemDto);
-        modelAndView.addObject("compilers", contestProblemDto.getProblemDto().getCompilers());
 
         return modelAndView;
     }

@@ -74,7 +74,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    @Cacheable(value = "problems", key = "#code + #onlySummary")
+    @Cacheable(value = "problems", key = "#code + '-' + #onlySummary")
     public ProblemDto getProblemByCode(UserBean userBean, String code, boolean onlySummary) {
         logger.info("Check - Is cached problem.");
         Problem problem = problemRepository.findByCode(code);
@@ -83,6 +83,7 @@ public class ProblemServiceImpl implements ProblemService {
             return problemDto;
         }else{
             List<CompilerDto> compilerDtoList = getCompilerList(problemDto.getId());
+            compilerDtoList.removeIf(compilerDto -> !compilerDto.isAllowed());
             problemDto.setCompilers(compilerDtoList);
             problemDto.setTestCaseDtoList(getSampleTests(problem));
             int min = Integer.MAX_VALUE;
@@ -340,10 +341,11 @@ public class ProblemServiceImpl implements ProblemService {
         }
 
 
-        cacheEvict("problems", problem.getCode() + "" + false);
+        cacheEvict("problems", problem.getCode() + "-" + false);
     }
 
-    private void cacheEvict(String name, String key) {
+    @Override
+    public void cacheEvict(String name, String key) {
 
         cacheManager.getCache(name).evict(key);
 

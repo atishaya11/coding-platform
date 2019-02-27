@@ -17,9 +17,6 @@
                 <li><a th:href="@{/contests}">Contests</a></li>
                 <li class="next">&raquo;</li>
                 <li th:text="${contest.name}"></li>
-                <th:block th:if="${contest.registered}">
-                    <li style="float: right;"><a th:href="@{/contests/__${contest.code}__/problems}">Enter Contest</a></li>
-                </th:block>
             </ul>
         </div>
         <div style="display: inline-flex; width: 100%">
@@ -31,9 +28,19 @@
                         <img th:src="@{/img/default_contest.jpg}">
                         <div class="center">
                             <th:block th:text="${contest.name}"/>
-                            <th:block th:if="${not contest.registered}">
+                            <th:block th:if="${not contest.registered && not contest.endDate.before(#dates.createNow())}">
                                 <div>
                                     <a class="button submit-button" th:href="@{'/contests/'+ ${contest.code} +'/register'}">Register</a>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${contest.registered}">
+                                <div>
+                                    <a class="button submit-button" th:href="@{/contests/__${contest.code}__/problems}">Enter Contest</a>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${contest.endDate.before(#dates.createNow())}">
+                                <div>
+                                    <a class="button submit-button" th:href="@{/contests/__${contest.code}__/problems}">Enter Contest</a>
                                 </div>
                             </th:block>
                         </div>

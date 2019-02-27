@@ -33,6 +33,8 @@ public interface ProblemService {
 
     void updateAllowedCompilers(UserBean userBean, List<CompilerDto> compilers, Integer id);
 
+    void cacheEvict(String name, String key);
+
     void addToPractice(UserBean userBean, int problemId);
 
     void removeFromPractice(UserBean userBean, int id);

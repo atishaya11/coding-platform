@@ -7,9 +7,12 @@ import com.dscjss.codingplatform.contests.dto.Settings;
 import com.dscjss.codingplatform.error.InvalidRequestException;
 import com.dscjss.codingplatform.problems.ProblemService;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
+import com.dscjss.codingplatform.submissions.dto.SubmissionDto;
 import com.dscjss.codingplatform.users.UserService;
 import com.dscjss.codingplatform.users.dto.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,8 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.dscjss.codingplatform.util.Utility.createPageable;
 
 @Controller("contestAdminController")
 @RequestMapping("/admin")
@@ -174,6 +179,25 @@ public class AdminController {
             return new ModelAndView("redirect:/admin/contests/edit/" + id + "/settings");
         }
         return new ModelAndView("error/401.html");
+    }
+
+    @RequestMapping(value = "/contests/{id}/submissions", method = RequestMethod.GET)
+    public ModelAndView contestSubmissions(Principal principal, @PathVariable Integer id, Integer page,
+                                           @RequestParam(name = "sort_by", required = false, defaultValue = "creationDate") String sort,
+                                           @RequestParam(name = "sort_order", required = false, defaultValue = "desc") String order){
+
+        int pageSize = 20;
+        Pageable pageable = createPageable(page == null ? 0 : page, sort, order, pageSize);
+        if(principal != null){
+            UserBean userBean = userService.getUserByUsername(principal.getName());
+            ContestDto contestDto = contestService.getContestById(userBean, id, true);
+            Page<SubmissionDto> submissionDtoPage = contestService.getAllSubmissions(userBean, id, pageable);
+            ModelAndView modelAndView = new ModelAndView("admin/contest_submissions.html");
+            modelAndView.addObject("page", submissionDtoPage);
+            modelAndView.addObject("contest", contestDto);
+            return modelAndView;
+        }
+        return new ModelAndView("401.html");
     }
 
 }

@@ -49,4 +49,6 @@ public interface ContestService {
     void updateContestSettings(UserBean userBean, Integer id, Settings settings);
 
     Page<SubmissionDto> getSubmissionsForUser(UserBean userBean, String code, String problem, String user, Pageable pageable);
+
+    Page<SubmissionDto> getAllSubmissions(UserBean userBean, Integer id, Pageable pageable);
 }

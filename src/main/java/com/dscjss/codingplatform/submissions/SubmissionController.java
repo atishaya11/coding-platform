@@ -126,12 +126,17 @@ public class SubmissionController {
             submissionService.updateSubmission(submissionDto.getId());
         }
 
+        ModelAndView modelAndView = new ModelAndView("submission/submission.html");
+        modelAndView.addObject("submission", submissionDto);
+
+        if(submissionDto.isForContest() && submissionDto.getContestDto().getCreatedBy().getUsername().equals(username)){
+            return modelAndView;
+        }
+
         if(!submissionDto.isPublic() && !submissionDto.getUserBean().getUsername().equals(username)){
             return new ModelAndView("error/403.html");
         }
 
-        ModelAndView modelAndView = new ModelAndView("submission/submission.html");
-        modelAndView.addObject("submission", submissionDto);
         return modelAndView;
 
     }

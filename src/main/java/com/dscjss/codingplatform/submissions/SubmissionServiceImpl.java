@@ -62,6 +62,7 @@ public class SubmissionServiceImpl implements SubmissionService {
     private final ProblemService problemService;
     private final ContestRepository contestRepository;
 
+    private static final int MAX_SOURCE_FILE_SIZE = 50000;
 
     @Autowired
     public SubmissionServiceImpl(SubmissionRepository submissionRepository, CompilerRepository compilerRepository,
@@ -157,7 +158,8 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     //TODO Implement the below method
     private boolean isValid(SubmissionRequest submissionRequest) {
-        return submissionRequest.getSource().length() != 0;
+        return submissionRequest.getSource().length() != 0 &&
+                submissionRequest.getSource().length() < MAX_SOURCE_FILE_SIZE;
     }
 
     @Override
@@ -299,6 +301,12 @@ public class SubmissionServiceImpl implements SubmissionService {
             throw new InvalidRequestException("User not found");
         }
         Page<Submission> submissionPage = submissionRepository.findContestSubmissionsForUser(contest, problem,  userObj.getId(), pageable);
+        return submissionPage.map(submission -> getSubmission(userBean, submission, true));
+    }
+
+    @Override
+    public Page<SubmissionDto> getSubmissionsByContest(UserBean userBean, String code, Pageable pageable) {
+        Page<Submission> submissionPage = submissionRepository.findByContestCode(code, pageable);
         return submissionPage.map(submission -> getSubmission(userBean, submission, true));
     }
 }

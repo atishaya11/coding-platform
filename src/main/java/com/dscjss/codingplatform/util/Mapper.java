@@ -123,6 +123,7 @@ public class Mapper {
         contestDto.setId(contest.getId());
         contestDto.setName(contest.getName());
         contestDto.setCode(contest.getCode());
+        contestDto.setCreatedBy(getUserBean(contest.getCreatedBy()));
         if(contest.getBody() != null){
             contestDto.setDescription(contest.getBody().getDescription());
             contestDto.setPrizes(contest.getBody().getPrizes());

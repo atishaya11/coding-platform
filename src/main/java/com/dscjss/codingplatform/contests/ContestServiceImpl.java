@@ -341,6 +341,23 @@ public class ContestServiceImpl implements ContestService {
     }
 
     @Override
+    public Page<SubmissionDto> getAllSubmissions(UserBean userBean, Integer id, Pageable pageable) {
+        Contest contest = contestRepository.findById(id).orElse(null);
+        if(contest == null)
+            throw new NotFoundException("Contest not available.");
+        Page<SubmissionDto> page = submissionService.getSubmissionsByContest(userBean, contest.getCode(), pageable);
+        return makeAllSubmissionPublic(userBean, page);
+    }
+
+    private Page<SubmissionDto> makeAllSubmissionPublic(UserBean userBean, Page<SubmissionDto> page) {
+        for(SubmissionDto submissionDto : page.getContent()){
+                submissionDto.setPublic(true);
+        }
+        return page;
+    }
+
+
+    @Override
     public void updateContestProblems(UserBean userBean, Integer id, ProblemsUpdateForm problemsUpdateForm) throws InvalidRequestException {
         Contest contest = contestRepository.getOne(id);
         if(contest == null) {

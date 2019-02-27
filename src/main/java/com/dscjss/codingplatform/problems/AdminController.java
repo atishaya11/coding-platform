@@ -2,6 +2,7 @@ package com.dscjss.codingplatform.problems;
 
 
 import com.dscjss.codingplatform.compilers.dto.CompilerDto;
+import com.dscjss.codingplatform.contests.exception.NotFoundException;
 import com.dscjss.codingplatform.problems.dto.CompilersUpdateForm;
 import com.dscjss.codingplatform.problems.dto.ProblemDto;
 import com.dscjss.codingplatform.problems.dto.UploadTestCaseDto;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -180,5 +182,13 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/cache/evict/{name}/{key}")
+    public ModelAndView cacheEvict(Principal principal, @PathVariable String name, @PathVariable String key){
+        if(principal != null) {
+            problemService.cacheEvict(name, key);
+        }
+        return new ModelAndView("error/404.html");
     }
 }

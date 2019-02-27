@@ -4,7 +4,6 @@
     <th:block th:replace="layout :: head"/>
     <meta charset="UTF-8">
     <title>Title</title>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -76,6 +75,7 @@
                                 <div style="display: inline-flex;margin: 10px;">
                                     <a href="javascript:void(0)" class="button" >Preview</a>
                                 </div>
+
                             </div>
 
 
@@ -96,6 +96,11 @@
                             <a href="javascript:void(0)" class="button delete-button" >Delete</a>
                         </div>
 
+                    </div>
+                </div>
+                <div th:fragment="contest-submissions-box" class="sidebar-box">
+                    <div style="display: inline-flex; width: 100%;">
+                        <a th:href="@{'/admin/contests/' + ${contest.id} + '/submissions'}" class="button" style="width: 50%;">All Submissions</a>
                     </div>
                 </div>
             </div>

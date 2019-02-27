@@ -20,6 +20,8 @@ public interface SubmissionRepository extends JpaRepository<Submission, Integer>
         return findByContestCodeAndProblemCodeAndVisibleIsTrue(contest, problem, pageable);
     }
 
+    Page<Submission> findByContestCode(String code, Pageable pageable);
+
     int countByProblemIdAndVisibleIsTrueAndForContestIsFalseAndResultStatus(int problemId, Status status);
 
     //TODO Custom query for group submissions by user while counting

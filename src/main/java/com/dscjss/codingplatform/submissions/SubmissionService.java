@@ -26,4 +26,6 @@ public interface SubmissionService {
     Page<SubmissionDto> getSubmissionsByUser(UserBean userBean, String code, Pageable pageable, String user);
 
     Page<SubmissionDto> getSubmissionsByUser(UserBean userBean, String contest, String code, Pageable pageable, String user);
+
+    Page<SubmissionDto> getSubmissionsByContest(UserBean userBean, String code, Pageable pageable);
 }

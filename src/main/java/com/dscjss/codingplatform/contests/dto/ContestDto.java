@@ -1,5 +1,6 @@
 package com.dscjss.codingplatform.contests.dto;
 
+import com.dscjss.codingplatform.users.dto.UserBean;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,6 +34,8 @@ public class ContestDto {
     private Date endDate;
 
     private boolean registered;
+
+    private UserBean createdBy;
 
     private Row currentUserLeaderboardRow;
 
@@ -131,5 +134,13 @@ public class ContestDto {
 
     public void setCurrentUserLeaderboardRow(Row currentUserLeaderboardRow) {
         this.currentUserLeaderboardRow = currentUserLeaderboardRow;
+    }
+
+    public UserBean getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserBean createdBy) {
+        this.createdBy = createdBy;
     }
 }
